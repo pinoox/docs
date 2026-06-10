@@ -24,10 +24,6 @@ Each guide describes **one recommended approach** with practical examples. Choos
 
 ### Practical walkthroughs
 
-**Example source:** [docs/source/](./source/) — full code for every walkthrough
-
-Step-by-step guides for real apps — use these after reading the basics and when you want hands-on code.
-
 #### [Notes API app](./en/examples/simple-api-app.md)
 #### [Phonebook web app](./en/examples/phonebook-app.md)
 #### [Contact form app](./en/examples/contact-form-app.md)
@@ -100,6 +96,15 @@ Step-by-step guides for real apps — use these after reading the basics and whe
 
 #### [Common issues](./en/faq/common-issues.md)
 #### [Contact support](./en/faq/contact-support.md)
+
+---
+
+### Source
+**Example source:** [docs/source/](./source/) — full code for every walkthrough
+
+Step-by-step guides for real apps — use these after reading the basics and when you want hands-on code.
+
+---
 
 ### How to read these docs
 

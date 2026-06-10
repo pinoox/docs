@@ -26,10 +26,6 @@
 
 ### نمونه‌های عملی
 
-**سورس نمونه‌ها:** [docs/source/](./source/) — کد کامل هر walkthrough
-
-راهنمای گام‌به‌گام برای ساخت اپ واقعی — مناسب وقتی مفهوم تئوری را خوانده‌اید و می‌خواهید دست به کد شوید.
-
 #### [اپ API یادداشت](./fa/examples/simple-api-app.md)
 #### [اپ دفترچه تلفن (وب)](./fa/examples/phonebook-app.md)
 #### [فرم تماس سایت](./fa/examples/contact-form-app.md)
@@ -38,7 +34,7 @@
 #### [گالری تصاویر](./fa/examples/gallery-app.md)
 #### [پنل Vue (SPA)](./fa/examples/vue-spa-app.md)
 #### [پنل React (SPA)](./fa/examples/react-spa-app.md)
-#### [Vite hybrid — Twig + ویجت JS](./fa/examples/vite-hybrid-app.md)
+#### [نمونه vite (hybrid)](./fa/examples/vite-hybrid-app.md)
 
 ### مفاهیم پایه
 
@@ -50,7 +46,7 @@
 #### [آدرس - URL](./fa/basic/url.md)
 #### [مسیر - Path](./fa/basic/path.md)
 #### [اعتبارسنجی - Validation](./fa/basic/validation.md)
-#### [Viewها - Views](./fa/basic/views.md)
+#### [آماده سازی Views](./fa/basic/views.md)
 #### [قالب - Templates](./fa/basic/templates.md)
 #### [پورتال - Portal](./fa/basic/portal.md)
 #### [تنظیمات - Config](./fa/basic/config.md)
@@ -60,14 +56,14 @@
 
 #### [پینکر - Pinoox Baker (Pinker)](./fa/advanced/pinker.md)
 #### [سرویس‌ها](./fa/advanced/services.md)
-#### [Helperها - Helpers](./fa/advanced/helpers.md)
+#### [داده های کمکی - Helpers](./fa/advanced/helpers.md)
 #### [ایمیل](./fa/advanced/mail.md)
 #### [کلاینت HTTP - Http Client](./fa/advanced/http-client.md)
 #### [مدیریت کاربران](./fa/advanced/user-management.md)
 #### [مدیریت فایل](./fa/advanced/file-management.md)
 #### [مدیریت توکن](./fa/advanced/token-management.md)
 #### [دسترسی و مجوز - Access](./fa/advanced/access-permissions.md)
-#### [boot.php و رویدادها](./fa/advanced/boot-and-events.md)
+#### [بوت و رویدادها](./fa/advanced/boot-and-events.md)
 #### [زمان‌بندی - Schedule / Cron](./fa/advanced/schedule.md)
 
 ### کار با دیتابیس
@@ -76,17 +72,17 @@
 #### [کوئری‌بیلدر - Query Builder](./fa/database/query-builder.md)
 #### [صفحه‌بندی](./fa/database/pagination.md)
 #### [مایگریشن - Migrations](./fa/database/migrations.md)
-#### [Patch - به‌روزرسانی داده](./fa/database/patches.md)
+#### [به‌روزرسانی داده - Patch](./fa/database/patches.md)
 
 ### Eloquent ORM
 
 #### [شروع به کار](./fa/eloquent-orm/getting-started.md)
 #### [روابط](./fa/eloquent-orm/relationships.md)
 #### [مجموعه‌ها](./fa/eloquent-orm/collections.md)
-#### [Mutatorها / Castها - Mutators & casts](./fa/eloquent-orm/mutators-casts.md)
+#### [تغییر دهنده ها - Mutators & casts](./fa/eloquent-orm/mutators-casts.md)
 #### [منابع API](./fa/eloquent-orm/api-resources.md)
 #### [سریال‌سازی](./fa/eloquent-orm/serialization.md)
-#### [Factoryها - Factories](./fa/eloquent-orm/factories.md)
+#### [داده اولیه - Factories](./fa/eloquent-orm/factories.md)
 
 ### روش تست
 
@@ -102,6 +98,14 @@
 
 #### [مشکلات رایج](./fa/faq/common-issues.md)
 #### [تماس با پشتیبانی](./fa/faq/contact-support.md)
+
+---
+
+### سورس کد 
+
+**سورس نمونه‌ها:** [docs/source/](./source/) — کد کامل هر walkthrough
+
+راهنمای گام‌به‌گام برای ساخت اپ واقعی — مناسب وقتی مفهوم تئوری را خوانده‌اید و می‌خواهید دست به کد شوید.
 
 ---
 
