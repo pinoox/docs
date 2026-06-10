@@ -1,0 +1,192 @@
+# File Management
+
+Upload and storage in Pinoox 3.x go through a single portal: **`Pinoox\Portal\File`**. Metadata lives in `pincore_file` (or a shared transport scope) and physical files on disk (local, S3, …).
+
+---
+
+## Entry point
+
+```php
+use Pinoox\Portal\File;
+```
+
+| Need | API |
+|------|-----|
+| Upload + DB record + URL | `File::upload(...)->save()` |
+| Find / delete / URL | `File::find()`, `File::url()`, `File::remove()` |
+| Raw disk access | `File::storage()->put(...)` |
+
+Do not use `Storage::` directly for user uploads — prefix, disk, and URL stay consistent with `File::`.
+
+---
+
+## app.php configuration
+
+```php
+return [
+    'transport' => [
+        'file_storage' => 'platform',   // or 'local'
+    ],
+    'filesystem' => [
+        'disk' => 'local',
+        'default_access' => 'public',
+        'thumb_width' => 512,
+        'thumb_height' => 512,
+    ],
+];
+```
+
+Global disks in `config/filesystems.config.php` and `.env`:
+
+```env
+FILESYSTEM_DISK=local
+AWS_ACCESS_KEY_ID=...
+AWS_BUCKET=...
+AWS_URL=https://cdn.example.com
+```
+
+---
+
+## Upload with a database record
+
+```php
+$result = File::upload('avatar')
+    ->to('uploads/avatar')
+    ->group('avatar')
+    ->thumb()
+    ->maxSize('2MB')
+    ->extensions('jpg,jpeg,png,webp')
+    ->save();
+
+if ($result->success) {
+    $fileId = $result->id;
+    $url = $result->url;
+    $thumb = $result->thumb;
+}
+```
+
+---
+
+## From Request
+
+```php
+$result = $request->store('photo', 'uploads/gallery')
+    ->group('gallery')
+    ->thumb(256, 256)
+    ->save();
+```
+
+---
+
+## Attach to a model
+
+```php
+$result = File::upload('cover')
+    ->to('uploads/posts')
+    ->group('post_cover')
+    ->attach($post, 'cover_id')
+    ->save();
+```
+
+Replace a previous file:
+
+```php
+$result = File::upload('avatar')
+    ->to('uploads/avatar')
+    ->group('avatar')
+    ->replaceOn($user, 'avatar_id')
+    ->thumb()
+    ->save();
+```
+
+---
+
+## Disk only (no DB)
+
+```php
+$result = File::upload('file')
+    ->to('uploads/apps')
+    ->diskOnly()
+    ->save();
+
+if ($result->success) {
+    $path = $result->path;
+}
+```
+
+---
+
+## Read and delete
+
+```php
+$record = File::find($fileId);
+$url = File::url($fileId);
+$thumb = File::thumb($fileId);
+$list = File::listByGroup('avatar');
+
+File::remove($fileId);
+```
+
+---
+
+## UploadBuilder — key methods
+
+| Method | Description |
+|--------|-------------|
+| `to($dir)` | Destination folder |
+| `group($name)` | Logical group in DB |
+| `thumb($w, $h)` | Image thumbnail |
+| `maxSize('2MB')` | Max file size |
+| `extensions('jpg,png')` | Allowed extensions |
+| `disk('s3')` | Override disk |
+| `attach($model, $column)` | Set FK after upload |
+| `replaceOn($model, $column)` | Remove old + upload new |
+| `save()` | Execute → `UploadResult` |
+
+---
+
+## UploadResult
+
+```php
+$result->success;   // bool
+$result->id;        // file_id
+$result->url;       // file_link
+$result->thumb;     // thumb_link
+$result->path;      // absolute path
+$result->record;    // FileModel
+$result->error;     // error message
+```
+
+---
+
+## S3
+
+```php
+// app.php
+'filesystem' => ['disk' => 's3'],
+
+// or per upload
+File::upload('doc')->to('uploads/docs')->disk('s3')->save();
+```
+
+Private files on S3:
+
+```php
+$url = File::storage('s3')->temporaryUrl('private/doc.pdf', now()->addHour());
+```
+
+---
+
+## Tips
+
+- Validate in FormRequest before `File::upload()`.
+- `user_id` is filled from `Auth::id()`.
+- With `transport.file_storage => platform`, files are shared across platform apps.
+
+---
+
+## Related docs
+
+- [User management](./user-management.md)
+- [Transport](../../pinoox%20docs/pinoox-transport.md)
+- [Validation](../basic/validation.md)

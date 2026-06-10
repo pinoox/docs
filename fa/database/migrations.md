@@ -1,0 +1,137 @@
+# Migrations
+
+Migrationها تغییرات **schema** دیتابیس را نسخه‌بندی می‌کنند. در پینوکس 3.x فایل‌های اپ در `apps/{package}/database/migrations/` و core در `system/database/migrations/` قرار دارند.
+
+---
+
+## ساخت migration
+
+```bash
+php pinoox migrate:create CreatePosts com_acme_blog
+```
+
+خروجی:
+
+```text
+apps/com_acme_blog/database/migrations/2026_06_10_120000_create_posts_table.php
+```
+
+---
+
+## ساختار فایل
+
+```php
+<?php
+namespace App\com_acme_blog\database\migrations;
+
+use Illuminate\Database\Schema\Blueprint;
+use Pinoox\Component\Migration\MigrationBase;
+
+return new class extends MigrationBase
+{
+    public function up()
+    {
+        $this->schema->create($this->table('posts', 'com_acme_blog'), function (Blueprint $table) {
+            $table->id();
+            $table->unsignedInteger('user_id')->nullable();
+            $table->string('title', 255);
+            $table->text('body')->nullable();
+            $table->string('status', 50)->default('draft');
+            $table->timestamps();
+
+            $table->index('user_id');
+        });
+    }
+
+    public function down(): void
+    {
+        $this->schema->dropIfExists($this->table('posts', 'com_acme_blog'));
+    }
+};
+```
+
+`$this->table('posts', $package)` prefix صحیح اپ را اعمال می‌کند.
+
+---
+
+## اجرا
+
+```bash
+# migration اپ
+php pinoox migrate com_acme_blog
+
+# migration هسته
+php pinoox migrate pincore
+
+# migration پلتفرم (جداول pinx_*)
+php pinoox migrate platform
+```
+
+---
+
+## وضعیت و rollback
+
+```bash
+php pinoox migrate:status com_acme_blog
+php pinoox migrate:rollback com_acme_blog
+php pinoox migrate:rollback com_acme_blog --step=1
+```
+
+---
+
+## migration core (مثال)
+
+```php
+namespace Pinoox\Database\migrations;
+
+use Pinoox\Model\Table;
+
+$this->schema->create($this->table(Table::USER, 'platform'), function (Blueprint $table) {
+    $table->increments('user_id');
+    // ...
+});
+```
+
+جداول core: prefix **`pincore_`** (یا `pinx_` برای scope platform).
+
+---
+
+## namespace
+
+| محل | Namespace |
+|-----|-----------|
+| اپ | `App\{package}\database\migrations` |
+| core | `Pinoox\Database\migrations` |
+
+---
+
+## مسیر legacy
+
+پینوکس هنوز `apps/{package}/migrations/` قدیمی را می‌خواند، اما فایل **جدید** در `database/migrations/` ساخته می‌شود.
+
+---
+
+## تفاوت Migration / Seed / Patch
+
+| نوع | کاربرد | دستور |
+|-----|--------|-------|
+| Migration | schema (CREATE/ALTER) | `php pinoox migrate {package}` |
+| Seeder | داده اولیه | `php pinoox seeder:run {package}` |
+| Patch | تغییر یک‌باره داده | `php pinoox patch:run {package}` |
+
+---
+
+## بهترین شیوه‌ها
+
+- هر migration یک تغییر منطقی (یک جدول یا یک ALTER).
+- `down()` را همیشه بنویسید.
+- migration اجراشده را edit نکنید — migration جدید بسازید.
+- foreign key به جداول core با `$this->table(Table::FILE, 'platform')`.
+
+---
+
+## مستندات مرتبط
+
+- [شروع کار با دیتابیس](./getting-started.md)
+- [Seeder / Factory](../eloquent-orm/factories.md)
+- [ساختار DB اپ](../../pinoox%20docs/pinoox-app-database-structure.md)
