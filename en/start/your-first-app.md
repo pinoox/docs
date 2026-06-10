@@ -1,5 +1,7 @@
 # Your first app
 
+[← Back to index](../../readme.md)
+
 The fastest way to create an app in Pinoox 3.x is the CLI command `app:create`. It scaffolds the standard MVC structure under `apps/{package}/`: `routes/`, `Controller/`, `theme/`, `config/`.
 
 ---
@@ -163,3 +165,13 @@ php pinoox route:actions com_acme_blog
 - [Project structure](./structure.md)
 - [Router](../basic/routers.md)
 - [Controllers](../basic/controllers.md)
+- [Notes API walkthrough](../examples/simple-api-app.md)
+- [Phonebook web walkthrough](../examples/phonebook-app.md)
+- [Contact form walkthrough](../examples/contact-form-app.md)
+- [Simple blog walkthrough](../examples/blog-app.md)
+- [Task board walkthrough](../examples/task-board-app.md)
+- [Image gallery walkthrough](../examples/gallery-app.md)
+
+---
+
+[← Back to index](../../readme.md)

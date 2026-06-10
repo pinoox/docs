@@ -1,5 +1,7 @@
 # سرویس‌های اپ (Component + Portal)
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 در پینوکس ۳.x منطق business داخل **`apps/{package}/Component/`** می‌ماند و از طریق **`Portal/`** در کل اپ در دسترس است. این الگوی استاندارد HMVC است — نه Controller ضخیم، نه logic در `pincore/`.
 
 ---
@@ -144,7 +146,11 @@ expect($order->qty)->toBe(2);
 
 ## مستندات مرتبط
 
-- [Portal](../basic/portal.md)
-- [Validation](../basic/validation.md)
+- [Portal — پورتال](../basic/portal.md)
+- [اعتبارسنجی — Validation](../basic/validation.md)
 - [شروع دیتابیس](../database/getting-started.md)
-- [Flow](../basic/flows.md)
+- [فلو — Flow](../basic/flows.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

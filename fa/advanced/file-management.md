@@ -1,5 +1,7 @@
 # مدیریت فایل
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 آپلود و ذخیره فایل در پینوکس 3.x از یک Portal واحد انجام می‌شود: **`Pinoox\Portal\File`**. متادیتا در `pincore_file` (یا scope مشترک transport) و فایل فیزیکی روی دیسک (local، S3، …) نگه‌داری می‌شود.
 
 ---
@@ -188,5 +190,10 @@ $url = File::storage('s3')->temporaryUrl('private/doc.pdf', now()->addHour());
 ## مستندات مرتبط
 
 - [مدیریت کاربران](./user-management.md)
-- [Transport](../../pinoox%20docs/pinoox-transport.md)
-- [Validation](../basic/validation.md)
+- [Transport — حمل API](../../pinoox%20docs/pinoox-transport.md)
+- [اعتبارسنجی — Validation](../basic/validation.md)
+- [نمونه گالری تصاویر](../examples/gallery-app.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

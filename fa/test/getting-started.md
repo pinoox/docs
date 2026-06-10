@@ -1,5 +1,7 @@
 # شروع تست در پینوکس
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 پینوکس برای **هسته فریمورک** (`tests/`) و **هر اپ** (`apps/{package}/tests/`) یک روش واحد دارد: [Pest](https://pestphp.com/)، بوت‌استرپ مشترک و `AppTestKit`. در این راهنما همان روش استاندارد را با مثال عملی می‌بینید.
 
 ---
@@ -170,6 +172,10 @@ config('~pinoox')->get('mode'); // 'test'
 - [تست Console](./console-tests.md)
 - [تست مرورگر (HTML)](./browser-tests.md)
 - [تست دیتابیس](./database.md)
-- [Mocking](./mocking.md)
+- [Mocking — شبیه‌سازی](./mocking.md)
 - [ساخت اولین اپلیکیشن](../start/your-first-app.md)
 - [ساختار پوشه‌بندی](../start/structure.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

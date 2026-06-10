@@ -1,5 +1,7 @@
 # Query Builder
 
+[← Back to index](../../readme.md)
+
 The Pinoox Query Builder is **Illuminate Query Builder** accessed through the **`DB`** portal with an app-scoped connection. Use it for queries that do not need a full model or for complex joins.
 
 ---
@@ -139,3 +141,7 @@ $user = DB::core()->table('user')
 - [Database getting started](./getting-started.md)
 - [Pagination](./pagination.md)
 - [Eloquent — getting started](../eloquent-orm/getting-started.md)
+
+---
+
+[← Back to index](../../readme.md)

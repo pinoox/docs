@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        body { font-family: Tahoma, system-ui, sans-serif; background: #f1f5f9; margin: 0; line-height: 1.5; }
+        .page { max-width: 520px; margin: 0 auto; padding: 2rem 1rem; }
+        .panel { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 1.5rem; text-align: center; }
+        .page-title { margin: 0 0 1rem; font-size: 1.4rem; }
+        .link { display: inline-block; margin-top: 1rem; padding: .45rem 1rem; border: 2px solid #334155; border-radius: 6px; color: #334155; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="panel">
+        <h1 class="page-title">{{ title }}</h1>
+        <p>به‌زودی با شما تماس می‌گیریم.</p>
+        <a class="link" href="{{ url('/') }}">بازگشت به فرم</a>
+    </div>
+</div>
+</body>
+</html>

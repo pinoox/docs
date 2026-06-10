@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: Tahoma, system-ui, sans-serif; background: #f1f5f9; color: #0f172a; margin: 0; line-height: 1.5; }
+        .page { max-width: 560px; margin: 0 auto; padding: 2rem 1rem; }
+        .page-title { margin: 0 0 1.25rem; padding-bottom: .75rem; border-bottom: 2px solid #334155; font-size: 1.5rem; }
+        .panel { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+        .toolbar { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+        .toolbar a { padding: .35rem .85rem; border: 2px solid #cbd5e1; border-radius: 999px; text-decoration: none; color: #334155; font-size: .9rem; background: #fff; }
+        .toolbar a.active { border-color: #334155; background: #334155; color: #fff; }
+        .form-row { display: flex; gap: .5rem; }
+        .form-row input { flex: 1; padding: .5rem .65rem; border: 2px solid #cbd5e1; border-radius: 6px; font: inherit; }
+        .btn { padding: .45rem 1rem; font: inherit; font-weight: 600; border-radius: 6px; cursor: pointer; background: transparent; border: 2px solid #2563eb; color: #2563eb; }
+        .btn-sm { padding: .2rem .55rem; font-size: .85rem; border-color: #334155; color: #334155; }
+        .task-list { list-style: none; padding: 0; margin: 0; }
+        .task-list li { display: flex; align-items: center; gap: .5rem; padding: .65rem 0; border-bottom: 1px solid #e2e8f0; }
+        .task-list li.done { opacity: .55; text-decoration: line-through; }
+        form.inline { display: inline; margin: 0; }
+        .empty { color: #64748b; font-style: italic; }
+    </style>
+</head>
+<body>
+<div class="page">
+    <h1 class="page-title">{{ title }}</h1>
+    <div class="panel">
+        <div class="toolbar">
+            فیلتر:
+            <a href="{{ url('/') }}" class="{{ filter == 'all' ? 'active' : '' }}">همه</a>
+            <a href="{{ url('/?status=pending') }}" class="{{ filter == 'pending' ? 'active' : '' }}">باز</a>
+            <a href="{{ url('/?status=done') }}" class="{{ filter == 'done' ? 'active' : '' }}">انجام‌شده</a>
+        </div>
+        <form method="post" action="{{ url('add') }}" class="form-row">
+            <input name="title" placeholder="کار جدید…" required maxlength="255">
+            <button type="submit" class="btn">افزودن</button>
+        </form>
+    </div>
+    <div class="panel">
+        <ul class="task-list">
+            {% for task in tasks %}
+            <li class="{{ task.status == 'done' ? 'done' : '' }}">
+                <span style="flex:1">{{ task.title }}</span>
+                {% if task.status == 'pending' %}
+                <form class="inline" method="post" action="{{ url('done/' ~ task.id) }}"><button type="submit" class="btn btn-sm">انجام</button></form>
+                {% else %}
+                <form class="inline" method="post" action="{{ url('reopen/' ~ task.id) }}"><button type="submit" class="btn btn-sm">باز</button></form>
+                {% endif %}
+            </li>
+            {% else %}<li class="empty">کاری ثبت نشده.</li>{% endfor %}
+        </ul>
+    </div>
+</div>
+</body>
+</html>

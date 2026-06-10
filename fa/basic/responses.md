@@ -1,5 +1,7 @@
 # پاسخ HTTP (Response)
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 در پینوکس ۳.x هر کنترلر باید یک پاسخ HTTP برگرداند. برای HTML از **`View::render()`**، برای JSON از **`response()->json()`** یا **`ApiController`** استفاده کنید.
 
 ---
@@ -142,8 +144,12 @@ public function store(Request $request)
 
 ## مستندات مرتبط
 
-- [Request](./requests.md)
+- [درخواست — Request](./requests.md)
 - [کنترلر](./controllers.md)
 - [اعتبارسنجی](./validation.md)
-- [View](./views.md)
-- [Portal](./portal.md)
+- [View — ویو](./views.md)
+- [Portal — پورتال](./portal.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

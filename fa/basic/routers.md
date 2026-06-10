@@ -1,5 +1,7 @@
 # روتر (Router)
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 سیستم routing پینوکس ۳.x دو لایه دارد: **Named Action** (handler منطقی) و **Route** (URL و متد HTTP). هر اپ مسیرهای خود را در پوشه **`routes/`** تعریف و در **`app.php`** ثبت می‌کند.
 
 > از **`Pinoox\Portal\Router::get`** استفاده نکنید. توابع router از namespace **`Pinoox\Router`** import می‌شوند.
@@ -176,8 +178,13 @@ php pinoox app:router set /shop com_acme_shop
 
 ## مستندات مرتبط
 
-- [Flow](./flows.md)
+- [فلو — Flow](./flows.md)
 - [کنترلر](./controllers.md)
-- [Request](./requests.md)
+- [درخواست — Request](./requests.md)
 - [ساخت اولین اپ](../start/your-first-app.md)
+- [نمونه API](../examples/simple-api-app.md) · [نمونه دفترچه تلفن](../examples/phonebook-app.md)
 - [ساختار پروژه](../start/structure.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

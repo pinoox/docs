@@ -1,5 +1,7 @@
 # Global Helpers
 
+[← Back to index](../../readme.md)
+
 Pinoox 3.x loads global helpers from `pincore/functions/`. For day-to-day app development these helpers (plus Portals) are enough — do not instantiate core Components directly.
 
 ---
@@ -169,3 +171,7 @@ In addition to PHP helpers, these are available in Twig:
 - [Path](../basic/path.md)
 - [Language](../basic/language.md)
 - [Services](./services.md)
+
+---
+
+[← Back to index](../../readme.md)

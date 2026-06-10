@@ -1,5 +1,7 @@
 # Browser (HTML) Testing in Pinoox
 
+[← Back to index](../../readme.md)
+
 For Twig and HTML pages, Pinoox uses **Feature tests with `appGet()` and `assertSee()`** — no real browser or Dusk required. HTTP is simulated and HTML content is asserted.
 
 ---
@@ -116,3 +118,7 @@ This approach does not execute client-side JavaScript (Vue/Vite SPA). For SPAs, 
 - [Views](../basic/views.md)
 - [Templates](../basic/templates.md)
 - [Serialization tests](./serialization.md)
+
+---
+
+[← Back to index](../../readme.md)

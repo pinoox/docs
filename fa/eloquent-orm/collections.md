@@ -1,5 +1,7 @@
 # مجموعه‌های Eloquent (Collections)
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 وقتی از Model چند رکورد می‌گیرید (`get()`, `all()`)، نتیجه **`Illuminate\Database\Eloquent\Collection`** است — نه آرایه ساده PHP. این مجموعه متدهای قدرتمند برای پردازش دسته‌ای دارد.
 
 ---
@@ -124,3 +126,7 @@ $items = $paginator->items();   // array of models
 - [شروع به کار Eloquent](./getting-started.md)
 - [سریال‌سازی](./serialization.md)
 - [منابع API](./api-resources.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

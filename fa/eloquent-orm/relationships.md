@@ -1,6 +1,8 @@
 # روابط Eloquent
 
-روابط Eloquent Illuminate در پینوکس 3.x بدون تغییر API کار می‌کنند. مثال زیر **`hasMany`** و **`belongsTo`** را برای یک وبلاگ ساده نشان می‌دهد.
+[← بازگشت به فهرست](../../readme-fa.md)
+
+روابط Eloquent در پینوکس 3.x با API استاندارد **`hasMany`، `belongsTo`** و … کار می‌کنند. مثال زیر یک وبلاگ ساده در اپ پینوکسی را نشان می‌دهد:
 
 ---
 
@@ -134,3 +136,7 @@ public function tags()
 - [شروع به کار Eloquent](./getting-started.md)
 - [مجموعه‌ها](./collections.md)
 - [سریال‌سازی](./serialization.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

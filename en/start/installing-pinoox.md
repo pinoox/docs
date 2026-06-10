@@ -1,5 +1,7 @@
 # Installing Pinoox
 
+[← Back to index](../../readme.md)
+
 This guide covers installing Pinoox 3.x on a local stack (MAMP/XAMPP/WAMP) using the graphical installer.
 
 ---
@@ -8,7 +10,7 @@ This guide covers installing Pinoox 3.x on a local stack (MAMP/XAMPP/WAMP) using
 
 | Tool | Version |
 |------|---------|
-| PHP | 8.2 or higher (with ext-mysqli, ext-zip) |
+| PHP | 8.1 or higher (with ext-mysqli, ext-zip) |
 | MySQL / MariaDB | 5.7+ |
 | Composer | 2.x |
 | Node.js (optional) | 18+ — only for frontend theme builds |
@@ -104,3 +106,7 @@ php pinoox app:create com_acme_blog
 - [Your first app](./your-first-app.md)
 - [Project structure](./structure.md)
 - [What is Pinoox?](../introduction/what-is-pinoox.md)
+
+---
+
+[← Back to index](../../readme.md)

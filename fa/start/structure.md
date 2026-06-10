@@ -1,5 +1,7 @@
 # ساختار پوشه‌بندی
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 پینوکس از معماری HMVC استفاده می‌کند: هر اپ در `apps/{package}/` یک ماژول MVC کامل و مستقل است. هسته فریمورک در `vendor/pinoox/pincore/` قرار دارد و فقط برای تغییرات خود پلتفرم ویرایش می‌شود.
 
 ---
@@ -43,6 +45,8 @@ apps/com_acme_shop/
 ├── lang/fa/                 ← ترجمه
 ├── config/                  ← تنظیمات اپ
 ├── database/migrations/
+├── database/seed/
+├── patches/                 ← Patch داده (یک‌باره)
 └── pinker/                  ← mirror برای build
 ```
 
@@ -115,4 +119,8 @@ PSR-4: `App\` → `apps/`
 - [ساخت اولین اپلیکیشن](./your-first-app.md)
 - [روتر](../basic/routers.md)
 - [کنترلر](../basic/controllers.md)
-- [Flow](../basic/flows.md)
+- [فلو — Flow](../basic/flows.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

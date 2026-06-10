@@ -1,5 +1,7 @@
 # File Management
 
+[← Back to index](../../readme.md)
+
 Upload and storage in Pinoox 3.x go through a single portal: **`Pinoox\Portal\File`**. Metadata lives in `pincore_file` (or a shared transport scope) and physical files on disk (local, S3, …).
 
 ---
@@ -190,3 +192,8 @@ $url = File::storage('s3')->temporaryUrl('private/doc.pdf', now()->addHour());
 - [User management](./user-management.md)
 - [Transport](../../pinoox%20docs/pinoox-transport.md)
 - [Validation](../basic/validation.md)
+- [Image gallery walkthrough](../examples/gallery-app.md)
+
+---
+
+[← Back to index](../../readme.md)

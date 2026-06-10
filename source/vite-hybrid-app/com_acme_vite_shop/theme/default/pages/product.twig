@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.title }}</title>
+    {{ seo_tags()|raw }}
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: Tahoma, system-ui, sans-serif; background: #f1f5f9; margin: 0; line-height: 1.5; }
+        .page { max-width: 640px; margin: 0 auto; padding: 2rem 1rem; }
+        .panel { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+        .price { font-size: 1.25rem; color: #2563eb; }
+    </style>
+</head>
+<body>
+<div class="page">
+    <article class="panel">
+        <h1>{{ product.title }}</h1>
+        <p>{{ product.summary }}</p>
+        <p class="price">قیمت واحد: {{ product.unit_price|number_format(0, '.', ',') }} تومان</p>
+    </article>
+
+    <section class="panel">
+        <h2>محاسبه سفارش</h2>
+        <div id="price-widget">در حال بارگذاری…</div>
+    </section>
+</div>
+
+{{ pinoox_bootstrap(bootstrap|default({}))|raw }}
+{{ vite_tags('src/widgets/price-calculator.js')|raw }}
+</body>
+</html>

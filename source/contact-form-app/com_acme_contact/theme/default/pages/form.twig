@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: Tahoma, system-ui, sans-serif; background: #f1f5f9; color: #0f172a; margin: 0; line-height: 1.5; }
+        .page { max-width: 520px; margin: 0 auto; padding: 2rem 1rem; }
+        .panel { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 1.5rem; }
+        .page-title { margin: 0 0 1.25rem; padding-bottom: .75rem; border-bottom: 2px solid #334155; font-size: 1.5rem; }
+        .field { margin-bottom: 1rem; }
+        .field label { display: block; font-weight: 600; margin-bottom: .35rem; font-size: .9rem; }
+        .field input, .field textarea { width: 100%; padding: .5rem .65rem; border: 2px solid #cbd5e1; border-radius: 6px; font: inherit; }
+        .btn { padding: .5rem 1.25rem; font: inherit; font-weight: 600; border-radius: 6px; cursor: pointer; background: transparent; border: 2px solid #2563eb; color: #2563eb; }
+        .btn:hover { background: #2563eb; color: #fff; }
+    </style>
+</head>
+<body>
+<div class="page">
+    <h1 class="page-title">{{ title }}</h1>
+    <div class="panel">
+        <form method="post" action="{{ url('send') }}">
+            <div class="field"><label>نام</label><input name="name" required maxlength="120"></div>
+            <div class="field"><label>ایمیل</label><input name="email" type="email" required maxlength="180"></div>
+            <div class="field"><label>موضوع</label><input name="subject" required maxlength="200"></div>
+            <div class="field"><label>پیام</label><textarea name="body" rows="5" required minlength="10"></textarea></div>
+            <button type="submit" class="btn">ارسال</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

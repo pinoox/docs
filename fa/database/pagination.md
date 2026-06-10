@@ -1,5 +1,7 @@
 # صفحه‌بندی (Pagination)
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 پینوکس 3.x از **`paginate()`** Illuminate (از طریق Eloquent Model پایه pincore) پشتیبانی می‌کند. برای API، نتیجه را در envelope استاندارد با فیلد **`meta`** برگردانید.
 
 ---
@@ -152,6 +154,10 @@ const { data, meta } = unwrapApiResponse(await postAPI.list({ page: 2, per_page:
 
 ## مستندات مرتبط
 
-- [Query Builder](./query-builder.md)
+- [Query Builder — سازنده کوئری](./query-builder.md)
 - [منابع API](../eloquent-orm/api-resources.md)
-- [API Response](../../pinoox%20docs/pinoox-api-response.md)
+- [پاسخ API — API Response](../../pinoox%20docs/pinoox-api-response.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

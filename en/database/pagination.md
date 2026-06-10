@@ -1,5 +1,7 @@
 # Pagination
 
+[← Back to index](../../readme.md)
+
 Pinoox 3.x supports Illuminate **`paginate()`** through the pincore base Eloquent model. For APIs, return the result in the standard envelope with a **`meta`** field.
 
 ---
@@ -155,3 +157,7 @@ const { data, meta } = unwrapApiResponse(await postAPI.list({ page: 2, per_page:
 - [Query Builder](./query-builder.md)
 - [API resources](../eloquent-orm/api-resources.md)
 - [API response](../../pinoox%20docs/pinoox-api-response.md)
+
+---
+
+[← Back to index](../../readme.md)

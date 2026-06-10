@@ -1,5 +1,7 @@
 # Flow (میان‌افزار)
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 Flow در پینوکس معادل Middleware است: قبل از اجرای action کنترلر اجرا می‌شود. برای boot، احراز هویت، کنترل دسترسی و … استفاده می‌شود.
 
 ---
@@ -193,5 +195,9 @@ group(['prefix' => 'account', 'flows' => ['auth']], function () {
 
 - [روتر](./routers.md)
 - [کنترلر](./controllers.md)
-- [Request](./requests.md)
+- [درخواست — Request](./requests.md)
 - [ساختار پروژه](../start/structure.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

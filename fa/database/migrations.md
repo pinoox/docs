@@ -1,5 +1,7 @@
 # Migrations
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 Migrationها تغییرات **schema** دیتابیس را نسخه‌بندی می‌کنند. در پینوکس 3.x فایل‌های اپ در `apps/{package}/database/migrations/` و core در `system/database/migrations/` قرار دارند.
 
 ---
@@ -119,6 +121,8 @@ $this->schema->create($this->table(Table::USER, 'platform'), function (Blueprint
 | Seeder | داده اولیه | `php pinoox seeder:run {package}` |
 | Patch | تغییر یک‌باره داده | `php pinoox patch:run {package}` |
 
+راهنمای کامل Patch: [Patch (به‌روزرسانی داده)](./patches.md).
+
 ---
 
 ## بهترین شیوه‌ها
@@ -133,5 +137,9 @@ $this->schema->create($this->table(Table::USER, 'platform'), function (Blueprint
 ## مستندات مرتبط
 
 - [شروع کار با دیتابیس](./getting-started.md)
-- [Seeder / Factory](../eloquent-orm/factories.md)
+- [Seeder / Factory — داده آزمایشی](../eloquent-orm/factories.md)
 - [ساختار DB اپ](../../pinoox%20docs/pinoox-app-database-structure.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

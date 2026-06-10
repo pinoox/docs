@@ -1,5 +1,7 @@
 # تست HTTP در پینوکس
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 برای تست کنترلر، API و Flow از helperهای HTTP پینوکس استفاده کنید: `appGet()`، `appPost()` و `appPostJson()`. هر کدام یک `TestResponse` برمی‌گردانند که assertionهای آماده دارد.
 
 ---
@@ -125,7 +127,11 @@ php pinoox test com_my_shop -f ProductApi
 - [شروع تست در پینوکس](./getting-started.md)
 - [تست سریال‌سازی JSON](./serialization.md)
 - [تست دیتابیس](./database.md)
-- [Routers](../basic/routers.md)
-- [Controllers](../basic/controllers.md)
-- [Responses](../basic/responses.md)
-- [Requests](../basic/requests.md)
+- [روتر — Routers](../basic/routers.md)
+- [کنترلر — Controllers](../basic/controllers.md)
+- [پاسخ — Responses](../basic/responses.md)
+- [درخواست — Requests](../basic/requests.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

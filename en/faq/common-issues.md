@@ -1,5 +1,7 @@
 # Common Issues
 
+[← Back to index](../../readme.md)
+
 Practical fixes for frequent errors during installation, runtime, and development on Pinoox. Each section recommends **one approach**.
 
 ---
@@ -10,7 +12,7 @@ Practical fixes for frequent errors during installation, runtime, and developmen
 
 **Fix:**
 
-1. Enable PHP 8.2+ and extensions `mysqli`, `zip`, `mbstring`, `json`.
+1. Enable PHP 8.1+ and extensions `mysqli`, `zip`, `mbstring`, `json`.
 2. Run the platform check before install:
 
 ```bash
@@ -160,3 +162,7 @@ Details: [Getting started with testing](../test/getting-started.md)
 - [Pinoox Baker (Pinker)](../advanced/pinker.md)
 - [Database getting started](../database/getting-started.md)
 - [Contact support](./contact-support.md)
+
+---
+
+[← Back to index](../../readme.md)

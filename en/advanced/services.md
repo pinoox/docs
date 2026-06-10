@@ -1,5 +1,7 @@
 # App Services (Component + Portal)
 
+[← Back to index](../../readme.md)
+
 In Pinoox 3.x business logic lives in **`apps/{package}/Component/`** and is exposed through **`Portal/`**. This is the standard HMVC pattern — not fat controllers, not logic in `pincore/`.
 
 ---
@@ -150,3 +152,7 @@ expect($order->qty)->toBe(2);
 - [Validation](../basic/validation.md)
 - [Database getting started](../database/getting-started.md)
 - [Flow / Middleware](../basic/flows.md)
+
+---
+
+[← Back to index](../../readme.md)

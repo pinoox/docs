@@ -1,6 +1,8 @@
 # اعتبارسنجی (Validation)
 
-سیستم اعتبارسنجی پینوکس ۳.x بر پایه Laravel Validation است. سه روش استاندارد:
+[← بازگشت به فهرست](../../readme-fa.md)
+
+اعتبارسنجی در پینوکس ۳.x از **موتور Illuminate Validation** (همان قوانین رایج مثل `required` و `email`) استفاده می‌کند. در اپ خودتان با Portal یا Request اعمالش کنید — سه روش استاندارد:
 
 1. **`Validation::validate()`** — Portal
 2. **`$request->validate()`** — روی Request تزریق‌شده
@@ -166,7 +168,11 @@ public function save(Request $request)
 
 ## مستندات مرتبط
 
-- [Request](./requests.md)
-- [Response](./responses.md)
+- [درخواست — Request](./requests.md)
+- [پاسخ — Response](./responses.md)
 - [زبان و ترجمه](./language.md)
-- [Portal](./portal.md)
+- [Portal — پورتال](./portal.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

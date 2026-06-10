@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        body { font-family: Tahoma, system-ui, sans-serif; background: #f1f5f9; margin: 0; line-height: 1.5; color: #0f172a; }
+        .page { max-width: 640px; margin: 0 auto; padding: 2rem 1rem; text-align: center; }
+        .panel { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 2rem; }
+        .link { color: #2563eb; font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="panel">
+        <h1>{{ title }}</h1>
+        <p>مطلبی با این آدرس وجود ندارد.</p>
+        <p><a class="link" href="{{ url('/') }}">بازگشت به لیست</a></p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,6 +1,8 @@
 # Portal (فاساد)
 
-Portal در پینوکس ۳.x دروازه استاتیک به سرویس‌های هسته است — مشابه Facade لارavel. برای کار روزمره از **`Pinoox\Portal\*`** استفاده کنید؛ برای سرویس‌های اپ خود Portal بسازید.
+[← بازگشت به فهرست](../../readme-fa.md)
+
+Portal در پینوکس ۳.x دروازه استاتیک به سرویس‌های هسته است — الگوی **Facade** برای دسترسی ساده به View، DB، Lang و … . برای کار روزمره از **`Pinoox\Portal\*`** استفاده کنید؛ برای سرویس‌های اپ خود Portal بسازید.
 
 ---
 
@@ -117,3 +119,7 @@ php pinoox portal:update PriceCalculator -p com_acme_shop
 - [سرویس‌های اپ](../advanced/services.md)
 - [پیکربندی](config.md)
 - [ساختار پروژه](../start/structure.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

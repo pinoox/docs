@@ -1,6 +1,8 @@
 # ارسال ایمیل
 
-پینوکس 3.x در هسته (`pincore`) سرویس ایمیل یکپارچه ندارد. روش پیشنهادی: **رویداد (Event) + سرویس ایمیل در Component اپ** — منطق ارسال از کنترلر جدا می‌ماند و با Symfony Mailer (یا هر درایور SMTP) در همان اپ پیاده‌سازی می‌شود.
+[← بازگشت به فهرست](../../readme-fa.md)
+
+پینوکس 3.x در هسته (`pincore`) سرویس ایمیل یکپارچه ندارد. روش پیشنهادی: **رویداد (Event) + سرویس ایمیل در Component اپ** — منطق ارسال از کنترلر جدا می‌ماند. برای ارسال واقعی می‌توانید در همان اپ از **Symfony Mailer** (یا هر SMTP) استفاده کنید؛ این وابستگی اختیاری اپ است، نه «پینوکس = Symfony».
 
 ---
 
@@ -174,5 +176,9 @@ class CheckoutController extends ApiController
 
 - [سرویس‌های اپ](./services.md)
 - [رویدادها و boot.php](../../pinoox%20docs/pinoox-app-events.md)
-- [Controllers](../basic/controllers.md)
+- [کنترلر — Controllers](../basic/controllers.md)
 - [View و Twig](../basic/views.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

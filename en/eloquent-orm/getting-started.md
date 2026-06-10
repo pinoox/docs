@@ -1,6 +1,8 @@
 # Eloquent ORM Getting Started
 
-App models live in **`apps/{package}/Model/`** and extend **`Pinoox\Component\Database\Model`**. This class combines Illuminate Eloquent with Pinoox automatic connection and prefix handling.
+[← Back to index](../../readme.md)
+
+App models live in **`apps/{package}/Model/`** and extend **`Pinoox\Component\Database\Model`**. That is Pinoox’s base class: it wraps Eloquent with automatic app connection and table prefix handling.
 
 ---
 
@@ -140,3 +142,7 @@ $post->transaction(function () use ($post) {
 - [Database getting started](../database/getting-started.md)
 - [Relationships](./relationships.md)
 - [Migrations](../database/migrations.md)
+
+---
+
+[← Back to index](../../readme.md)

@@ -19,6 +19,24 @@ Each guide describes **one recommended approach** with practical examples. Choos
 #### [Installation](./en/start/installing-pinoox.md)
 #### [Your first app](./en/start/your-first-app.md)
 #### [Folder structure](./en/start/structure.md)
+#### [CLI reference](./en/start/cli-reference.md)
+#### [app.php manifest](./en/start/app-manifest.md)
+
+### Practical walkthroughs
+
+**Example source:** [docs/source/](./source/) — full code for every walkthrough
+
+Step-by-step guides for real apps — use these after reading the basics and when you want hands-on code.
+
+#### [Notes API app](./en/examples/simple-api-app.md)
+#### [Phonebook web app](./en/examples/phonebook-app.md)
+#### [Contact form app](./en/examples/contact-form-app.md)
+#### [Simple blog app](./en/examples/blog-app.md)
+#### [Task board (Todo)](./en/examples/task-board-app.md)
+#### [Image gallery](./en/examples/gallery-app.md)
+#### [Vue SPA panel](./en/examples/vue-spa-app.md)
+#### [React SPA panel](./en/examples/react-spa-app.md)
+#### [Vite hybrid — Twig + JS widget](./en/examples/vite-hybrid-app.md)
 
 ### Core Concepts
 
@@ -46,6 +64,9 @@ Each guide describes **one recommended approach** with practical examples. Choos
 #### [User management](./en/advanced/user-management.md)
 #### [File management](./en/advanced/file-management.md)
 #### [Token management](./en/advanced/token-management.md)
+#### [Access & permissions](./en/advanced/access-permissions.md)
+#### [boot.php & events](./en/advanced/boot-and-events.md)
+#### [Schedule / cron](./en/advanced/schedule.md)
 
 ### Database
 
@@ -53,6 +74,7 @@ Each guide describes **one recommended approach** with practical examples. Choos
 #### [Query Builder](./en/database/query-builder.md)
 #### [Pagination](./en/database/pagination.md)
 #### [Migrations](./en/database/migrations.md)
+#### [Patches (data updates)](./en/database/patches.md)
 
 ### Eloquent ORM
 
@@ -82,9 +104,10 @@ Each guide describes **one recommended approach** with practical examples. Choos
 ### How to read these docs
 
 1. Start with **Introduction** and **Getting Started** if you are new to Pinoox.
-2. Follow **Core Concepts** while building routes, controllers, and views.
-3. Use **Database** and **Eloquent ORM** when you add persistence.
-4. Refer to **Advanced Topics** for auth, files, Pinker, and shared services.
-5. Use **Testing** before shipping features to production.
+2. Follow **Practical walkthroughs** — build a JSON API and a simple website step by step.
+3. Read **Core Concepts** while building routes, controllers, and views.
+4. Use **Database** and **Eloquent ORM** when you add persistence.
+5. Refer to **Advanced Topics** for auth, files, Pinker, and shared services.
+6. Use **Testing** before shipping features to production.
 
 All app code lives under `apps/{package}/`. The framework core is `vendor/pinoox/pincore/` — do not put app business logic there.

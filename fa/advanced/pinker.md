@@ -1,5 +1,7 @@
 # Pinker و Cache
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 **Pinker** لایه bake/runtime پینوکس ۳.x است: config و cache از سورس به PHP قابل `include` تبدیل می‌شود تا boot سریع‌تر شود. مسیر استاندارد هر اپ: **`pinker/apps/{package}/`**.
 
 ---
@@ -140,5 +142,9 @@ php pinoox pinker:rebuild com_acme_shop
 
 - [پیکربندی](../basic/config.md)
 - [قالب Twig](../basic/templates.md)
-- [CLI](../../../pinoox docs/pinoox-cli.md)
+- [CLI — خط فرمان](../../../pinoox docs/pinoox-cli.md)
 - [روتر](../../basic/routers.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

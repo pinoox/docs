@@ -1,5 +1,7 @@
 # مشکلات رایج
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 راه‌حل‌های عملی برای خطاهای پرتکرار هنگام نصب، اجرا و توسعه روی پینوکس. هر بخش **یک روش** پیشنهادی دارد.
 
 ---
@@ -155,8 +157,12 @@ php pinoox test com_my_shop
 
 - [نصب و راه‌اندازی](../start/installing-pinoox.md)
 - [ساختار پوشه‌بندی](../start/structure.md)
-- [Routers](../basic/routers.md)
-- [Config](../basic/config.md)
-- [Pinoox Baker (Pinker)](../advanced/pinker.md)
+- [روتر — Routers](../basic/routers.md)
+- [پیکربندی — Config](../basic/config.md)
+- [Pinker — بیلد Pinoox](../advanced/pinker.md)
 - [شروع دیتابیس](../database/getting-started.md)
 - [تماس با پشتیبانی](./contact-support.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

@@ -1,5 +1,7 @@
 # تست Console در پینوکس
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 برای تست دستورات CLI پینوکس (`php pinoox ...`) از `Symfony\Component\Process\Process` در تست Pest استفاده کنید. خروجی و کد خروج را assert می‌کنید — همان روش پیشنهادی برای تست ترمینال.
 
 ---
@@ -108,7 +110,11 @@ vendor/bin/pest --filter=MigrateCommand
 ## مستندات مرتبط
 
 - [شروع تست در پینوکس](./getting-started.md)
-- [Mocking](./mocking.md)
-- [Migrations](../database/migrations.md)
-- [Pinoox Baker (Pinker)](../advanced/pinker.md)
+- [Mocking — شبیه‌سازی](./mocking.md)
+- [Migration — مهاجرت](../database/migrations.md)
+- [Pinker — بیلد Pinoox](../advanced/pinker.md)
 - [ساختار پوشه‌بندی](../start/structure.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

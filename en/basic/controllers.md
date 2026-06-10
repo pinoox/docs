@@ -1,5 +1,7 @@
 # Controllers
 
+[← Back to index](../../readme.md)
+
 Controllers receive HTTP requests, work with models when needed, and return a View or JSON response. In Pinoox 3.x, app controllers live in `apps/{package}/Controller/` with the namespace `App\{package}\Controller`.
 
 ---
@@ -195,3 +197,7 @@ class ProductController extends Controller
 - [Flow](./flows.md)
 - [Views](./views.md)
 - [Project structure](../start/structure.md)
+
+---
+
+[← Back to index](../../readme.md)

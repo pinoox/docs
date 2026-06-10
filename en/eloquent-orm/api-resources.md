@@ -1,5 +1,7 @@
 # API Resources
 
+[← Back to index](../../readme.md)
+
 Pinoox 3.x shapes JSON API output with **`Pinoox\Component\Http\Api\ApiResource`** (not Laravel JsonResource). Output is wrapped in the standard `{ success, data, message, meta }` envelope.
 
 ---
@@ -137,3 +139,7 @@ return $this->ok(
 - [API response](../../pinoox%20docs/pinoox-api-response.md)
 - [Pagination](../database/pagination.md)
 - [Serialization](./serialization.md)
+
+---
+
+[← Back to index](../../readme.md)

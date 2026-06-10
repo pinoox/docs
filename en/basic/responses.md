@@ -1,5 +1,7 @@
 # HTTP Response
 
+[← Back to index](../../readme.md)
+
 In Pinoox 3.x every controller must return an HTTP response. For HTML use **`View::render()`**; for JSON use **`response()->json()`** or **`ApiController`**.
 
 ---
@@ -147,3 +149,7 @@ public function store(Request $request)
 - [Validation](./validation.md)
 - [Views](./views.md)
 - [Portal](./portal.md)
+
+---
+
+[← Back to index](../../readme.md)

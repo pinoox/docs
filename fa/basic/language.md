@@ -1,5 +1,7 @@
 # زبان و ترجمه (Lang)
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 پینوکس ۳.x از فایل‌های **`lang/{locale}/*.lang.php`** برای چندزبانه‌سازی پشتیبانی می‌کند. روش استاندارد: **`t('file.key')`** یا **`Lang::get('file.key')`** در PHP و **`{{ t('file.key') }}`** در Twig.
 
 ---
@@ -130,6 +132,10 @@ View::shareSeo([
 ## مستندات مرتبط
 
 - [قالب Twig](templates.md)
-- [Portal](portal.md)
+- [Portal — پورتال(portal.md)
 - [اعتبارسنجی](validation.md)
 - [ساختار پروژه](../start/structure.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

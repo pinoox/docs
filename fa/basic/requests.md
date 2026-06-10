@@ -1,5 +1,7 @@
 # Request (درخواست HTTP)
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 کلاس `Pinoox\Component\Http\Request` ورودی HTTP را مدیریت می‌کند: query string، فرم POST، JSON body، پارامتر route و فایل آپلود. در کنترلر و Flow، Request با **تزریق وابستگی** به متد در دسترس است.
 
 > helper سراسری **`request()`** وجود ندارد. Request را inject کنید یا از `$this->getRequest()` در کنترلر استفاده کنید.
@@ -146,6 +148,10 @@ class ProductApiController extends ApiController
 ## مستندات مرتبط
 
 - [کنترلر](./controllers.md)
-- [Response](./responses.md)
-- [Validation](./validation.md)
+- [پاسخ — Response](./responses.md)
+- [اعتبارسنجی — Validation](./validation.md)
 - [روتر](./routers.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

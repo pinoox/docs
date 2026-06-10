@@ -1,5 +1,7 @@
 # Model Serialization
 
+[← Back to index](../../readme.md)
+
 Serialization converts an Eloquent model to an array or JSON — for APIs, cache, or logs. Pinoox 3.x follows Illuminate behavior; `$hidden`, `$visible`, and `$appends` play the main roles.
 
 ---
@@ -125,3 +127,7 @@ protected $casts = ['metadata' => 'array', 'paid_at' => 'datetime'];
 - [Mutators and casts](./mutators-casts.md)
 - [API resources](./api-resources.md)
 - [Collections](./collections.md)
+
+---
+
+[← Back to index](../../readme.md)

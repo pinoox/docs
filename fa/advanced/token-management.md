@@ -1,5 +1,7 @@
 # مدیریت توکن
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 در پینوکس 3.x نشست‌ها و JWT از **`TokenModel`** (`pincore_token`) و Guard داخلی pincore مدیریت می‌شوند. اپ با بلوک `auth` در `app.php` حالت را انتخاب می‌کند؛ برای API و SPA معمولاً **`jwt`** پیشنهاد می‌شود.
 
 ---
@@ -172,5 +174,9 @@ Auth::persistClientJwt($jwt);
 ## مستندات مرتبط
 
 - [مدیریت کاربران](./user-management.md)
-- [Transport](../../pinoox%20docs/pinoox-transport.md)
-- [API Response](../../pinoox%20docs/pinoox-api-response.md)
+- [Transport — حمل API](../../pinoox%20docs/pinoox-transport.md)
+- [پاسخ API — API Response](../../pinoox%20docs/pinoox-api-response.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

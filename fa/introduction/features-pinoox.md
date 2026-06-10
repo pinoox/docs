@@ -1,5 +1,7 @@
 # ویژگی‌های پینوکس
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 پینوکس ۳.x برای ساخت اکوسیستم PHP ماژولار طراحی شده: چند اپ مستقل روی یک هسته مشترک، CLI برای scaffolding، و ابزارهای آماده برای HTTP، دیتابیس، تم و احراز هویت.
 
 ---
@@ -98,4 +100,8 @@ return response()->json(['ok' => true, 'data' => $items]);
 - [پینوکس چیست؟](./what-is-pinoox.md)
 - [نصب و راه‌اندازی](../start/installing-pinoox.md)
 - [روتر](../basic/routers.md)
-- [Flow](../basic/flows.md)
+- [فلو — Flow](../basic/flows.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

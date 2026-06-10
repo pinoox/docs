@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        body { font-family: Tahoma, system-ui, sans-serif; background: #f1f5f9; margin: 0; line-height: 1.5; color: #0f172a; }
+        .page { max-width: 640px; margin: 0 auto; padding: 2rem 1rem; }
+        .page-title { margin: 0 0 1rem; padding-bottom: .75rem; border-bottom: 2px solid #334155; }
+        .panel { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
+        .btn { display: inline-block; padding: .4rem 1rem; border: 2px solid #2563eb; border-radius: 6px; color: #2563eb; text-decoration: none; font-weight: 600; }
+        .post-list { list-style: none; padding: 0; margin: 0; }
+        .post-list li { padding: .85rem 0; border-bottom: 2px solid #e2e8f0; }
+        .post-list a { font-weight: 600; color: #0f172a; text-decoration: none; }
+        .post-meta { color: #64748b; font-size: .85rem; margin-right: .5rem; }
+        .empty { color: #64748b; font-style: italic; }
+    </style>
+</head>
+<body>
+<div class="page">
+    <h1 class="page-title">{{ title }}</h1>
+    <p><a class="btn" href="{{ url('write') }}">نوشتن مطلب جدید</a></p>
+    <div class="panel">
+        <ul class="post-list">
+            {% for post in posts %}
+            <li><a href="{{ url('post/' ~ post.slug) }}">{{ post.title }}</a><span class="post-meta">{{ post.created_at }}</span></li>
+            {% else %}<li class="empty">هنوز مطلبی نیست.</li>{% endfor %}
+        </ul>
+    </div>
+</div>
+</body>
+</html>

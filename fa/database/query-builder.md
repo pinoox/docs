@@ -1,5 +1,7 @@
 # Query Builder
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 Query Builder پینوکس همان **Illuminate Query Builder** است، از Portal **`DB`** با اتصال scoped اپ. برای کوئری‌هایی که به Model کامل نیاز ندارید یا joinهای پیچیده دارید، این روش پیشنهادی است.
 
 ---
@@ -139,3 +141,7 @@ $user = DB::core()->table('user')
 - [شروع کار با دیتابیس](./getting-started.md)
 - [صفحه‌بندی](./pagination.md)
 - [Eloquent — شروع به کار](../eloquent-orm/getting-started.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

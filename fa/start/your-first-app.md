@@ -1,5 +1,7 @@
 # ساخت اولین اپلیکیشن
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 سریع‌ترین راه ساخت اپ در پینوکس ۳.x، دستور CLI `app:create` است. این دستور ساختار استاندارد MVC را در `apps/{package}/` می‌سازد: `routes/`، `Controller/`، `theme/`، `config/`.
 
 ---
@@ -161,3 +163,13 @@ php pinoox route:actions com_acme_blog
 - [ساختار پوشه‌بندی](./structure.md)
 - [روتر](../basic/routers.md)
 - [کنترلر](../basic/controllers.md)
+- [نمونه API یادداشت](../examples/simple-api-app.md)
+- [نمونه دفترچه تلفن](../examples/phonebook-app.md)
+- [نمونه فرم تماس](../examples/contact-form-app.md)
+- [نمونه وبلاگ](../examples/blog-app.md)
+- [نمونه تابلوی کار](../examples/task-board-app.md)
+- [نمونه گالری تصاویر](../examples/gallery-app.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

@@ -1,5 +1,7 @@
 # Migrations
 
+[← Back to index](../../readme.md)
+
 Migrations version **schema** changes in the database. In Pinoox 3.x, app files live in `apps/{package}/database/migrations/` and core files in `system/database/migrations/`.
 
 ---
@@ -119,6 +121,8 @@ Pinoox still reads the old `apps/{package}/migrations/` folder, but **new** file
 | Seeder | Initial data | `php pinoox seeder:run {package}` |
 | Patch | One-time data change | `php pinoox patch:run {package}` |
 
+Full patch guide: [Patches (data updates)](./patches.md).
+
 ---
 
 ## Best practices
@@ -135,3 +139,7 @@ Pinoox still reads the old `apps/{package}/migrations/` folder, but **new** file
 - [Database getting started](./getting-started.md)
 - [Seeders / factories](../eloquent-orm/factories.md)
 - [App database structure](../../pinoox%20docs/pinoox-app-database-structure.md)
+
+---
+
+[← Back to index](../../readme.md)

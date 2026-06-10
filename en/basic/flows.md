@@ -1,5 +1,7 @@
 # Flow (middleware)
 
+[← Back to index](../../readme.md)
+
 Flow is Pinoox's middleware layer: it runs before the controller action. Use it for bootstrapping, authentication, authorization, and similar cross-cutting concerns.
 
 ---
@@ -195,3 +197,7 @@ If a Flow returns an HTTP response (redirect, error JSON, etc.), the controller 
 - [Controllers](./controllers.md)
 - [Request](./requests.md)
 - [Project structure](../start/structure.md)
+
+---
+
+[← Back to index](../../readme.md)

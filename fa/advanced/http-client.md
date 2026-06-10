@@ -1,6 +1,8 @@
 # HTTP Client
 
-پینوکس 3.x برای درخواست‌های خروجی به APIهای خارجی از **Symfony HttpClient** از طریق کلاس `Pinoox\Component\Http\Http` استفاده می‌کند. این همان الگویی است که در اپ‌های سیستمی مثل `com_pinoox_manager` برای ارتباط با pinoox.com به کار رفته است.
+[← بازگشت به فهرست](../../readme-fa.md)
+
+پینوکس 3.x برای درخواست‌های خروجی به APIهای خارجی از **`Pinoox\Component\Http\Http`** استفاده می‌کند (درونش Symfony HttpClient). این یک کتابخانه کمکی است — خود پینوکس API و روتر و اپ‌محوری خودش را دارد. همان الگویی که در اپ‌های سیستمی مثل `com_pinoox_manager` برای ارتباط با pinoox.com به کار رفته است.
 
 ---
 
@@ -129,6 +131,10 @@ if ($response === null) {
 
 ## مستندات مرتبط
 
-- [Controllers](../basic/controllers.md)
-- [API Response](../../pinoox%20docs/pinoox-api-response.md)
-- [Config](../basic/config.md)
+- [کنترلر — Controllers](../basic/controllers.md)
+- [پاسخ API — API Response](../../pinoox%20docs/pinoox-api-response.md)
+- [پیکربندی — Config](../basic/config.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

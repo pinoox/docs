@@ -1,5 +1,7 @@
 # سریال‌سازی Model
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 سریال‌سازی تبدیل Model Eloquent به آرایه یا JSON است — برای API، cache، یا log. پینوکس 3.x همان رفتار Illuminate را دارد؛ `$hidden`, `$visible`, و `$appends` نقش اصلی را بازی می‌کنند.
 
 ---
@@ -125,3 +127,7 @@ protected $casts = ['metadata' => 'array', 'paid_at' => 'datetime'];
 - [Mutatorها و Castها](./mutators-casts.md)
 - [منابع API](./api-resources.md)
 - [مجموعه‌ها](./collections.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

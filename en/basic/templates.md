@@ -1,5 +1,7 @@
 # Twig Templates
 
+[← Back to index](../../readme.md)
+
 Pinoox 3.x uses **Twig** by default for server-side rendering. Template files live in `apps/{package}/theme/{theme}/`.
 
 ---
@@ -142,3 +144,7 @@ php pinoox cache:build com_acme_shop --only=twig
 - [URL](./url.md)
 - [Language](./language.md)
 - [Project structure](../start/structure.md)
+
+---
+
+[← Back to index](../../readme.md)

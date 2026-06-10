@@ -1,5 +1,7 @@
 # تست مرورگر (HTML) در پینوکس
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 پینوکس برای صفحات Twig و HTML از **تست Feature با `appGet()` و `assertSee()`** استفاده می‌کند — بدون نیاز به مرورگر واقعی یا Dusk. درخواست HTTP شبیه‌سازی می‌شود و محتوای HTML assert می‌شود.
 
 ---
@@ -114,5 +116,9 @@ php pinoox test com_my_shop -f HomePage
 - [تست HTTP](./http-tests.md)
 - [تست دیتابیس](./database.md)
 - [Viewها](../basic/views.md)
-- [Templates](../basic/templates.md)
+- [قالب — Templates](../basic/templates.md)
 - [تست سریال‌سازی](./serialization.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

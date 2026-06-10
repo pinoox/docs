@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        body { font-family: Tahoma, system-ui, sans-serif; background: #f1f5f9; margin: 0; line-height: 1.5; color: #0f172a; }
+        .page { max-width: 640px; margin: 0 auto; padding: 2rem 1rem; }
+        .link { color: #2563eb; font-weight: 600; text-decoration: none; }
+        .page-title { margin: .5rem 0 1rem; }
+        .article { border: 2px solid #cbd5e1; border-radius: 8px; padding: 1.25rem; background: #fff; line-height: 1.7; }
+    </style>
+</head>
+<body>
+<div class="page">
+    <p><a class="link" href="{{ url('/') }}">← لیست مطالب</a></p>
+    <h1 class="page-title">{{ post.title }}</h1>
+    <article class="article">{{ post.body|nl2br }}</article>
+</div>
+</body>
+</html>

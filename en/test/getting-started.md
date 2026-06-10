@@ -1,5 +1,7 @@
 # Getting Started with Testing in Pinoox
 
+[← Back to index](../../readme.md)
+
 Pinoox uses a single approach for the **framework core** (`tests/`) and **each app** (`apps/{package}/tests/`): [Pest](https://pestphp.com/), a shared bootstrap, and `AppTestKit`. This guide walks through that standard workflow with practical examples.
 
 ---
@@ -173,3 +175,7 @@ In CI, configure `.env.testing` or `APP_ENV=test` when needed.
 - [Mocking](./mocking.md)
 - [Your first app](../start/your-first-app.md)
 - [Project structure](../start/structure.md)
+
+---
+
+[← Back to index](../../readme.md)

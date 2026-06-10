@@ -1,5 +1,7 @@
 # تست دیتابیس در پینوکس
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 برای تست مدل، migration و endpointهای وابسته به DB، کد را داخل `inApp()` اجرا کنید و از دیتابیس تست (`mode=test`) استفاده کنید. migrationها را قبل از تست اجرا کنید تا schema آماده باشد.
 
 ---
@@ -120,6 +122,10 @@ php pinoox test com_my_shop -f ProductModel
 - [شروع تست در پینوکس](./getting-started.md)
 - [تست HTTP](./http-tests.md)
 - [شروع دیتابیس](../database/getting-started.md)
-- [Migrations](../database/migrations.md)
+- [Migration — مهاجرت](../database/migrations.md)
 - [Eloquent — شروع](../eloquent-orm/getting-started.md)
 - [Factoryها](../eloquent-orm/factories.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

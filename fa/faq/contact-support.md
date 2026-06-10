@@ -1,5 +1,7 @@
 # تماس با پشتیبانی
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 اگر بعد از [مشکلات رایج](./common-issues.md) هنوز blocker دارید، از کانال‌های رسمی زیر استفاده کنید. قبل از تماس، نسخه پینوکس، PHP، پیام خطا و مراحل reproduce را آماده کنید.
 
 ---
@@ -41,7 +43,7 @@
 ```markdown
 ## محیط
 - Pinoox: 3.1-beta
-- PHP: 8.2.x
+- PHP: 8.1.x
 - OS: Windows / Linux
 
 ## انتظار
@@ -96,3 +98,7 @@
 - [پینوکس چیست؟](../introduction/what-is-pinoox.md)
 - [مشارکت در توسعه](../introduction/contributions.md)
 - [نصب و راه‌اندازی](../start/installing-pinoox.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

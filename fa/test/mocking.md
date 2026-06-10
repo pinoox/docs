@@ -1,5 +1,7 @@
 # Mocking در پینوکس
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 برای جدا کردن واحد تحت تست از وابستگی‌های خارجی از **Pest + Mockery** (`mock()`) برای کلاس‌ها و **`fakeApp()`** برای اپ موقت استفاده کنید. هر دو در bootstrap تست پینوکس در دسترس‌اند.
 
 ---
@@ -108,5 +110,9 @@ php pinoox test com_my_shop -f OrderService
 - [شروع تست در پینوکس](./getting-started.md)
 - [تست HTTP](./http-tests.md)
 - [تست Console](./console-tests.md)
-- [Portal](../basic/portal.md)
+- [Portal — پورتال](../basic/portal.md)
 - [سرویس‌ها](../advanced/services.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

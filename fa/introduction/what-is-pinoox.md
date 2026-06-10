@@ -1,5 +1,7 @@
 # پینوکس چیست؟
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 پینوکس یک فریمورک PHP متن‌باز و مدرن (نسخه ۳.x) است که با معماری HMVC و مفهوم «اپ»، توسعه وب‌اپلیکیشن‌های ماژولار را ساده می‌کند. هر اپ یک واحد MVC مستقل در `apps/{package}/` است و هسته مشترک فریمورک در `vendor/pinoox/pincore/` قرار دارد.
 
 ---
@@ -54,7 +56,7 @@ com_{vendor}_{name}
 
 - سایت‌ها و پنل‌های چندبخشی که هر بخش می‌تواند اپ جدا باشد
 - تیم‌هایی که می‌خواهند ماژول‌ها را مستقل توسعه، تست و نگه‌داری کنند
-- پروژه‌های PHP 8.2+ با Composer و CLI یکپارچه (`php pinoox …`)
+- پروژه‌های PHP 8.1+ با Composer و CLI یکپارچه (`php pinoox …`)
 
 ---
 
@@ -63,4 +65,14 @@ com_{vendor}_{name}
 - [ویژگی‌های پینوکس](./features-pinoox.md)
 - [نصب و راه‌اندازی](../start/installing-pinoox.md)
 - [ساخت اولین اپلیکیشن](../start/your-first-app.md)
+- [نمونه API یادداشت](../examples/simple-api-app.md)
+- [نمونه دفترچه تلفن](../examples/phonebook-app.md)
+- [نمونه فرم تماس](../examples/contact-form-app.md)
+- [نمونه وبلاگ](../examples/blog-app.md)
+- [نمونه تابلوی کار](../examples/task-board-app.md)
+- [نمونه گالری تصاویر](../examples/gallery-app.md)
 - [ساختار پوشه‌بندی](../start/structure.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

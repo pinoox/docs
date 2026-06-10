@@ -1,6 +1,8 @@
 # HTTP Client
 
-Pinoox 3.x uses **Symfony HttpClient** through `Pinoox\Component\Http\Http` for outbound requests to external APIs. This is the same pattern used in system apps such as `com_pinoox_manager` when talking to pinoox.com.
+[← Back to index](../../readme.md)
+
+Pinoox 3.x sends outbound HTTP requests through **`Pinoox\Component\Http\Http`** (Symfony HttpClient inside). That is a helper library — Pinoox itself is an app-centric HMVC platform with its own routing and APIs. System apps such as `com_pinoox_manager` use this pattern when talking to pinoox.com.
 
 ---
 
@@ -126,3 +128,7 @@ if ($response === null) {
 - [Controllers](../basic/controllers.md)
 - [API response](../../pinoox%20docs/pinoox-api-response.md)
 - [Config](../basic/config.md)
+
+---
+
+[← Back to index](../../readme.md)

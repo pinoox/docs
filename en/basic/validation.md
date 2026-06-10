@@ -1,6 +1,8 @@
 # Validation
 
-Pinoox 3.x validation is built on Laravel Validation. Three standard approaches:
+[← Back to index](../../readme.md)
+
+Pinoox 3.x validation uses **Illuminate Validation** — the same familiar rule strings (`required`, `email`, …). Apply them in your app via Portal or Request. Three standard approaches:
 
 1. **`Validation::validate()`** — Portal
 2. **`$request->validate()`** — on injected Request
@@ -170,3 +172,7 @@ public function save(Request $request)
 - [HTTP Response](./responses.md)
 - [Language and Translation](./language.md)
 - [Portal](./portal.md)
+
+---
+
+[← Back to index](../../readme.md)

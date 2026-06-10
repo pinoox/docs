@@ -1,6 +1,8 @@
 # Portal (Facade)
 
-In Pinoox 3.x a Portal is a static gateway to core services — similar to a Laravel Facade. For day-to-day work use **`Pinoox\Portal\*`**; for your own app services, create Portals under your app.
+[← Back to index](../../readme.md)
+
+In Pinoox 3.x a Portal is a static gateway to core services — the **Facade** pattern for simple access to View, DB, Lang, and more. For day-to-day work use **`Pinoox\Portal\*`**; for your own app services, create Portals under your app.
 
 ---
 
@@ -117,3 +119,7 @@ php pinoox portal:update PriceCalculator -p com_acme_shop
 - [App Services](../advanced/services.md)
 - [Config](./config.md)
 - [Project structure](../start/structure.md)
+
+---
+
+[← Back to index](../../readme.md)

@@ -1,5 +1,7 @@
 # HTTP Request
 
+[← Back to index](../../readme.md)
+
 The `Pinoox\Component\Http\Request` class handles HTTP input: query string, form POST, JSON body, route parameters, and file uploads. In controllers and Flows, `Request` is available through **dependency injection** on method parameters.
 
 > There is no global **`request()`** helper. Inject `Request` or use `$this->getRequest()` in controllers.
@@ -149,3 +151,7 @@ class ProductApiController extends ApiController
 - [HTTP Response](./responses.md)
 - [Validation](./validation.md)
 - [Router](./routers.md)
+
+---
+
+[← Back to index](../../readme.md)

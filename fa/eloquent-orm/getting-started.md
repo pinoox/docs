@@ -1,6 +1,8 @@
 # شروع به کار Eloquent ORM
 
-مدل‌های اپ در **`apps/{package}/Model/`** قرار می‌گیرند و از **`Pinoox\Component\Database\Model`** ارث می‌برند. این کلاس Eloquent Illuminate را با اتصال و prefix خودکار پینوکس ترکیب می‌کند.
+[← بازگشت به فهرست](../../readme-fa.md)
+
+مدل‌های اپ در **`apps/{package}/Model/`** قرار می‌گیرند و از **`Pinoox\Component\Database\Model`** ارث می‌برند. این کلاس پایه پینوکس است: Eloquent را با اتصال دیتابیس و prefix خودکار اپ یکپارچه می‌کند.
 
 ---
 
@@ -139,4 +141,8 @@ $post->transaction(function () use ($post) {
 
 - [شروع کار با دیتابیس](../database/getting-started.md)
 - [روابط](./relationships.md)
-- [Migrations](../database/migrations.md)
+- [Migration — مهاجرت](../database/migrations.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

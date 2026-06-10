@@ -1,5 +1,7 @@
 # توابع کمکی سراسری (Helpers)
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 پینوکس ۳.x helperهای global در `pincore/functions/` بارگذاری می‌کند. برای توسعه اپ روزمره همین توابع (+ Portal) کافی است — Component هسته را مستقیم نسازید.
 
 ---
@@ -159,8 +161,12 @@ function format_price(float $amount): string
 
 ## مستندات مرتبط
 
-- [Portal](../basic/portal.md)
-- [URL](../basic/url.md)
-- [Path](../basic/path.md)
+- [Portal — پورتال](../basic/portal.md)
+- [URL — آدرس](../basic/url.md)
+- [مسیر — Path](../basic/path.md)
 - [زبان](../basic/language.md)
 - [سرویس‌ها](services.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

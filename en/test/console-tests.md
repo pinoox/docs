@@ -1,5 +1,7 @@
 # Console Testing in Pinoox
 
+[← Back to index](../../readme.md)
+
 To test Pinoox CLI commands (`php pinoox ...`), use `Symfony\Component\Process\Process` in Pest tests. Assert output and exit codes — the recommended approach for terminal testing.
 
 ---
@@ -112,3 +114,7 @@ vendor/bin/pest --filter=MigrateCommand
 - [Migrations](../database/migrations.md)
 - [Pinoox Baker (Pinker)](../advanced/pinker.md)
 - [Project structure](../start/structure.md)
+
+---
+
+[← Back to index](../../readme.md)

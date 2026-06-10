@@ -1,5 +1,7 @@
 # Router
 
+[← Back to index](../../readme.md)
+
 Pinoox 3.x routing has two layers: **Named Actions** (logical handlers) and **Routes** (URL paths and HTTP methods). Each app defines its routes in the **`routes/`** folder and registers them in **`app.php`**.
 
 > Do not use **`Pinoox\Portal\Router::get`**. Import router functions from the **`Pinoox\Router`** namespace.
@@ -183,3 +185,7 @@ php pinoox app:router set /shop com_acme_shop
 - [Request](./requests.md)
 - [Your first app](../start/your-first-app.md)
 - [Project structure](../start/structure.md)
+
+---
+
+[← Back to index](../../readme.md)

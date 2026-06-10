@@ -1,5 +1,7 @@
 # مشارکت در توسعه پینوکس
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 پینوکس یک پروژه متن‌باز است. مشارکت شما — از گزارش باگ تا Pull Request — به بهبود فریمورک و مستندات کمک می‌کند.
 
 ---
@@ -49,7 +51,7 @@
 
 - [PSR-12](https://www.php-fig.org/psr/psr-12/) برای سبک کد
 - [PSR-4](https://www.php-fig.org/psr/psr-4/) برای autoload
-- PHP 8.2+
+- PHP 8.1+
 - پیام commit واضح و imperative (مثلاً `Fix route validation for missing actions`)
 
 ---
@@ -73,3 +75,7 @@
 
 - [پینوکس چیست؟](./what-is-pinoox.md)
 - [ویژگی‌های پینوکس](./features-pinoox.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

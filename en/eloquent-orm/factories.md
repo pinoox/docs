@@ -1,5 +1,7 @@
 # Test Data — Seeders
 
+[← Back to index](../../readme.md)
+
 Pinoox 3.x does not include a **Model Factory** (Laravel-style) in the CLI. The recommended approach for initial and development data is **Seeders** with `SeederBase` in `apps/{package}/database/seed/`.
 
 ---
@@ -142,3 +144,7 @@ public function run(): void
 - [Migrations](../database/migrations.md)
 - [Eloquent getting started](./getting-started.md)
 - [App database structure](../../pinoox%20docs/pinoox-app-database-structure.md)
+
+---
+
+[← Back to index](../../readme.md)

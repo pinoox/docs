@@ -1,5 +1,7 @@
 # Serialization Testing in Pinoox
 
+[← Back to index](../../readme.md)
+
 For APIs and Resources, inspect JSON output with `assertJsonPath()` and `json()` on `TestResponse`. For Eloquent models, assert `toArray()` / `toJson()` inside `inApp()`.
 
 ---
@@ -120,3 +122,7 @@ php pinoox test com_my_shop -f Serialization
 - [Eloquent — serialization](../eloquent-orm/serialization.md)
 - [API resources](../eloquent-orm/api-resources.md)
 - [Mutators / casts](../eloquent-orm/mutators-casts.md)
+
+---
+
+[← Back to index](../../readme.md)

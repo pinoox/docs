@@ -1,6 +1,8 @@
 # Eloquent Relationships
 
-Eloquent relationships from Illuminate work in Pinoox 3.x with the same API. The example below shows **`hasMany`** and **`belongsTo`** for a simple blog.
+[← Back to index](../../readme.md)
+
+Eloquent relationships in Pinoox 3.x use the standard **`hasMany`**, **`belongsTo`**, and related APIs. The example below is a simple blog inside a Pinoox app:
 
 ---
 
@@ -134,3 +136,7 @@ The pivot table `post_tags` also receives the app prefix.
 - [Eloquent getting started](./getting-started.md)
 - [Collections](./collections.md)
 - [Serialization](./serialization.md)
+
+---
+
+[← Back to index](../../readme.md)

@@ -1,5 +1,7 @@
 # نصب و راه‌اندازی پینوکس
 
+[← بازگشت به فهرست](../../readme-fa.md)
+
 این راهنما نصب پینوکس ۳.x روی لوکال‌هاست (MAMP/XAMPP/WAMP) را با نصب‌کننده گرافیکی توضیح می‌دهد.
 
 ---
@@ -104,3 +106,7 @@ php pinoox app:create com_acme_blog
 - [ساخت اولین اپلیکیشن](./your-first-app.md)
 - [ساختار پوشه‌بندی](./structure.md)
 - [پینوکس چیست؟](../introduction/what-is-pinoox.md)
+
+---
+
+[← بازگشت به فهرست](../../readme-fa.md)

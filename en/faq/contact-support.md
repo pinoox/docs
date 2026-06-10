@@ -1,5 +1,7 @@
 # Contact Support
 
+[← Back to index](../../readme.md)
+
 If you still have a blocker after reviewing [Common issues](./common-issues.md), use the official channels below. Before contacting support, prepare your Pinoox version, PHP version, error message, and reproduction steps.
 
 ---
@@ -41,7 +43,7 @@ Suggested issue template:
 ```markdown
 ## Environment
 - Pinoox: 3.1-beta
-- PHP: 8.2.x
+- PHP: 8.1.x
 - OS: Windows / Linux
 
 ## Expected
@@ -96,3 +98,7 @@ For PRs and framework development:
 - [What is Pinoox?](../introduction/what-is-pinoox.md)
 - [Contributing](../introduction/contributions.md)
 - [Installing Pinoox](../start/installing-pinoox.md)
+
+---
+
+[← Back to index](../../readme.md)

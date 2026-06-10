@@ -1,5 +1,7 @@
 # What is Pinoox?
 
+[← Back to index](../../readme.md)
+
 Pinoox is a modern, open-source PHP framework (3.x) built on HMVC architecture and the **app** concept. It makes modular web development straightforward: each app is an independent MVC unit under `apps/{package}/`, while the shared framework core lives in `vendor/pinoox/pincore/`.
 
 ---
@@ -54,7 +56,7 @@ Example: `com_acme_shop` — the folder name, the `package` value in `app.php`, 
 
 - Multi-section sites and admin panels where each section can be a separate app
 - Teams that want to develop, test, and maintain modules independently
-- PHP 8.2+ projects with Composer and the integrated CLI (`php pinoox …`)
+- PHP 8.1+ projects with Composer and the integrated CLI (`php pinoox …`)
 
 ---
 
@@ -63,4 +65,11 @@ Example: `com_acme_shop` — the folder name, the `package` value in `app.php`, 
 - [Pinoox features](./features-pinoox.md)
 - [Installing Pinoox](../start/installing-pinoox.md)
 - [Your first app](../start/your-first-app.md)
+- [Notes API walkthrough](../examples/simple-api-app.md)
+- [Phonebook walkthrough](../examples/phonebook-app.md)
+- [Contact form walkthrough](../examples/contact-form-app.md)
 - [Project structure](../start/structure.md)
+
+---
+
+[← Back to index](../../readme.md)

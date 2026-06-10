@@ -1,5 +1,7 @@
 # Pinker and Cache
 
+[← Back to index](../../readme.md)
+
 **Pinker** is the bake/runtime layer in Pinoox 3.x: config and cache are compiled from source into PHP files that can be `include`d for faster boot. Standard path per app: **`pinker/apps/{package}/`**.
 
 ---
@@ -142,3 +144,7 @@ php pinoox pinker:rebuild com_acme_shop
 - [Twig Templates](../basic/templates.md)
 - [CLI Reference](../../pinoox%20docs/pinoox-cli.md)
 - [Router](../basic/routers.md)
+
+---
+
+[← Back to index](../../readme.md)
