@@ -1,6 +1,6 @@
 # Browser (HTML) Testing in Pinoox
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 For Twig and HTML pages, Pinoox uses **Feature tests with `appGet()` and `assertSee()`** — no real browser or Dusk required. HTTP is simulated and HTML content is asserted.
 
@@ -121,4 +121,4 @@ This approach does not execute client-side JavaScript (Vue/Vite SPA). For SPAs, 
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

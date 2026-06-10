@@ -1,6 +1,6 @@
 # Walkthrough: React SPA panel
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 A **React 18 task panel** (Todo) — API in PHP, UI in React with Vite. Pinoox default React entry: `src/main.jsx`.
 
@@ -385,4 +385,4 @@ php pinoox fe com_acme_react_tasks build
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

@@ -1,6 +1,6 @@
 # app.php manifest reference
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 `app.php` is your app manifest. Defaults live in `vendor/pinoox/pincore/Component/Package/data/source.php` — override only what you need.
 
@@ -125,4 +125,4 @@ return [
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

@@ -1,6 +1,6 @@
 # Patches (data updates)
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 A **patch** in Pinoox 3.x is a **one-time operational change**: fix data, move records, sync config, or run post-upgrade logic. It is not a **migration** (schema) or a **seeder** (repeatable seed data).
 
@@ -154,4 +154,4 @@ The system app `com_pinoox_installer` runs migrations and patches during setup v
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

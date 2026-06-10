@@ -1,6 +1,6 @@
 # Walkthrough: Simple blog app
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Build a small blog: **post list**, **single post page** with slug in the URL, and a **write post** form. Good for learning dynamic routes and multiple Twig pages.
 
@@ -326,4 +326,4 @@ class PostController extends Controller
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

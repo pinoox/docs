@@ -1,6 +1,6 @@
 # Project structure
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Pinoox uses HMVC architecture: each app under `apps/{package}/` is a complete, independent MVC module. The framework core lives in `vendor/pinoox/pincore/` and is edited only when changing the platform itself.
 
@@ -120,4 +120,4 @@ Keep apps independent — use `Pinoox\Portal\*` facades rather than coupling app
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

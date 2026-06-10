@@ -1,6 +1,6 @@
 # Portal (Facade)
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 In Pinoox 3.x a Portal is a static gateway to core services — the **Facade** pattern for simple access to View, DB, Lang, and more. For day-to-day work use **`Pinoox\Portal\*`**; for your own app services, create Portals under your app.
 
@@ -122,4 +122,4 @@ php pinoox portal:update PriceCalculator -p com_acme_shop
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

@@ -1,6 +1,6 @@
 # Walkthrough: Vue SPA panel
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Build a **Vue 3 single-page panel** that reads notes from a Pinoox API and performs simple CRUD. The pattern matches `com_pinoox_manager` / `spark`: Twig is only the **shell**; UI lives in Vue components.
 
@@ -320,4 +320,4 @@ Output goes to `theme/default/dist/` — Twig reads the manifest for production 
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

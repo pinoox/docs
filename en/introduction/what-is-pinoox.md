@@ -1,6 +1,6 @@
 # What is Pinoox?
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Pinoox is a modern, open-source PHP framework (3.x) built on HMVC architecture and the **app** concept. It makes modular web development straightforward: each app is an independent MVC unit under `apps/{package}/`, while the shared framework core lives in `vendor/pinoox/pincore/`.
 
@@ -72,4 +72,4 @@ Example: `com_acme_shop` — the folder name, the `package` value in `app.php`, 
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

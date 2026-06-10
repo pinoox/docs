@@ -1,6 +1,6 @@
 # Pagination
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Pinoox 3.x supports Illuminate **`paginate()`** through the pincore base Eloquent model. For APIs, return the result in the standard envelope with a **`meta`** field.
 
@@ -160,4 +160,4 @@ const { data, meta } = unwrapApiResponse(await postAPI.list({ page: 2, per_page:
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

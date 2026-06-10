@@ -1,6 +1,6 @@
 # Pinoox features
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Pinoox 3.x is designed for a modular PHP ecosystem: multiple independent apps on one shared core, CLI scaffolding, and built-in tools for HTTP, database, themes, and authentication.
 
@@ -107,4 +107,4 @@ Translation files in `lang/{locale}/*.lang.php` — suitable for multilingual ap
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

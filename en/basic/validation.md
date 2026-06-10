@@ -1,6 +1,6 @@
 # Validation
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Pinoox 3.x validation uses **Illuminate Validation** — the same familiar rule strings (`required`, `email`, …). Apply them in your app via Portal or Request. Three standard approaches:
 
@@ -175,4 +175,4 @@ public function save(Request $request)
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

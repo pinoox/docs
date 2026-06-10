@@ -1,6 +1,6 @@
 # Test Data — Seeders
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Pinoox 3.x does not include a **Model Factory** (Laravel-style) in the CLI. The recommended approach for initial and development data is **Seeders** with `SeederBase` in `apps/{package}/database/seed/`.
 
@@ -147,4 +147,4 @@ public function run(): void
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

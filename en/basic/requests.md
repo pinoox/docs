@@ -1,6 +1,6 @@
 # HTTP Request
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 The `Pinoox\Component\Http\Request` class handles HTTP input: query string, form POST, JSON body, route parameters, and file uploads. In controllers and Flows, `Request` is available through **dependency injection** on method parameters.
 
@@ -154,4 +154,4 @@ class ProductApiController extends ApiController
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

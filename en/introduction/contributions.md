@@ -1,6 +1,6 @@
 # Contributing to Pinoox
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Pinoox is an open-source project. Your contributions — from bug reports to pull requests — help improve the framework and its documentation.
 
@@ -78,4 +78,4 @@ Report security vulnerabilities **privately**:
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

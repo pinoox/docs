@@ -1,6 +1,6 @@
 # Access & permissions
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Authorization in Pinoox 3.x uses the **`Access`** portal and `app.php` settings — roles, groups, and route/API permissions.
 
@@ -101,4 +101,4 @@ On routes: `'flow' => ['manager.auth']`.
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

@@ -1,6 +1,6 @@
 # Common Issues
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Practical fixes for frequent errors during installation, runtime, and development on Pinoox. Each section recommends **one approach**.
 
@@ -165,4 +165,4 @@ Details: [Getting started with testing](../test/getting-started.md)
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

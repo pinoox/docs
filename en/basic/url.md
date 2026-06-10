@@ -1,6 +1,6 @@
 # URL and Link Building
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 In Pinoox 3.x use **`url()`** to build internal URLs. This helper uses **`Url::link()`** and is aware of the domain, install path (subfolder), and current app segment.
 
@@ -133,4 +133,4 @@ Url::referer();
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

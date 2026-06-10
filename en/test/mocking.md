@@ -1,6 +1,6 @@
 # Mocking in Pinoox
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 To isolate the unit under test from external dependencies, use **Pest + Mockery** (`mock()`) for classes and **`fakeApp()`** for temporary apps. Both are available in the Pinoox test bootstrap.
 
@@ -115,4 +115,4 @@ php pinoox test com_my_shop -f OrderService
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

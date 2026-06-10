@@ -4,7 +4,7 @@ Official developer documentation for building apps on the Pinoox platform (PHP 8
 
 Each guide describes **one recommended approach** with practical examples. Choose a section below or browse by topic.
 
-**Languages:** [English](./readme.md) · [فارسی](./readme-fa.md)
+**Languages:** [English](./README.md) · [فارسی](./readme-fa.md)
 
 ---
 

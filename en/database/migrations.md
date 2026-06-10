@@ -1,6 +1,6 @@
 # Migrations
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Migrations version **schema** changes in the database. In Pinoox 3.x, app files live in `apps/{package}/database/migrations/` and core files in `system/database/migrations/`.
 
@@ -142,4 +142,4 @@ Full patch guide: [Patches (data updates)](./patches.md).
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

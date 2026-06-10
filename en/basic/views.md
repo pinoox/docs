@@ -1,6 +1,6 @@
 # Views
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 In Pinoox 3.x HTML pages are rendered with **Twig** in the theme folder. The standard approach in controllers: **`View::render()`** from the Portal.
 
@@ -143,4 +143,4 @@ return View::render('errors/404');
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

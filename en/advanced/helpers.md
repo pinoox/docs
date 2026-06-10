@@ -1,6 +1,6 @@
 # Global Helpers
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Pinoox 3.x loads global helpers from `pincore/functions/`. For day-to-day app development these helpers (plus Portals) are enough — do not instantiate core Components directly.
 
@@ -174,4 +174,4 @@ In addition to PHP helpers, these are available in Twig:
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

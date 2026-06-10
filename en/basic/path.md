@@ -1,6 +1,6 @@
 # File Path
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Use **`path()`** and the **`Pinoox\Portal\Path`** Portal to access files and folders on disk. This keeps code independent of where the project is installed and what the `apps/` folder is named.
 
@@ -111,4 +111,4 @@ class UploadService
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

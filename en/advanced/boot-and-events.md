@@ -1,6 +1,6 @@
 # boot.php and events
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Besides `routes/`, you can register routes, API endpoints, flows, schedules, and listeners in **`boot.php`** — useful for **plugins**, micro-modules, or hooks into a host app (e.g. manager).
 
@@ -112,4 +112,4 @@ app_boot();
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

@@ -1,6 +1,6 @@
 # HTTP Client
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Pinoox 3.x sends outbound HTTP requests through **`Pinoox\Component\Http\Http`** (Symfony HttpClient inside). That is a helper library — Pinoox itself is an app-centric HMVC platform with its own routing and APIs. System apps such as `com_pinoox_manager` use this pattern when talking to pinoox.com.
 
@@ -131,4 +131,4 @@ if ($response === null) {
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

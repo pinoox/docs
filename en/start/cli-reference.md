@@ -1,6 +1,6 @@
 # Pinoox CLI reference
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Run every command from the **project root**:
 
@@ -143,4 +143,4 @@ See [Schedule](../advanced/schedule.md).
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

@@ -1,6 +1,6 @@
 # Token Management
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 In Pinoox 3.x, sessions and JWTs are managed by **`TokenModel`** (`pincore_token`) and the internal pincore guard. The app selects the mode via the `auth` block in `app.php`; for APIs and SPAs, **`jwt`** is usually recommended.
 
@@ -158,4 +158,4 @@ Used to persist the JWT on the client after a token refresh.
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

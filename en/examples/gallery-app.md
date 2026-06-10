@@ -1,6 +1,6 @@
 # Walkthrough: Image gallery app
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Build an **image gallery**: upload form, Pinoox file storage, thumbnail grid, and delete. Good for learning **`File::upload()`** and linking `file_id` to a model.
 
@@ -327,4 +327,4 @@ If you see permission errors, check write access on the project `uploads/` folde
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

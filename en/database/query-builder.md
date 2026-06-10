@@ -1,6 +1,6 @@
 # Query Builder
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 The Pinoox Query Builder is **Illuminate Query Builder** accessed through the **`DB`** portal with an app-scoped connection. Use it for queries that do not need a full model or for complex joins.
 
@@ -144,4 +144,4 @@ $user = DB::core()->table('user')
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

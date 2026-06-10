@@ -1,6 +1,6 @@
 # Installing Pinoox
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 This guide covers installing Pinoox 3.x on a local stack (MAMP/XAMPP/WAMP) using the graphical installer.
 
@@ -109,4 +109,4 @@ php pinoox app:create com_acme_blog
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

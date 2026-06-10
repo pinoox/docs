@@ -1,6 +1,6 @@
 # Walkthrough: Task board (Todo)
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 A **daily task board**: add tasks, mark them done, and **filter** with a query string (`?status=pending`). Practical for internal panels and learning query filtering in controllers.
 
@@ -297,4 +297,4 @@ class TaskController extends Controller
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

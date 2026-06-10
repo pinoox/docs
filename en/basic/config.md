@@ -1,6 +1,6 @@
 # Config
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Pinoox 3.x settings are stored in PHP files under `config/` (core and app). The standard approach: **`config('key')`** to read and **`config('name')->set(...)->save()`** to write.
 
@@ -131,4 +131,4 @@ In practice `config()` wraps the same Portal — one style is enough.
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

@@ -1,6 +1,6 @@
 # Walkthrough: Notes API app
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 This guide builds a small app that exposes a **JSON API** for notes (title + body). Assumes Pinoox is installed and `php pinoox` works from the project root.
 
@@ -298,4 +298,4 @@ URL: `http://localhost/pinoox/notes/browse` — the API remains at `/api/v1/note
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

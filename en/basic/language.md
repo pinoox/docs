@@ -1,6 +1,6 @@
 # Language and Translation
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Pinoox 3.x supports i18n through **`lang/{locale}/*.lang.php`** files. The standard approach: **`t('file.key')`** or **`Lang::get('file.key')`** in PHP and **`{{ t('file.key') }}`** in Twig.
 
@@ -127,4 +127,4 @@ Put validation messages in `lang/{locale}/validation.lang.php` (see [Validation]
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)

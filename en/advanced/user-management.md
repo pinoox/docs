@@ -1,6 +1,6 @@
 # User Management
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
 
 Authentication in Pinoox 3.x is centralized in **pincore**. Apps only configure `auth` and `transport.user` in `app.php` and use the `Auth` and `User` portals — do not duplicate login logic in the app.
 
@@ -248,4 +248,4 @@ UserModel (pincore_user) + TokenModel (pincore_token)
 
 ---
 
-[← Back to index](../../readme.md)
+[← Back to index](../../README.md)
