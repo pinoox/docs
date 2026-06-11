@@ -1,6 +1,6 @@
 # منابع API (ApiResource)
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 پینوکس 3.x برای شکل‌دهی JSON API از **`Pinoox\Component\Http\Api\ApiResource`** استفاده می‌کند (نه Laravel JsonResource). خروجی در envelope استاندارد `{ success, data, message, meta }` قرار می‌گیرد.
 
@@ -136,10 +136,10 @@ return $this->ok(
 
 ## مستندات مرتبط
 
-- [پاسخ API — API Response](../../pinoox%20docs/pinoox-api-response.md)
+- [پاسخ — Responses](../basic/responses.md)
 - [صفحه‌بندی](../database/pagination.md)
 - [سریال‌سازی](./serialization.md)
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

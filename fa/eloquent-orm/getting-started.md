@@ -1,6 +1,6 @@
 # شروع به کار Eloquent ORM
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 مدل‌های اپ در **`apps/{package}/Model/`** قرار می‌گیرند و از **`Pinoox\Component\Database\Model`** ارث می‌برند. این کلاس پایه پینوکس است: Eloquent را با اتصال دیتابیس و prefix خودکار اپ یکپارچه می‌کند.
 
@@ -145,4 +145,4 @@ $post->transaction(function () use ($post) {
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

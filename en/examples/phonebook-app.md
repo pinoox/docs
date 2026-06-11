@@ -1,6 +1,6 @@
 # Walkthrough: Phonebook web app
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 Build a simple **web app** with Twig: list contacts, add a form, and delete entries. Data is stored in MySQL.
 
@@ -265,4 +265,4 @@ Add a few contacts and try delete.
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

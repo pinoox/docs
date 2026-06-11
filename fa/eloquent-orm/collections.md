@@ -1,6 +1,6 @@
 # مجموعه‌های Eloquent (Collections)
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 وقتی از Model چند رکورد می‌گیرید (`get()`, `all()`)، نتیجه **`Illuminate\Database\Eloquent\Collection`** است — نه آرایه ساده PHP. این مجموعه متدهای قدرتمند برای پردازش دسته‌ای دارد.
 
@@ -129,4 +129,4 @@ $items = $paginator->items();   // array of models
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

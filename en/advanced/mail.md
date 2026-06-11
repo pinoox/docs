@@ -1,6 +1,6 @@
 # Sending Email
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 Pinoox 3.x does not ship a built-in mail service in the core (`pincore`). The recommended approach is **Event + mail service in the app Component** — sending logic stays out of controllers. For actual delivery, add **Symfony Mailer** (or any SMTP driver) inside your app; that is an optional app dependency, not “Pinoox = Symfony”.
 
@@ -170,10 +170,10 @@ The controller only dispatches the event; the listener sends the email. On failu
 ## Related docs
 
 - [App services](./services.md)
-- [Events and boot.php](../../pinoox%20docs/pinoox-app-events.md)
+- [Events and boot.php](./boot-and-events.md)
 - [Controllers](../basic/controllers.md)
 - [Views and Twig](../basic/views.md)
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

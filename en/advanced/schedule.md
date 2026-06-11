@@ -1,6 +1,6 @@
 # Scheduling (cron)
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 Use Pinoox **Schedule** for recurring work (cache cleanup, nightly reports, data sync). Tasks are registered per app in `schedule.php` or `boot.php`.
 
@@ -101,4 +101,4 @@ php pinoox schedule:run
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

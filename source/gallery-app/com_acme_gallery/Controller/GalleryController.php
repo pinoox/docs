@@ -37,7 +37,7 @@ class GalleryController extends Controller
         ]);
 
         $result = File::upload('photo')
-            ->to('uploads/gallery')
+            ->to('gallery')
             ->group('gallery')
             ->thumb()
             ->maxSize('4MB')

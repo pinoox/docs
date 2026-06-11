@@ -1,6 +1,6 @@
 # Eloquent Collections
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 When you fetch multiple records from a model (`get()`, `all()`), the result is an **`Illuminate\Database\Eloquent\Collection`** — not a plain PHP array. Collections provide powerful batch processing methods.
 
@@ -129,4 +129,4 @@ $items = $paginator->items();   // array of models
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

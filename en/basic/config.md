@@ -1,6 +1,6 @@
 # Config
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 Pinoox 3.x settings are stored in PHP files under `config/` (core and app). The standard approach: **`config('key')`** to read and **`config('name')->set(...)->save()`** to write.
 
@@ -127,8 +127,8 @@ In practice `config()` wraps the same Portal — one style is enough.
 - [Portal](./portal.md)
 - [Pinker](../advanced/pinker.md)
 - [File Path](./path.md)
-- [Core Config Reference](../../basic/config.md)
+- [app.php manifest](../start/app-manifest.md)
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

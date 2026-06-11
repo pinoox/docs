@@ -1,6 +1,6 @@
 # Walkthrough: Vite hybrid (Twig + JS widget)
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 A **product page** with full HTML in Twig (SEO and meta in PHP) plus an interactive **Vite widget** (Vanilla JS) that calculates price by quantity. **Hybrid** profile — no Vue/React.
 
@@ -318,4 +318,4 @@ In Twig, mount each node separately:
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

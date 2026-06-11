@@ -1,6 +1,6 @@
 # Common Issues
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 Practical fixes for frequent errors during installation, runtime, and development on Pinoox. Each section recommends **one approach**.
 
@@ -31,13 +31,13 @@ On shared hosting, if `composer` is not in PATH, build vendor locally and upload
 
 ## Permission errors (file access)
 
-**Symptoms:** Cannot write to `cache/`, `uploads/`, `pinker/`.
+**Symptoms:** Cannot write to `cache/`, `storage/`, `pinker/`.
 
 **Fix (Linux/macOS):**
 
 ```bash
-chmod -R 775 cache uploads pinker apps
-chown -R www-data:www-data cache uploads pinker
+chmod -R 775 cache storage pinker apps
+chown -R www-data:www-data cache storage pinker
 ```
 
 The web server user (e.g. `www-data` or `apache`) must be able to write to writable folders. On Windows/MAMP, keep the project folder outside `Program Files`.
@@ -165,4 +165,4 @@ Details: [Getting started with testing](../test/getting-started.md)
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

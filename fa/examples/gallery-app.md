@@ -1,6 +1,6 @@
 # نمونه عملی: گالری تصاویر
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 اپ **گالری تصویر** می‌سازیم: آپلود عکس با فرم، ذخیره در سیستم فایل پینوکس، نمایش grid با thumbnail، و حذف. مناسب برای یادگیری **`File::upload()`** و اتصال `file_id` به Model.
 
@@ -194,7 +194,7 @@ class GalleryController extends Controller
         ]);
 
         $result = File::upload('photo')
-            ->to('uploads/gallery')
+            ->to('gallery')   // → storage/apps/com_acme_gallery/gallery
             ->group('gallery')
             ->thumb()
             ->maxSize('4MB')
@@ -303,7 +303,7 @@ class GalleryController extends Controller
 3. روی تصویر کلیک کنید — نسخه کامل در تب جدید.
 4. حذف — رکورد DB و فایل فیزیکی با `File::remove()` پاک می‌شوند.
 
-اگر خطای permission یا پوشه uploads دیدید، دسترسی نوشتن روی `uploads/` پروژه را چک کنید.
+اگر خطای permission دیدید، دسترسی نوشتن روی پوشه `storage/` پروژه را چک کنید.
 
 ---
 
@@ -325,4 +325,4 @@ class GalleryController extends Controller
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

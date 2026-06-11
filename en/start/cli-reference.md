@@ -1,6 +1,6 @@
 # Pinoox CLI reference
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 Run every command from the **project root**:
 
@@ -11,6 +11,8 @@ php pinoox help migrate
 ```
 
 When a package is required and omitted, Pinoox shows an interactive picker.
+
+> For **single-app** projects, use the standalone [Pinx CLI](./pinx-cli.md) (`pinx dev`, `pinx setup`, `pinx build`, …).
 
 ---
 
@@ -143,4 +145,4 @@ See [Schedule](../advanced/schedule.md).
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

@@ -1,6 +1,6 @@
 # HTTP Testing in Pinoox
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 To test controllers, APIs, and Flows, use Pinoox HTTP helpers: `appGet()`, `appPost()`, and `appPostJson()`. Each returns a `TestResponse` with built-in assertions.
 
@@ -134,4 +134,4 @@ php pinoox test com_my_shop -f ProductApi
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

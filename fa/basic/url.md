@@ -1,6 +1,6 @@
 # URL و لینک‌سازی
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 در پینوکس ۳.x برای ساخت آدرس‌های داخلی از **`url()`** استفاده کنید. این helper از **`Url::link()`** استفاده می‌کند و از دامنه، مسیر نصب (subfolder) و segment اپ جاری آگاه است.
 
@@ -126,11 +126,11 @@ Url::referer();
 ## مستندات مرتبط
 
 - [مسیر فایل (Path)](path.md)
-- [View — ویو(views.md)
+- [View — ویو](views.md)
 - [قالب Twig](templates.md)
 - [روتر](routers.md)
 - [ساختار پروژه](../start/structure.md)
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

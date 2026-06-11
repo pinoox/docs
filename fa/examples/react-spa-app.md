@@ -1,6 +1,6 @@
 # نمونه عملی: پنل React (SPA)
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 پنل **React 18** برای مدیریت کارها (Todo) — API در PHP، UI در React با Vite. entry پیش‌فرض React در پینوکس: `src/main.jsx`.
 
@@ -385,4 +385,4 @@ php pinoox fe com_acme_react_tasks build
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

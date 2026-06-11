@@ -1,6 +1,6 @@
 # Mutatorها و Castها
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 پینوکس 3.x از **`$casts`** و accessor/mutator استاندارد Eloquent Illuminate پشتیبانی می‌کند. این‌ها نوع داده را هنگام خواندن/نوشتن از DB نرمال می‌کنند.
 
@@ -123,4 +123,4 @@ PostModel::withCasts(['view_count' => 'integer'])->get();
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

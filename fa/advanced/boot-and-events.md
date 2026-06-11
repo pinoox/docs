@@ -1,6 +1,6 @@
 # boot.php و رویدادها
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 علاوه بر `routes/`، می‌توانید در **`boot.php`** مسیر، API، Flow، schedule و listener ثبت کنید — مفید برای **افزونه**، micro-module، یا اتصال به اپ میزبان (مثل manager).
 
@@ -113,4 +113,4 @@ app_boot();                     // helper
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

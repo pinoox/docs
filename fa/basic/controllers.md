@@ -1,6 +1,6 @@
 # کنترلر (Controller)
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 کنترلر لایه‌ای است که درخواست HTTP را می‌گیرد، در صورت نیاز با Model کار می‌کند و View یا JSON برمی‌گرداند. در پینوکس ۳.x کنترلرهای اپ در `apps/{package}/Controller/` با namespace `App\{package}\Controller` قرار می‌گیرند.
 
@@ -202,4 +202,4 @@ class ProductController extends Controller
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

@@ -1,6 +1,6 @@
 # تست سریال‌سازی در پینوکس
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 برای API و Resourceها، خروجی JSON را با `assertJsonPath()` و `json()` روی `TestResponse` بررسی کنید. برای مدل Eloquent، `toArray()` / `toJson()` را داخل `inApp()` assert کنید.
 
@@ -125,4 +125,4 @@ php pinoox test com_my_shop -f Serialization
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

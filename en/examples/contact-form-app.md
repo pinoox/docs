@@ -1,6 +1,6 @@
 # Walkthrough: Contact form app
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 A contact form is one of the most common parts of a business website. In this walkthrough you **validate** input, **save messages** to the database, and redirect to a thank-you page.
 
@@ -264,4 +264,4 @@ class ContactController extends Controller
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

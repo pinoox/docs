@@ -1,13 +1,13 @@
-# Notes API app / اپ API یادداشت
+# Notes API app
 
-Source code for the Pinoox walkthrough: [Notes API app](../../en/examples/simple-api-app.md) · [اپ API یادداشت](../../fa/examples/simple-api-app.md)
+Source code for the Pinoox walkthrough: [Notes API app](../../en/examples/simple-api-app.md)
 
 **Package:** `com_acme_notes`
 **URL path:** `/notes`
 
 ---
 
-## English — Install
+## Install
 
 1. Copy the app folder into your project:
    ```bash
@@ -24,31 +24,6 @@ Source code for the Pinoox walkthrough: [Notes API app](../../en/examples/simple
    php pinoox migrate com_acme_notes
    ```
 4. Open in browser:
-   ```
-   http://localhost/pinoox/notes
-   ```
-
-
-
----
-
-## فارسی — نصب
-
-۱. پوشه اپ را در پروژه کپی کنید:
-   ```bash
-   cp -r docs/source/simple-api-app/com_acme_notes apps/com_acme_notes
-   ```
-   در ویندوز: `docs/source/simple-api-app/com_acme_notes` را به `apps/com_acme_notes` کپی کنید.
-
-۲. ثبت مسیر اپ:
-   ```bash
-   php pinoox app:router set /notes com_acme_notes
-   ```
-۳. اجرای migration:
-   ```bash
-   php pinoox migrate com_acme_notes
-   ```
-۴. در مرورگر باز کنید:
    ```
    http://localhost/pinoox/notes
    ```

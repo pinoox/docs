@@ -1,6 +1,6 @@
 # Eloquent ORM Getting Started
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 App models live in **`apps/{package}/Model/`** and extend **`Pinoox\Component\Database\Model`**. That is Pinoox’s base class: it wraps Eloquent with automatic app connection and table prefix handling.
 
@@ -145,4 +145,4 @@ $post->transaction(function () use ($post) {
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

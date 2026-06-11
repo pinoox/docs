@@ -1,6 +1,6 @@
 # مسیر فایل (Path)
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 برای دسترسی به فایل و پوشه در دیسک از **`path()`** و Portal **`Pinoox\Portal\Path`** استفاده کنید. این روش کد را مستقل از محل نصب پروژه و نام پوشه `apps/` نگه می‌دارد.
 
@@ -10,8 +10,8 @@
 
 ```php
 // مسیر نسبی به اپ فعال
-$uploadDir = path('uploads/avatars');
-// → …/apps/com_acme_shop/uploads/avatars
+$logDir = path('storage/logs');
+// → …/apps/com_acme_shop/storage/logs
 
 // مسیر فایل config اپ دیگر
 $configFile = path('config/payment.php', 'com_acme_shop');
@@ -66,31 +66,37 @@ $themeDir = path('theme/default');
 
 | تابع | خروجی | مثال |
 |------|--------|------|
-| `path()` | مسیر فیزیکی روی سرور | `/var/www/pinoox/apps/com_acme_shop/uploads` |
+| `path()` | مسیر فیزیکی روی سرور | `/var/www/pinoox/apps/com_acme_shop/storage` |
 | `url()` | آدرس HTTP برای مرورگر | `https://site.com/pinoox/shop/products` |
 
 ---
 
 ## مثال: سرویس آپلود
 
+آپلود را به‌صورت دستی با `path()` و `move_uploaded_file()` انجام ندهید — از Portal **`File`** استفاده کنید تا فایل‌ها در پوشه `storage/` پروژه ذخیره شوند:
+
 ```php
 // apps/com_acme_shop/Component/UploadService.php
 namespace App\com_acme_shop\Component;
 
+use Pinoox\Portal\File;
+
 class UploadService
 {
-    public function store(array $file, string $subdir = 'products'): string
+    public function store($file, string $subdir = 'products'): ?string
     {
-        $dest = path('uploads/' . $subdir);
-        if (!is_dir($dest)) {
-            mkdir($dest, 0755, true);
-        }
-        $name = uniqid() . '_' . $file['name'];
-        move_uploaded_file($file['tmp_name'], $dest . '/' . $name);
-        return $name;
+        // ذخیره در storage/apps/com_acme_shop/{subdir}
+        $result = File::upload($file)
+            ->to($subdir)
+            ->diskOnly()
+            ->save();
+
+        return $result->success ? $result->path : null;
     }
 }
 ```
+
+برای API کامل آپلود، [مدیریت فایل](../advanced/file-management.md) را ببینید.
 
 ---
 
@@ -110,4 +116,4 @@ class UploadService
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

@@ -1,6 +1,6 @@
 # نمونه عملی: پنل Vue (SPA)
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 یک **پنل تک‌صفحه‌ای Vue 3** می‌سازیم که یادداشت‌ها را از API پینوکس می‌خواند و CRUD ساده انجام می‌دهد. الگو مشابه `com_pinoox_manager` / `spark` است: Twig فقط **shell** است؛ UI در Vue Router و کامپوننت‌ها.
 
@@ -320,4 +320,4 @@ php pinoox fe com_acme_vue_notes build
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

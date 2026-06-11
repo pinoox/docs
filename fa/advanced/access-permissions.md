@@ -1,6 +1,6 @@
 # دسترسی و مجوز (Access)
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 کنترل دسترسی در پینوکس ۳.x از **Portal `Access`** و تنظیمات `app.php` انجام می‌شود — نقش‌ها، گروه‌ها، و مجوز روی route/API.
 
@@ -101,4 +101,4 @@ Access::define('blog.posts.publish', function ($user, $post) {
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

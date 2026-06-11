@@ -1,6 +1,6 @@
 # تست دیتابیس در پینوکس
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 برای تست مدل، migration و endpointهای وابسته به DB، کد را داخل `inApp()` اجرا کنید و از دیتابیس تست (`mode=test`) استفاده کنید. migrationها را قبل از تست اجرا کنید تا schema آماده باشد.
 
@@ -128,4 +128,4 @@ php pinoox test com_my_shop -f ProductModel
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

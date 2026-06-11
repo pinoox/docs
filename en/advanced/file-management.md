@@ -1,6 +1,6 @@
 # File Management
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 Upload and storage in Pinoox 3.x go through a single portal: **`Pinoox\Portal\File`**. Metadata lives in `pincore_file` (or a shared transport scope) and physical files on disk (local, S3, …).
 
@@ -53,7 +53,7 @@ AWS_URL=https://cdn.example.com
 
 ```php
 $result = File::upload('avatar')
-    ->to('uploads/avatar')
+    ->to('avatar')                  // → storage/apps/{package}/avatar
     ->group('avatar')
     ->thumb()
     ->maxSize('2MB')
@@ -72,7 +72,7 @@ if ($result->success) {
 ## From Request
 
 ```php
-$result = $request->store('photo', 'uploads/gallery')
+$result = $request->store('photo', 'gallery')
     ->group('gallery')
     ->thumb(256, 256)
     ->save();
@@ -84,7 +84,7 @@ $result = $request->store('photo', 'uploads/gallery')
 
 ```php
 $result = File::upload('cover')
-    ->to('uploads/posts')
+    ->to('posts')
     ->group('post_cover')
     ->attach($post, 'cover_id')
     ->save();
@@ -94,7 +94,7 @@ Replace a previous file:
 
 ```php
 $result = File::upload('avatar')
-    ->to('uploads/avatar')
+    ->to('avatar')
     ->group('avatar')
     ->replaceOn($user, 'avatar_id')
     ->thumb()
@@ -107,7 +107,7 @@ $result = File::upload('avatar')
 
 ```php
 $result = File::upload('file')
-    ->to('uploads/apps')
+    ->to('packages')
     ->diskOnly()
     ->save();
 
@@ -168,7 +168,7 @@ $result->error;     // error message
 'filesystem' => ['disk' => 's3'],
 
 // or per upload
-File::upload('doc')->to('uploads/docs')->disk('s3')->save();
+File::upload('doc')->to('docs')->disk('s3')->save();
 ```
 
 Private files on S3:
@@ -190,10 +190,10 @@ $url = File::storage('s3')->temporaryUrl('private/doc.pdf', now()->addHour());
 ## Related docs
 
 - [User management](./user-management.md)
-- [Transport](../../pinoox%20docs/pinoox-transport.md)
+- [Transport](./transport.md)
 - [Validation](../basic/validation.md)
 - [Image gallery walkthrough](../examples/gallery-app.md)
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

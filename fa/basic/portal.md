@@ -1,6 +1,6 @@
 # Portal (فاساد)
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 Portal در پینوکس ۳.x دروازه استاتیک به سرویس‌های هسته است — الگوی **Facade** برای دسترسی ساده به View، DB، Lang و … . برای کار روزمره از **`Pinoox\Portal\*`** استفاده کنید؛ برای سرویس‌های اپ خود Portal بسازید.
 
@@ -19,7 +19,7 @@ use Pinoox\Portal\Database\DB;
 View::render('home', $data);
 Url::link('products');
 Url::forApp('com_acme_shop');
-Path::get('uploads');
+Path::get('storage/logs');
 Lang::get('welcome.title');
 config('payment.merchant_id');   // helper → Config Portal
 Validation::validate($data, $rules);
@@ -122,4 +122,4 @@ php pinoox portal:update PriceCalculator -p com_acme_shop
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

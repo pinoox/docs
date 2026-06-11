@@ -1,6 +1,6 @@
 # داده آزمایشی — Seeder
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 پینوکس 3.x **Model Factory** (Laravel-style) در CLI ندارد. روش پیشنهادی برای داده اولیه و توسعه: **Seeder** با `SeederBase` در `apps/{package}/database/seed/`.
 
@@ -143,8 +143,8 @@ public function run(): void
 
 - [Migration — مهاجرت](../database/migrations.md)
 - [شروع به کار Eloquent](./getting-started.md)
-- [ساختار DB اپ](../../pinoox%20docs/pinoox-app-database-structure.md)
+- [پیکربندی DB اپ (app.php)](../start/app-manifest.md)
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

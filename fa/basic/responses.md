@@ -1,6 +1,6 @@
 # پاسخ HTTP (Response)
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 در پینوکس ۳.x هر کنترلر باید یک پاسخ HTTP برگرداند. برای HTML از **`View::render()`**، برای JSON از **`response()->json()`** یا **`ApiController`** استفاده کنید.
 
@@ -152,4 +152,4 @@ public function store(Request $request)
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

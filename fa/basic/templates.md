@@ -1,6 +1,6 @@
 # قالب Twig
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 پینوکس ۳.x به‌صورت پیش‌فرض از **Twig** برای رندر سمت سرور استفاده می‌کند. فایل‌های قالب در `apps/{package}/theme/{theme}/` قرار می‌گیرند.
 
@@ -140,11 +140,11 @@ php pinoox cache:build com_acme_shop --only=twig
 
 ## مستندات مرتبط
 
-- [View — ویو(views.md)
-- [URL — آدرس(url.md)
+- [View — ویو](views.md)
+- [URL — آدرس](url.md)
 - [زبان](language.md)
 - [ساختار پروژه](../start/structure.md)
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

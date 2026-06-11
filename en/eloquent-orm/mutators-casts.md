@@ -1,6 +1,6 @@
 # Mutators and Casts
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 Pinoox 3.x supports standard Illuminate Eloquent **`$casts`** and accessors/mutators. They normalize data types when reading from or writing to the database.
 
@@ -123,4 +123,4 @@ PostModel::withCasts(['view_count' => 'integer'])->get();
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

@@ -1,6 +1,6 @@
 # HTTP Request
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 The `Pinoox\Component\Http\Request` class handles HTTP input: query string, form POST, JSON body, route parameters, and file uploads. In controllers and Flows, `Request` is available through **dependency injection** on method parameters.
 
@@ -77,7 +77,7 @@ The base controller also provides **`$this->validate()`** and **`$this->validati
 ```php
 $file = $request->file('avatar');
 
-$uploader = $request->store('avatar', 'uploads/avatars');
+$uploader = $request->store('avatar', 'avatars'); // → storage/apps/{package}/avatars
 if ($uploader) {
     $path = $uploader->getPath();
 }
@@ -154,4 +154,4 @@ class ProductApiController extends ApiController
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

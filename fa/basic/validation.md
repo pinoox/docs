@@ -1,6 +1,6 @@
 # اعتبارسنجی (Validation)
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 اعتبارسنجی در پینوکس ۳.x از **موتور Illuminate Validation** (همان قوانین رایج مثل `required` و `email`) استفاده می‌کند. در اپ خودتان با Portal یا Request اعمالش کنید — سه روش استاندارد:
 
@@ -175,4 +175,4 @@ public function save(Request $request)
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

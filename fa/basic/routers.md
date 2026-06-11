@@ -1,6 +1,6 @@
 # روتر (Router)
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 سیستم routing پینوکس ۳.x دو لایه دارد: **Named Action** (handler منطقی) و **Route** (URL و متد HTTP). هر اپ مسیرهای خود را در پوشه **`routes/`** تعریف و در **`app.php`** ثبت می‌کند.
 
@@ -187,4 +187,4 @@ php pinoox app:router set /shop com_acme_shop
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

@@ -1,6 +1,6 @@
 # ویو (View)
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 در پینوکس ۳.x صفحات HTML با موتور **Twig** در پوشه theme رندر می‌شوند. روش استاندارد در کنترلر: **`View::render()`** از Portal.
 
@@ -138,9 +138,9 @@ return View::render('errors/404');
 - [قالب Twig](templates.md)
 - [URL و assets](url.md)
 - [پاسخ HTTP](responses.md)
-- [Portal — پورتال(portal.md)
+- [Portal — پورتال](portal.md)
 - [ساختار پروژه](../start/structure.md)
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

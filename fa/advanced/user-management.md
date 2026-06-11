@@ -1,6 +1,6 @@
 # مدیریت کاربران
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 احراز هویت در پینوکس 3.x در **pincore** متمرکز است. اپ‌ها فقط `auth` و `transport.user` را در `app.php` تنظیم می‌کنند و از Portalهای `Auth` و `User` استفاده می‌کنند — منطق لاگین را در اپ تکرار نکنید.
 
@@ -244,8 +244,8 @@ UserModel (pincore_user) + TokenModel (pincore_token)
 
 - [مدیریت توکن](./token-management.md)
 - [فلو — Flow](../basic/flows.md)
-- [Transport — حمل API](../../pinoox%20docs/pinoox-transport.md)
+- [ترنسپورت — Transport](./transport.md)
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

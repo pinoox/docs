@@ -1,6 +1,6 @@
 # Portal (Facade)
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 In Pinoox 3.x a Portal is a static gateway to core services — the **Facade** pattern for simple access to View, DB, Lang, and more. For day-to-day work use **`Pinoox\Portal\*`**; for your own app services, create Portals under your app.
 
@@ -19,7 +19,7 @@ use Pinoox\Portal\Database\DB;
 View::render('home', $data);
 Url::link('products');
 Url::forApp('com_acme_shop');
-Path::get('uploads');
+Path::get('storage/logs');
 Lang::get('welcome.title');
 config('payment.merchant_id');   // helper → Config Portal
 Validation::validate($data, $rules);
@@ -122,4 +122,4 @@ php pinoox portal:update PriceCalculator -p com_acme_shop
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

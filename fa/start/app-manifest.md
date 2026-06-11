@@ -1,6 +1,6 @@
 # مرجع app.php
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 `app.php` manifest اپ است. schema پیش‌فرض در `vendor/pinoox/pincore/Component/Package/data/source.php` تعریف شده — فقط کلیدهایی که نیاز دارید override کنید.
 
@@ -125,4 +125,4 @@ return [
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

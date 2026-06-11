@@ -1,13 +1,13 @@
-# Gallery app / گالری تصاویر
+# Gallery app
 
-Source code for the Pinoox walkthrough: [Gallery app](../../en/examples/gallery-app.md) · [گالری تصاویر](../../fa/examples/gallery-app.md)
+Source code for the Pinoox walkthrough: [Gallery app](../../en/examples/gallery-app.md)
 
 **Package:** `com_acme_gallery`
 **URL path:** `/gallery`
 
 ---
 
-## English — Install
+## Install
 
 1. Copy the app folder into your project:
    ```bash
@@ -24,31 +24,6 @@ Source code for the Pinoox walkthrough: [Gallery app](../../en/examples/gallery-
    php pinoox migrate com_acme_gallery
    ```
 4. Open in browser:
-   ```
-   http://localhost/pinoox/gallery
-   ```
-
-
-
----
-
-## فارسی — نصب
-
-۱. پوشه اپ را در پروژه کپی کنید:
-   ```bash
-   cp -r docs/source/gallery-app/com_acme_gallery apps/com_acme_gallery
-   ```
-   در ویندوز: `docs/source/gallery-app/com_acme_gallery` را به `apps/com_acme_gallery` کپی کنید.
-
-۲. ثبت مسیر اپ:
-   ```bash
-   php pinoox app:router set /gallery com_acme_gallery
-   ```
-۳. اجرای migration:
-   ```bash
-   php pinoox migrate com_acme_gallery
-   ```
-۴. در مرورگر باز کنید:
    ```
    http://localhost/pinoox/gallery
    ```

@@ -1,6 +1,6 @@
 # Migrations
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 Migrations version **schema** changes in the database. In Pinoox 3.x, app files live in `apps/{package}/database/migrations/` and core files in `system/database/migrations/`.
 
@@ -138,8 +138,8 @@ Full patch guide: [Patches (data updates)](./patches.md).
 
 - [Database getting started](./getting-started.md)
 - [Seeders / factories](../eloquent-orm/factories.md)
-- [App database structure](../../pinoox%20docs/pinoox-app-database-structure.md)
+- [App database configuration (app.php)](../start/app-manifest.md)
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

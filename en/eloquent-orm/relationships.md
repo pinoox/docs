@@ -1,6 +1,6 @@
 # Eloquent Relationships
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 Eloquent relationships in Pinoox 3.x use the standard **`hasMany`**, **`belongsTo`**, and related APIs. The example below is a simple blog inside a Pinoox app:
 
@@ -139,4 +139,4 @@ The pivot table `post_tags` also receives the app prefix.
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

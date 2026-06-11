@@ -1,6 +1,6 @@
 # مشکلات رایج
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 راه‌حل‌های عملی برای خطاهای پرتکرار هنگام نصب، اجرا و توسعه روی پینوکس. هر بخش **یک روش** پیشنهادی دارد.
 
@@ -31,13 +31,13 @@ composer install --no-interaction
 
 ## خطای permission (دسترسی فایل)
 
-**علائم:** Cannot write to `cache/`، `uploads/`، `pinker/`.
+**علائم:** Cannot write to `cache/`، `storage/`، `pinker/`.
 
 **راه‌حل (Linux/macOS):**
 
 ```bash
-chmod -R 775 cache uploads pinker apps
-chown -R www-data:www-data cache uploads pinker
+chmod -R 775 cache storage pinker apps
+chown -R www-data:www-data cache storage pinker
 ```
 
 کاربر وب‌سرور (مثلاً `www-data` یا `apache`) باید روی پوشه‌های writable بنویسد. روی Windows/MAMP معمولاً پوشه پروژه را خارج از `Program Files` قرار دهید.
@@ -165,4 +165,4 @@ php pinoox test com_my_shop
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

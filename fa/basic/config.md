@@ -1,6 +1,6 @@
 # پیکربندی (Config)
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 تنظیمات پینوکس ۳.x در فایل‌های PHP داخل `config/` (هسته و اپ) ذخیره می‌شوند. روش استاندارد: helper **`config('key')`** برای خواندن و **`config('name')->set(...)->save()`** برای نوشتن.
 
@@ -124,11 +124,11 @@ Config::name('payment')->set('enabled', true)->save();
 
 ## مستندات مرتبط
 
-- [Portal — پورتال(portal.md)
+- [Portal — پورتال](portal.md)
 - [Pinker — بیلد](../advanced/pinker.md)
 - [مسیر فایل](path.md)
-- [پیکربندی پایه](../../basic/config.md)
+- [مرجع app.php](../start/app-manifest.md)
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

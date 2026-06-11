@@ -1,8 +1,13 @@
 # نصب و راه‌اندازی پینوکس
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
-این راهنما نصب پینوکس ۳.x روی لوکال‌هاست (MAMP/XAMPP/WAMP) را با نصب‌کننده گرافیکی توضیح می‌دهد.
+این راهنما نصب پینوکس ۳.x را پوشش می‌دهد. دو روش برای شروع وجود دارد:
+
+| روش | مناسب برای |
+|-----|------------|
+| **الف. تک‌اپ با [Pinx CLI](./pinx-cli.md)** | ساخت یک اپ — سریع‌ترین شروع، بدون UI منیجر |
+| **ب. پلتفرم کامل (کلاسیک)** | میزبانی چند اپ با نصب‌کننده گرافیکی و منیجر |
 
 ---
 
@@ -17,7 +22,37 @@
 
 ---
 
-## ۱. دریافت پروژه
+## روش الف — تک‌اپ با Pinx CLI
+
+[Pinx CLI](./pinx-cli.md) را یک بار نصب کنید، اپ جدید بسازید و اجرا کنید:
+
+```bash
+composer global require pinoox/pinx-cli
+
+pinx new my-shop              # پیشنهاد com_my_shop — در ویزارد تایید یا ویرایش کنید
+cd my-shop
+cp .env.example .env          # اگر دیتابیس دارید DB_* را تنظیم کنید
+pinx setup                    # مایگریشن platform + اپ، اجرای seeder ها
+pinx dev                      # http://127.0.0.1:8000
+```
+
+یا بدون نصب گلوبال، با قالب پروژه:
+
+```bash
+composer create-project pinoox/app my-shop
+cd my-shop
+cp .env.example .env
+pinx setup
+pinx dev
+```
+
+هر زمان با `pinx doctor` وضعیت PHP، env، دیتابیس و آمادگی build را بررسی کنید. برای گردش کار روزانه و مرجع کامل دستورها، [راهنمای Pinx CLI](./pinx-cli.md) را ببینید.
+
+---
+
+## روش ب — پلتفرم کامل (کلاسیک)
+
+### ۱. دریافت پروژه
 
 ```bash
 git clone https://github.com/pinoox/pinoox.git
@@ -29,7 +64,7 @@ composer install
 
 ---
 
-## ۲. قرار دادن در وب‌سرور
+### ۲. قرار دادن در وب‌سرور
 
 پوشه پروژه را در document root قرار دهید:
 
@@ -43,7 +78,7 @@ Document Root را روی **ریشه پروژه** (همان پوشه‌ای که
 
 ---
 
-## ۳. ساخت پایگاه داده
+### ۳. ساخت پایگاه داده
 
 ```sql
 CREATE DATABASE pinoox_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -51,7 +86,7 @@ CREATE DATABASE pinoox_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ---
 
-## ۴. اجرای نصب‌کننده
+### ۴. اجرای نصب‌کننده
 
 مرورگر را باز کنید:
 
@@ -69,7 +104,7 @@ http://localhost/pinoox
 
 ---
 
-## ۵. پس از نصب
+### ۵. پس از نصب
 
 ساختار اصلی:
 
@@ -103,10 +138,11 @@ php pinoox app:create com_acme_blog
 
 ## مستندات مرتبط
 
+- [Pinx CLI — پروژه تک‌اپ](./pinx-cli.md)
 - [ساخت اولین اپلیکیشن](./your-first-app.md)
 - [ساختار پوشه‌بندی](./structure.md)
 - [پینوکس چیست؟](../introduction/what-is-pinoox.md)
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

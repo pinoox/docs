@@ -1,6 +1,6 @@
 # Database Testing in Pinoox
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 To test models, migrations, and DB-dependent endpoints, run code inside `inApp()` and use the test database (`mode=test`). Run migrations before tests so the schema is ready.
 
@@ -128,4 +128,4 @@ php pinoox test com_my_shop -f ProductModel
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

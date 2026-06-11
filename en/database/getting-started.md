@@ -1,6 +1,6 @@
 # Database Getting Started
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 Pinoox 3.x provides the database layer through **Illuminate Database** (Eloquent + Query Builder) and the **`Pinoox\Portal\Database\DB`** portal. Each app defines its connection in `app.php`; platform credentials live in the project `.env`.
 
@@ -170,8 +170,8 @@ DB::physicalTableName('orders');
 - [Query Builder](./query-builder.md)
 - [Migrations](./migrations.md)
 - [Eloquent — getting started](../eloquent-orm/getting-started.md)
-- [App database configuration](../../pinoox%20docs/pinoox-app-database.md)
+- [App database configuration (app.php)](../start/app-manifest.md)
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

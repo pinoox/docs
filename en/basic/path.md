@@ -1,6 +1,6 @@
 # File Path
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 Use **`path()`** and the **`Pinoox\Portal\Path`** Portal to access files and folders on disk. This keeps code independent of where the project is installed and what the `apps/` folder is named.
 
@@ -10,8 +10,8 @@ Use **`path()`** and the **`Pinoox\Portal\Path`** Portal to access files and fol
 
 ```php
 // Path relative to the active app
-$uploadDir = path('uploads/avatars');
-// → …/apps/com_acme_shop/uploads/avatars
+$logDir = path('storage/logs');
+// → …/apps/com_acme_shop/storage/logs
 
 // Config file in another app
 $configFile = path('config/payment.php', 'com_acme_shop');
@@ -66,31 +66,37 @@ Path::app('com_pinoox_manager'); // specific app
 
 | Helper | Output | Example |
 |--------|--------|---------|
-| `path()` | Physical path on the server | `/var/www/pinoox/apps/com_acme_shop/uploads` |
-| `url()` | HTTP URL for the browser | `https://site.com/pinoox/shop/uploads` |
+| `path()` | Physical path on the server | `/var/www/pinoox/apps/com_acme_shop/storage` |
+| `url()` | HTTP URL for the browser | `https://site.com/pinoox/shop/products` |
 
 ---
 
 ## Example: upload service
 
+Do not write uploads manually with `path()` + `move_uploaded_file()` — use the **`File`** portal so files land in the project `storage/` folder:
+
 ```php
 // apps/com_acme_shop/Component/UploadService.php
 namespace App\com_acme_shop\Component;
 
+use Pinoox\Portal\File;
+
 class UploadService
 {
-    public function store(array $file, string $subdir = 'products'): string
+    public function store($file, string $subdir = 'products'): ?string
     {
-        $dest = path('uploads/' . $subdir);
-        if (!is_dir($dest)) {
-            mkdir($dest, 0755, true);
-        }
-        $name = uniqid() . '_' . $file['name'];
-        move_uploaded_file($file['tmp_name'], $dest . '/' . $name);
-        return $name;
+        // stored under storage/apps/com_acme_shop/{subdir}
+        $result = File::upload($file)
+            ->to($subdir)
+            ->diskOnly()
+            ->save();
+
+        return $result->success ? $result->path : null;
     }
 }
 ```
+
+See [File management](../advanced/file-management.md) for the full upload API.
 
 ---
 
@@ -111,4 +117,4 @@ class UploadService
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

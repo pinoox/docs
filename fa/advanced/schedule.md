@@ -1,6 +1,6 @@
 # زمان‌بندی (Schedule / Cron)
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 برای کارهای تکراری (پاک‌سازی cache، گزارش شبانه، sync داده) از **Schedule** پینوکس استفاده کنید. API شبیه task schedulerهای رایج PHP است، اما وظایف per-app در `schedule.php` یا `boot.php` ثبت می‌شوند.
 
@@ -106,4 +106,4 @@ php pinoox schedule:run
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

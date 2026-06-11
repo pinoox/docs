@@ -1,6 +1,6 @@
 # مدیریت فایل
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 آپلود و ذخیره فایل در پینوکس 3.x از یک Portal واحد انجام می‌شود: **`Pinoox\Portal\File`**. متادیتا در `pincore_file` (یا scope مشترک transport) و فایل فیزیکی روی دیسک (local، S3، …) نگه‌داری می‌شود.
 
@@ -53,7 +53,7 @@ AWS_URL=https://cdn.example.com
 
 ```php
 $result = File::upload('avatar')
-    ->to('uploads/avatar')
+    ->to('avatar')                  // → storage/apps/{package}/avatar
     ->group('avatar')
     ->thumb()
     ->maxSize('2MB')
@@ -72,7 +72,7 @@ if ($result->success) {
 ## از Request
 
 ```php
-$result = $request->store('photo', 'uploads/gallery')
+$result = $request->store('photo', 'gallery')
     ->group('gallery')
     ->thumb(256, 256)
     ->save();
@@ -84,7 +84,7 @@ $result = $request->store('photo', 'uploads/gallery')
 
 ```php
 $result = File::upload('cover')
-    ->to('uploads/posts')
+    ->to('posts')
     ->group('post_cover')
     ->attach($post, 'cover_id')
     ->save();
@@ -94,7 +94,7 @@ $result = File::upload('cover')
 
 ```php
 $result = File::upload('avatar')
-    ->to('uploads/avatar')
+    ->to('avatar')
     ->group('avatar')
     ->replaceOn($user, 'avatar_id')
     ->thumb()
@@ -107,7 +107,7 @@ $result = File::upload('avatar')
 
 ```php
 $result = File::upload('file')
-    ->to('uploads/apps')
+    ->to('packages')
     ->diskOnly()
     ->save();
 
@@ -168,7 +168,7 @@ $result->error;     // پیام خطا
 'filesystem' => ['disk' => 's3'],
 
 // یا per-upload
-File::upload('doc')->to('uploads/docs')->disk('s3')->save();
+File::upload('doc')->to('docs')->disk('s3')->save();
 ```
 
 فایل‌های private روی S3:
@@ -190,10 +190,10 @@ $url = File::storage('s3')->temporaryUrl('private/doc.pdf', now()->addHour());
 ## مستندات مرتبط
 
 - [مدیریت کاربران](./user-management.md)
-- [Transport — حمل API](../../pinoox%20docs/pinoox-transport.md)
+- [ترنسپورت — Transport](./transport.md)
 - [اعتبارسنجی — Validation](../basic/validation.md)
 - [نمونه گالری تصاویر](../examples/gallery-app.md)
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

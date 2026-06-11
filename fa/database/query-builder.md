@@ -1,6 +1,6 @@
 # Query Builder
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 Query Builder پینوکس همان **Illuminate Query Builder** است، از Portal **`DB`** با اتصال scoped اپ. برای کوئری‌هایی که به Model کامل نیاز ندارید یا joinهای پیچیده دارید، این روش پیشنهادی است.
 
@@ -144,4 +144,4 @@ $user = DB::core()->table('user')
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)

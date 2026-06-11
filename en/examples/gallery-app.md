@@ -1,6 +1,6 @@
 # Walkthrough: Image gallery app
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 Build an **image gallery**: upload form, Pinoox file storage, thumbnail grid, and delete. Good for learning **`File::upload()`** and linking `file_id` to a model.
 
@@ -194,7 +194,7 @@ class GalleryController extends Controller
         ]);
 
         $result = File::upload('photo')
-            ->to('uploads/gallery')
+            ->to('gallery')   // → storage/apps/com_acme_gallery/gallery
             ->group('gallery')
             ->thumb()
             ->maxSize('4MB')
@@ -305,7 +305,7 @@ Do not forget **`enctype="multipart/form-data"`** on the upload form.
 3. Click the image — full size in a new tab.
 4. Delete — DB row and physical file are removed via `File::remove()`.
 
-If you see permission errors, check write access on the project `uploads/` folder.
+If you see permission errors, check write access on the project `storage/` folder.
 
 ---
 
@@ -327,4 +327,4 @@ If you see permission errors, check write access on the project `uploads/` folde
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

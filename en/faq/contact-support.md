@@ -1,6 +1,6 @@
 # Contact Support
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)
 
 If you still have a blocker after reviewing [Common issues](./common-issues.md), use the official channels below. Before contacting support, prepare your Pinoox version, PHP version, error message, and reproduction steps.
 
@@ -101,4 +101,4 @@ For PRs and framework development:
 
 ---
 
-[← Back to index](../../README.md)
+[← Back to index](../README.md)

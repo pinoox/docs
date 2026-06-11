@@ -1,6 +1,6 @@
 # شروع کار با دیتابیس
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
 
 پینوکس 3.x لایه دیتابیس را با **Illuminate Database** (Eloquent + Query Builder) و Portal **`Pinoox\Portal\Database\DB`** در اختیار اپ‌ها قرار می‌دهد. هر اپ اتصال خود را در `app.php` تعریف می‌کند؛ credential پلتفرم در `.env` پروژه است.
 
@@ -170,8 +170,8 @@ DB::physicalTableName('orders');
 - [Query Builder — سازنده کوئری](./query-builder.md)
 - [Migration — مهاجرت](./migrations.md)
 - [Eloquent — شروع به کار](../eloquent-orm/getting-started.md)
-- [پیکربندی DB اپ](../../pinoox%20docs/pinoox-app-database.md)
+- [پیکربندی DB اپ (app.php)](../start/app-manifest.md)
 
 ---
 
-[← بازگشت به فهرست](../../readme-fa.md)
+[← بازگشت به فهرست](../README.md)
