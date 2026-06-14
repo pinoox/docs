@@ -2,7 +2,49 @@
 
 [← بازگشت به فهرست](../README.md)
 
-علاوه بر `routes/`، می‌توانید در **`boot.php`** مسیر، API، Flow، schedule و listener ثبت کنید — مفید برای **افزونه**، micro-module، یا اتصال به اپ میزبان (مثل manager).
+علاوه بر `routes/`، می‌توانید در **`boot.php`** مسیر، API، Flow، schedule، GraphQL، listener و bindingهای DI ثبت کنید — مفید برای **افزونه**، micro-module، یا اتصال به اپ میزبان.
+
+هر اپ می‌تواند `apps/{package}/boot.php` داشته باشد. این فایل یک closure برمی‌گرداند که `AppRegister` می‌گیرد و **قبل از** handle درخواست اجرا می‌شود.
+
+---
+
+## چرخهٔ بوت
+
+```
+HTTP request
+  → BootPipeline (composer → loader → boot.global → app.boot → container → …)
+  → AppBootstrap::ensure($package)
+  → include boot.php → callable($register)
+  → commit registries → integrate (flows, listeners, events)
+  → router / API loaders apply registered entries
+```
+
+### مراحل pipeline
+
+| مرحله | کار |
+|-------|-----|
+| `boot.global` | بوت اپ‌های `boot-global => true` در هر درخواست |
+| `app.boot` | بوت اپ فعال (+ extenderها با `extends`) |
+
+### رویدادهای boot
+
+| نام | زمان |
+|-----|------|
+| `app.booting` / `app.booting.{package}` | قبل از commit |
+| `app.booted` / `app.booted.{package}` | بعد از integrate |
+| `app.routes` / `app.routes.{package}` | هنگام اعمال route وب |
+| `app.api` / `app.api.{package}` | هنگام ساخت registry API |
+
+گوش دادن از داخل `boot.php`:
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+
+$register->listen(
+    AppEventNames::package(AppEventNames::BOOTED, $register->package()),
+    $listener,
+);
+```
 
 ---
 
@@ -17,10 +59,99 @@
 افزونه روی اپ میزبان:
 
 ```php
+'extends' => ['com_host_app'],
+```
+
+فقط وقتی host boot شود، افزونه شما هم boot می‌شود (سبک‌تر از global).
+
+---
+
+## کلیدهای `app.php` برای boot
+
+این کلیدها در `apps/{package}/app.php` مشخص می‌کنند **`boot.php` اجرا شود یا نه**، **چه زمانی** اجرا شود، و خروجی boot cache شود یا نه. آن‌ها pipeline بوت را تنظیم می‌کنند — جایگزین خود `boot.php` نیستند.
+
+### فایل boot (`boot`)
+
+کنترل پیدا کردن و اجرای اسکریپت boot (پیش‌فرض: `apps/{package}/boot.php`).
+
+| مقدار | پیش‌فرض | نتیجه |
+|-------|---------|--------|
+| `true` | بله | اجرای `boot.php` هنگام بوت این اپ |
+| `false` | | بدون boot file — فقط route |
+| `'path/custom.php'` | | فایل دیگر نسبت به ریشه اپ |
+
+```php
+'boot' => true,              // استاندارد — apps/{package}/boot.php
+'boot' => false,             // بدون ثبت programmatic
+'boot' => 'setup/boot.php',  // اسکریپت boot سفارشی
+```
+
+فایل باید **callable برگرداند**: `fn (AppRegister $register) => …`. اگر `boot` برابر `true` باشد ولی فایل نباشد، خطا نمی‌دهد — boot رد می‌شود.
+
+### plugin سراسری (`boot-global`)
+
+| مقدار | پیش‌فرض | نتیجه |
+|-------|---------|--------|
+| `false` | بله | بوت فقط وقتی این اپ فعال است (URL match) یا extender یک host |
+| `true` | | بوت در **هر درخواست HTTP**، قبل از اپ فعال |
+
+برای plugin سراسری (log، feature flag). هر request هزینه boot این اپ را دارد — سبک نگه دارید.
+
+### plugin روی host (`extends`)
+
+| مقدار | پیش‌فرض | نتیجه |
+|-------|---------|--------|
+| `[]` | بله | اپ عادی — فقط برای خودش boot |
+| `['com_host_app']` | | boot **قبل از** host وقتی آن host فعال شود |
+
+سبک‌تر از `boot-global`: plugin فقط وقتی host اجرا می‌شود boot می‌شود (مثلاً route یا watch به پنل).
+
+```php
 'extends' => ['com_pinoox_manager'],
 ```
 
-فقط وقتی manager boot شود، افزونه شما هم boot می‌شود (سبک‌تر از global).
+### ثبت اضافه (`startup`)
+
+| مقدار | پیش‌فرض | نتیجه |
+|-------|---------|--------|
+| `null` | بله | بدون مرحله دوم |
+| `fn (AppRegister $r) => …` | | ثبت اضافه در `app.php`، **بعد از** `boot.php` با همان API |
+
+بیشتر موارد را در `boot.php` بگذارید. `startup` برای ثبت کوچک inline در manifest.
+
+### cache boot (`cache`)
+
+cache زمان اجرا **opt-in** است (`cache.enabled` باید `true` باشد).
+
+| کلید | پیش‌فرض | نتیجه |
+|------|---------|--------|
+| `cache.enabled` | `false` | کلید اصلی — تا `true` نشود hydrate نمی‌شود |
+| `cache.stores.boot` | `true` | cache ثبت‌های boot (manifest API/GraphQL، bindings) |
+| `cache.stores.routes` | `true` | cache manifest route/action |
+| `cache.stores.api` | `true` | cache لیست entryهای API |
+
+```php
+'cache' => [
+    'enabled' => true,
+    'stores' => [
+        'boot' => true,
+        'routes' => true,
+        'api' => true,
+    ],
+],
+```
+
+بعد از deploy: `php pinoox cache:build {package}`. جزئیات: [cache boot](#cache-boot) و [Pinker](./pinker.md).
+
+### انتخاب سریع
+
+| می‌خواهید… | در `app.php` |
+|------------|--------------|
+| اپ عادی (route + boot) | `'boot' => true` (پیش‌فرض) |
+| فقط route | `'boot' => false` |
+| plugin سراسری | `'boot-global' => true` |
+| plugin روی یک host | `'extends' => ['com_host_app']` |
+| boot سریع‌تر در production | `'cache.enabled' => true` + `cache:build` |
 
 ---
 
@@ -30,26 +161,33 @@
 <?php
 
 use Pinoox\Component\AppEvent\AppRegister;
+use Pinoox\Component\Http\Api\ApiResponse;
 
 return function (AppRegister $register): void {
     $register->apiRoute([
         'method' => 'GET',
         'uri' => '/health',
-        'action' => fn () => response()->json(['ok' => true]),
+        'action' => static fn () => ApiResponse::success(['status' => 'ok']),
         'name' => 'health',
     ]);
 
-    $register->when('com_pinoox_manager', function (AppRegister $host) {
+    $register->when('com_host_app', function (AppRegister $host) {
         $host->apiRoute([
             'method' => 'GET',
             'uri' => '/acme/status',
-            'action' => fn () => response()->json(['status' => 'ok']),
+            'action' => static fn () => ApiResponse::success(['status' => 'ok']),
             'name' => 'acme.status',
-            'flow' => ['manager.auth'],
+            'flow' => ['host.auth'],
         ]);
     });
 };
 ```
+
+---
+
+## ترکیب با فایل route
+
+`boot.php` با `routes/web.php` و `routes/api.php` با هم کار می‌کند. CRUD پایدار را در route file بگذارید؛ ثبت شرطی، plugin و hook را در `boot.php`.
 
 ---
 
@@ -58,15 +196,86 @@ return function (AppRegister $register): void {
 | متد | کاربرد |
 |-----|--------|
 | `web(callable)` | ثبت route با builder |
-| `route([...])` | یک route web |
+| `route([...])` | یک route web (با `flow`، `permission`) |
 | `api([manifest])` | manifest کامل API |
 | `apiRoute([...])` | یک endpoint API |
+| `graphql([manifest])` | type / query / mutation |
 | `action('name', handler)` | Named Action |
-| `flowAlias(['auth' => AuthFlow::class])` | alias Flow |
+| `flowAlias(['auth' => AuthFlow::class])` | alias تخت |
+| `alias(['myapp' => ['auth' => AuthFlow::class]])` | alias تو در تو |
 | `schedule(callable)` | task زمان‌بندی |
 | `listen('event', listener)` | listener رویداد |
 | `subscribe(SubscriberClass::class)` | Symfony subscriber |
 | `when('com_host', fn)` | hook روی boot اپ دیگر |
+| `onRoute` / `onApi` / `onPath` | watch درخواست‌ها (پایین) |
+| `onController` / `onAction` | watch کنترلر یا action |
+| `onModel` | watch رویداد Eloquent |
+
+---
+
+## Watch — واکنش به route، API، controller، model
+
+در `boot.php` بدون نوشتن Symfony subscriber:
+
+```php
+use Pinoox\Component\AppEvent\AppWatchContext;
+
+return function (AppRegister $register): void {
+    $register->onRoute('app.run', function (AppWatchContext $ctx): void {
+        // $ctx->request, $ctx->routeName(), $ctx->route, $ctx->package()
+    });
+
+    $register->onApi('auth.login', function (AppWatchContext $ctx): void {});
+
+    $register->onPath('/manager/app/*', function (AppWatchContext $ctx): void {});
+
+    $register->onController([AppViewController::class, 'run'], function (AppWatchContext $ctx): void {});
+
+    $register->onModel(OrderModel::class, 'creating', function (AppWatchContext $ctx): void {
+        // $ctx->model
+    });
+
+    // plugin: فقط وقتی host فعال است
+    $register->onRoute('app.run', $handler, 'com_host_app');
+};
+```
+
+| متد | زمان اجرا |
+|-----|-----------|
+| `onRoute` | نام route وب match شد (قبل از controller) |
+| `onApi` | نام route API match شد |
+| `onPath` | path درخواست (`*` = prefix) |
+| `onController` | قبل از اجرای controller |
+| `onAction` | named action match شد |
+| `onModel` | رویداد Eloquent |
+
+**Flow** برای middleware (block/redirect). **Watch** برای side effect (log، sync).
+
+route با permission:
+
+```php
+$register->route([
+    'path' => '/panel',
+    'action' => [PanelController::class, 'index'],
+    'flow' => ['auth'],
+    'permission' => 'app.panel.view',
+]);
+```
+
+---
+
+## Service container (`bindings.php`)
+
+با `container.enabled => true` در `app.php`، bindingها از `container.bindings` و `apps/{package}/bindings.php` merge می‌شوند:
+
+```php
+// bindings.php
+return [
+    OrderRepositoryInterface::class => OrderRepository::class,
+];
+```
+
+اپ‌های جدید از `php pinoox app:create` stubهای `boot.php` و `bindings.php` می‌گیرند.
 
 ---
 
@@ -90,17 +299,35 @@ Event::listen(OrderPlaced::NAME, SendOrderEmail::class);
 ```php
 use Pinoox\Portal\AppBoot;
 
-AppBoot::ensure();              // boot اپ جاری
-AppBoot::booted('com_acme');    // bool
-
-app_boot();                     // helper
+AppBoot::ensure();
+AppBoot::booted('com_acme');
+app_boot(?string $package = null): AppRegister
 ```
 
 ---
 
 ## cache boot
 
-کلید `'boot' => true` در `app.php` → `cache.stores` باعث bake شدن boot در Pinker می‌شود — [Pinker](./pinker.md).
+```php
+'cache' => [
+    'enabled' => true,
+    'stores' => ['boot' => true, 'api' => true],
+],
+```
+
+ساخت cache: `php pinoox cache:build {package}` (یا `.pinx install`) — [Pinker](./pinker.md).
+
+---
+
+## فایل‌های مرتبط
+
+| فایل | نقش |
+|------|-----|
+| `boot.php` | ثبت programmatic |
+| `bindings.php` | DI bindings |
+| `schedule.php` | cron (فایل) |
+| `routes/web.php` | route وب |
+| `routes/api.php` | manifest API |
 
 ---
 
@@ -110,6 +337,7 @@ app_boot();                     // helper
 - [فلو — Flow](../basic/flows.md)
 - [روتر](../basic/routers.md)
 - [ساختار پروژه](../start/structure.md)
+- [manifest اپ](../start/app-manifest.md)
 
 ---
 

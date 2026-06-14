@@ -17,10 +17,67 @@ Además de `routes/`, puedes registrar rutas, endpoints API, flows, tareas progr
 Plugin en una app anfitriona:
 
 ```php
-'extends' => ['com_pinoox_manager'],
+'extends' => ['com_host_app'],
 ```
 
 Tu plugin arranca solo cuando arranca el host (más ligero que global).
+
+---
+
+## claves de `app.php` para boot
+
+Estas claves en `apps/{package}/app.php` controlan **si** se ejecuta `boot.php`, **cuándo** y si se cachea la salida. Configuran la pipeline de boot — no sustituyen `boot.php`.
+
+### Archivo boot (`boot`)
+
+| Valor | Por defecto | Efecto |
+|-------|-------------|--------|
+| `true` | sí | Ejecutar `boot.php` al bootear la app |
+| `false` | | Sin boot — solo rutas |
+| `'path/custom.php'` | | Otro archivo relativo a la raíz de la app |
+
+El archivo debe **devolver un callable** `fn (AppRegister $register) => …`. Si falta con `true`, el boot continúa sin error.
+
+### Plugin global (`boot-global`)
+
+| Valor | Por defecto | Efecto |
+|-------|-------------|--------|
+| `false` | sí | Boot solo cuando esta app está activa |
+| `true` | | Boot en **cada petición HTTP** |
+
+### Plugin en host (`extends`)
+
+| Valor | Por defecto | Efecto |
+|-------|-------------|--------|
+| `[]` | sí | App normal |
+| `['com_host_app']` | | Boot **antes** del host cuando se activa |
+
+### Registro extra (`startup`)
+
+Callable opcional en `app.php`, **después** de `boot.php`, misma API `AppRegister`.
+
+### Caché boot (`cache`)
+
+Opt-in: `cache.enabled` debe ser `true`.
+
+| Clave | Por defecto | Efecto |
+|-------|-------------|--------|
+| `cache.enabled` | `false` | Interruptor principal |
+| `cache.stores.boot` | `true` | Cache de registros boot |
+| `cache.stores.routes` | `true` | Cache de manifests de rutas |
+| `cache.stores.api` | `true` | Cache de listas API |
+
+Tras desplegar: `php pinoox cache:build {package}`.
+
+### Guía rápida
+
+| Objetivo | Ajuste |
+|----------|--------|
+| App normal | `'boot' => true` |
+| Solo rutas | `'boot' => false` |
+| Plugin global | `'boot-global' => true` |
+| Plugin en host | `'extends' => ['com_host_app']` |
+| Boot prod más rápido | `'cache.enabled' => true` |
 
 ---
 
@@ -30,22 +87,23 @@ Tu plugin arranca solo cuando arranca el host (más ligero que global).
 <?php
 
 use Pinoox\Component\AppEvent\AppRegister;
+use Pinoox\Component\Http\Api\ApiResponse;
 
 return function (AppRegister $register): void {
     $register->apiRoute([
         'method' => 'GET',
         'uri' => '/health',
-        'action' => fn () => response()->json(['ok' => true]),
+        'action' => fn () => ApiResponse::success(['status' => 'ok']),
         'name' => 'health',
     ]);
 
-    $register->when('com_pinoox_manager', function (AppRegister $host) {
+    $register->when('com_host_app', function (AppRegister $host) {
         $host->apiRoute([
             'method' => 'GET',
             'uri' => '/acme/status',
-            'action' => fn () => response()->json(['status' => 'ok']),
+            'action' => fn () => ApiResponse::success(['status' => 'ok']),
             'name' => 'acme.status',
-            'flow' => ['manager.auth'],
+            'flow' => ['host.auth'],
         ]);
     });
 };

@@ -17,10 +17,57 @@
 挂接到宿主应用的插件：
 
 ```php
-'extends' => ['com_pinoox_manager'],
+'extends' => ['com_host_app'],
 ```
 
 你的插件只在宿主启动时才会启动（比全局模式更轻量）。
+
+---
+
+## boot 用的 `app.php` 键
+
+`apps/{package}/app.php` 中的这些键控制 **是否** 运行 `boot.php`、**何时** 运行，以及是否缓存 boot 结果。它们配置 boot 管道，**不能** 替代 `boot.php` 本身。
+
+### boot 文件（`boot`）
+
+| 值 | 默认 | 效果 |
+|----|------|------|
+| `true` | 是 | 在该 app boot 时执行 `boot.php` |
+| `false` | | 不执行 boot，仅路由 |
+| `'path/custom.php'` | | 使用 app 根目录下的其他文件 |
+
+文件必须 **返回 callable**：`fn (AppRegister $register) => …`。若 `true` 但文件不存在，boot 会静默跳过。
+
+### 全局插件（`boot-global`）
+
+| 值 | 默认 | 效果 |
+|----|------|------|
+| `false` | 是 | 仅在该 app 激活时 boot |
+| `true` | | **每个 HTTP 请求** 都 boot |
+
+### 宿主插件（`extends`）
+
+| 值 | 默认 | 效果 |
+|----|------|------|
+| `[]` | 是 | 普通 app |
+| `['com_host_app']` | | 宿主激活时 **先于** 宿主 boot |
+
+### 额外注册（`startup`）
+
+`app.php` 中的可选 callable，在 `boot.php` **之后** 执行，API 相同。
+
+### boot 缓存（`cache`）
+
+需主动开启：`cache.enabled` 为 `true`。部署后：`php pinoox cache:build {package}`。
+
+### 快速选择
+
+| 需求 | 设置 |
+|------|------|
+| 普通 app | `'boot' => true` |
+| 仅路由 | `'boot' => false` |
+| 全站插件 | `'boot-global' => true` |
+| 宿主插件 | `'extends' => ['com_host_app']` |
 
 ---
 
@@ -30,22 +77,23 @@
 <?php
 
 use Pinoox\Component\AppEvent\AppRegister;
+use Pinoox\Component\Http\Api\ApiResponse;
 
 return function (AppRegister $register): void {
     $register->apiRoute([
         'method' => 'GET',
         'uri' => '/health',
-        'action' => fn () => response()->json(['ok' => true]),
+        'action' => fn () => ApiResponse::success(['status' => 'ok']),
         'name' => 'health',
     ]);
 
-    $register->when('com_pinoox_manager', function (AppRegister $host) {
+    $register->when('com_host_app', function (AppRegister $host) {
         $host->apiRoute([
             'method' => 'GET',
             'uri' => '/acme/status',
-            'action' => fn () => response()->json(['status' => 'ok']),
+            'action' => fn () => ApiResponse::success(['status' => 'ok']),
             'name' => 'acme.status',
-            'flow' => ['manager.auth'],
+            'flow' => ['host.auth'],
         ]);
     });
 };

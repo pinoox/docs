@@ -17,10 +17,57 @@
 ホストアプリ上のプラグイン:
 
 ```php
-'extends' => ['com_pinoox_manager'],
+'extends' => ['com_host_app'],
 ```
 
 プラグインはホストが boot するときのみ boot（global より軽量）。
+
+---
+
+## boot 用の `app.php` キー
+
+`apps/{package}/app.php` のこれらのキーは、**いつ** `boot.php` を実行するか、キャッシュするかを制御します。boot パイプラインの設定であり、`boot.php` の代替ではありません。
+
+### boot ファイル（`boot`）
+
+| 値 | デフォルト | 動作 |
+|----|------------|------|
+| `true` | はい | この app の boot 時に `boot.php` を実行 |
+| `false` | | boot なし — ルートのみ |
+| `'path/custom.php'` | | app ルートからの別ファイル |
+
+ファイルは **callable を返す**必要があります。`true` でファイルが無くてもエラーになりません。
+
+### グローバル plugin（`boot-global`）
+
+| 値 | デフォルト | 動作 |
+|----|------------|------|
+| `false` | はい | この app がアクティブなときのみ |
+| `true` | | **すべての HTTP リクエスト**で boot |
+
+### ホスト plugin（`extends`）
+
+| 値 | デフォルト | 動作 |
+|----|------------|------|
+| `[]` | はい | 通常の app |
+| `['com_host_app']` | | ホストがアクティブになる **前に** boot |
+
+### 追加登録（`startup`）
+
+`app.php` 内の optional callable。`boot.php` の **後** に同じ API で実行。
+
+### boot キャッシュ（`cache`）
+
+opt-in: `cache.enabled` を `true` に。デプロイ後: `php pinoox cache:build {package}`。
+
+### 早見表
+
+| 目的 | 設定 |
+|------|------|
+| 通常 app | `'boot' => true` |
+| ルートのみ | `'boot' => false` |
+| 全站 plugin | `'boot-global' => true` |
+| ホスト plugin | `'extends' => ['com_host_app']` |
 
 ---
 
@@ -30,22 +77,23 @@
 <?php
 
 use Pinoox\Component\AppEvent\AppRegister;
+use Pinoox\Component\Http\Api\ApiResponse;
 
 return function (AppRegister $register): void {
     $register->apiRoute([
         'method' => 'GET',
         'uri' => '/health',
-        'action' => fn () => response()->json(['ok' => true]),
+        'action' => fn () => ApiResponse::success(['status' => 'ok']),
         'name' => 'health',
     ]);
 
-    $register->when('com_pinoox_manager', function (AppRegister $host) {
+    $register->when('com_host_app', function (AppRegister $host) {
         $host->apiRoute([
             'method' => 'GET',
             'uri' => '/acme/status',
-            'action' => fn () => response()->json(['status' => 'ok']),
+            'action' => fn () => ApiResponse::success(['status' => 'ok']),
             'name' => 'acme.status',
-            'flow' => ['manager.auth'],
+            'flow' => ['host.auth'],
         ]);
     });
 };

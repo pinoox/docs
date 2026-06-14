@@ -17,10 +17,57 @@
 Host uygulamadaki eklenti:
 
 ```php
-'extends' => ['com_pinoox_manager'],
+'extends' => ['com_host_app'],
 ```
 
 Eklentiniz yalnızca host boot olduğunda boot olur (global'den daha hafif).
+
+---
+
+## boot için `app.php` anahtarları
+
+`apps/{package}/app.php` içindeki bu anahtarlar `boot.php`'nin **ne zaman** çalışacağını ve önbelleğe alınıp alınmayacağını belirler. Boot pipeline'ını yapılandırır — `boot.php`'nin yerini almaz.
+
+### Boot dosyası (`boot`)
+
+| Değer | Varsayılan | Etki |
+|-------|------------|------|
+| `true` | evet | App boot olurken `boot.php` çalıştır |
+| `false` | | Boot yok — yalnızca route |
+| `'path/custom.php'` | | App köküne göre başka dosya |
+
+Dosya **callable döndürmeli**: `fn (AppRegister $register) => …`.
+
+### Global plugin (`boot-global`)
+
+| Değer | Varsayılan | Etki |
+|-------|------------|------|
+| `false` | evet | Yalnızca bu app aktifken boot |
+| `true` | | **Her HTTP isteğinde** boot |
+
+### Host plugin (`extends`)
+
+| Değer | Varsayılan | Etki |
+|-------|------------|------|
+| `[]` | evet | Normal app |
+| `['com_host_app']` | | Host aktif olunca **önce** boot |
+
+### Ek kayıt (`startup`)
+
+`app.php` içinde optional callable, `boot.php`'den **sonra**.
+
+### Boot önbelleği (`cache`)
+
+Opt-in: `cache.enabled` = `true`. Deploy sonrası: `php pinoox cache:build {package}`.
+
+### Hızlı seçim
+
+| Amaç | Ayar |
+|------|------|
+| Normal app | `'boot' => true` |
+| Yalnızca route | `'boot' => false` |
+| Site geneli plugin | `'boot-global' => true` |
+| Host plugin | `'extends' => ['com_host_app']` |
 
 ---
 
@@ -30,22 +77,23 @@ Eklentiniz yalnızca host boot olduğunda boot olur (global'den daha hafif).
 <?php
 
 use Pinoox\Component\AppEvent\AppRegister;
+use Pinoox\Component\Http\Api\ApiResponse;
 
 return function (AppRegister $register): void {
     $register->apiRoute([
         'method' => 'GET',
         'uri' => '/health',
-        'action' => fn () => response()->json(['ok' => true]),
+        'action' => fn () => ApiResponse::success(['status' => 'ok']),
         'name' => 'health',
     ]);
 
-    $register->when('com_pinoox_manager', function (AppRegister $host) {
+    $register->when('com_host_app', function (AppRegister $host) {
         $host->apiRoute([
             'method' => 'GET',
             'uri' => '/acme/status',
-            'action' => fn () => response()->json(['status' => 'ok']),
+            'action' => fn () => ApiResponse::success(['status' => 'ok']),
             'name' => 'acme.status',
-            'flow' => ['manager.auth'],
+            'flow' => ['host.auth'],
         ]);
     });
 };

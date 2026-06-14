@@ -17,10 +17,57 @@
 किसी host ऐप पर plugin:
 
 ```php
-'extends' => ['com_pinoox_manager'],
+'extends' => ['com_host_app'],
 ```
 
 आपका plugin केवल तभी boot होता है जब host boot होता है (global से हल्का)।
+
+---
+
+## boot के लिए `app.php` कुंजियाँ
+
+`apps/{package}/app.php` में ये कुंजियाँ नियंत्रित करती हैं कि `boot.php` **चले या नहीं**, **कब** चले, और cache हो या नहीं। ये boot pipeline configure करती हैं — `boot.php` की जगह नहीं लेतीं।
+
+### boot फ़ाइल (`boot`)
+
+| मान | डिफ़ॉल्ट | प्रभाव |
+|-----|----------|---------|
+| `true` | हाँ | app boot पर `boot.php` चलाएँ |
+| `false` | | boot नहीं — केवल routes |
+| `'path/custom.php'` | | app root से दूसरी फ़ाइल |
+
+फ़ाइल को **callable** लौटाना चाहिए: `fn (AppRegister $register) => …`.
+
+### global plugin (`boot-global`)
+
+| मान | डिफ़ॉल्ट | प्रभाव |
+|-----|----------|---------|
+| `false` | हाँ | केवल जब यह app सक्रिय हो |
+| `true` | | **हर HTTP request** पर boot |
+
+### host plugin (`extends`)
+
+| मान | डिफ़ॉल्ट | प्रभाव |
+|-----|----------|---------|
+| `[]` | हाँ | सामान्य app |
+| `['com_host_app']` | | host सक्रिय होने पर **पहले** boot |
+
+### अतिरिक्त registration (`startup`)
+
+`app.php` में optional callable, `boot.php` के **बाद**।
+
+### boot cache (`cache`)
+
+Opt-in: `cache.enabled` = `true`. deploy के बाद: `php pinoox cache:build {package}`.
+
+### त्वरित चयन
+
+| लक्ष्य | सेटिंग |
+|--------|---------|
+| सामान्य app | `'boot' => true` |
+| केवल routes | `'boot' => false` |
+| site-wide plugin | `'boot-global' => true` |
+| host plugin | `'extends' => ['com_host_app']` |
 
 ---
 
@@ -30,22 +77,23 @@
 <?php
 
 use Pinoox\Component\AppEvent\AppRegister;
+use Pinoox\Component\Http\Api\ApiResponse;
 
 return function (AppRegister $register): void {
     $register->apiRoute([
         'method' => 'GET',
         'uri' => '/health',
-        'action' => fn () => response()->json(['ok' => true]),
+        'action' => fn () => ApiResponse::success(['status' => 'ok']),
         'name' => 'health',
     ]);
 
-    $register->when('com_pinoox_manager', function (AppRegister $host) {
+    $register->when('com_host_app', function (AppRegister $host) {
         $host->apiRoute([
             'method' => 'GET',
             'uri' => '/acme/status',
-            'action' => fn () => response()->json(['status' => 'ok']),
+            'action' => fn () => ApiResponse::success(['status' => 'ok']),
             'name' => 'acme.status',
-            'flow' => ['manager.auth'],
+            'flow' => ['host.auth'],
         ]);
     });
 };
