@@ -171,6 +171,33 @@ Auth::persistClientJwt($jwt);
 
 ---
 
+## CLI (ترمینال)
+
+مدیریت ردیف‌های `TokenModel` برای scope فعال:
+
+| دستور | کاربرد |
+|--------|--------|
+| `token:list {package}` | لیست توکن‌ها |
+| `token:show {token}` | جزئیات با id یا `token_key` |
+| `token:create` | ساخت (`--user`, `--lifetime`, `--unit`) |
+| `token:update` / `token:delete` | ویرایش یا حذف |
+| `token:revoke-user {user}` | معادل `Auth::revokeSessions` |
+| `token:purge` | حذف توکن‌های منقضی |
+
+Alias: `tokens` → `token:list`.
+
+```bash
+php pinoox token:list platform
+php pinoox token:create com_my_shop --user=1 --lifetime=7 --unit=day
+php pinoox token:revoke-user 1 --force
+```
+
+ساخت از CLI با `ip=127.0.0.1` و `user_agent=pinoox-cli` انجام می‌شود تا خارج از HTTP هم کار کند.
+
+مرجع: [CLI](../start/cli-reference.md).
+
+---
+
 ## مستندات مرتبط
 
 - [مدیریت کاربران](./user-management.md)

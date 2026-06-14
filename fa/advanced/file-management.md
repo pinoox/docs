@@ -187,6 +187,36 @@ $url = File::storage('s3')->temporaryUrl('private/doc.pdf', now()->addHour());
 
 ---
 
+## CLI (ترمینال)
+
+| دستور | کاربرد |
+|--------|--------|
+| `file:list {package}` | لیست با وضعیت storage |
+| `file:show {file}` | جزئیات با `file_id` یا `hash_id` |
+| `file:update {file}` | metadata، access، نام |
+| `file:delete {file}` | پیش‌فرض: ردیف DB **و** storage |
+| `file:purge` | پاکسازی گروهی |
+
+حالت‌های `file:delete`:
+
+| پرچم | اثر |
+|------|-----|
+| *(پیش‌فرض)* | حذف ردیف + storage (از hook مدل) |
+| `--db-only` | فقط ردیف DB |
+| `--storage-only` | فقط فایل روی disk/S3 |
+| `--force` | بدون تأیید |
+
+```bash
+php pinoox file:list com_my_shop
+php pinoox file:delete 12 --storage-only --force
+```
+
+Alias: `files` → `file:list`.
+
+مرجع: [CLI](../start/cli-reference.md).
+
+---
+
 ## مستندات مرتبط
 
 - [مدیریت کاربران](./user-management.md)

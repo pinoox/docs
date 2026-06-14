@@ -165,6 +165,29 @@ DB::physicalTableName('orders');
 
 ---
 
+## CLI (`db:*`)
+
+| دستور | کاربرد |
+|--------|--------|
+| `db:list` | اتصال‌های پلتفرم یا خلاصه اپ (`--all`, `--test`) |
+| `db:show {target}` | جزئیات + وضعیت برای `platform`، connection، یا package |
+| `db:test` | تست اتصال |
+| `db:create {name}` | افزودن profile پلتفرم |
+| `db:update {target}` | به‌روزرسانی host، credential، prefix |
+| `db:prefix {package} {prefix}` | فقط prefix جدول اپ |
+
+```bash
+php pinoox db:list --test
+php pinoox db:show com_my_shop --json
+php pinoox db:prefix com_my_shop shop_
+```
+
+اگر `.env` کلید `DB_*` داشته باشد، runtime با **env-over-pinker** ممکن است Pinker را override کند.
+
+مرجع: [CLI](../start/cli-reference.md)، [Pinker](../advanced/pinker.md).
+
+---
+
 ## مستندات مرتبط
 
 - [Query Builder — سازنده کوئری](./query-builder.md)

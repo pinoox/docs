@@ -165,6 +165,31 @@ DB::physicalTableName('orders');
 
 ---
 
+## CLI (`db:*`)
+
+Use terminal commands to inspect connections and write Pinker overrides (same storage as the installer sync):
+
+| Command | Purpose |
+|---------|---------|
+| `db:list` | Platform connections or app summary (`--all`, `--test`) |
+| `db:show {target}` | Full details + live status for `platform`, connection name, or package |
+| `db:test` | Probe connectivity (target or `--host` / `--database` options) |
+| `db:create {name}` | Add platform connection profile |
+| `db:update {target}` | Merge new host, credentials, prefix, or `use` |
+| `db:prefix {package} {prefix}` | Set app table prefix only |
+
+```bash
+php pinoox db:list --test
+php pinoox db:show com_my_shop --json
+php pinoox db:prefix com_my_shop shop_
+```
+
+When `.env` defines `DB_HOST`, `DB_DATABASE`, etc., runtime uses **env-over-pinker** — CLI changes in Pinker may not match live connections until env keys are cleared or aligned.
+
+See [CLI reference](../start/cli-reference.md) and [Pinker](../advanced/pinker.md).
+
+---
+
 ## Related docs
 
 - [Query Builder](./query-builder.md)

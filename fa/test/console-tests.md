@@ -83,10 +83,33 @@ it('fails when package is missing', function () {
 ```bash
 # ✅ در تست
 php pinoox migrate com_my_shop
+php pinoox user:list com_my_shop --json
 
 # ❌ در تست — منتظر انتخاب کاربر می‌ماند
 php pinoox migrate
+php pinoox user:list
 ```
+
+---
+
+## تست ایزوله CLI (pincore)
+
+تست‌های Pest در `pincore/tests/Feature/Cli/` برای دستورات `pincore/Terminal/`:
+
+| موضوع | فایل |
+|--------|------|
+| همه دستورات | `CliRegistryTest.php` |
+| DB | `DatabaseCliTest.php` |
+| کاربر / نقش / permission | `UserCliTest.php`, `RoleCliTest.php`, `PermissionCliTest.php` |
+| توکن / فایل / query | `TokenCliTest.php`, `FileCliTest.php`, `QueryCliTest.php` |
+
+از `CommandTester`، trait probe و sqlite `:memory:` استفاده می‌شود.
+
+```bash
+php vendor/bin/pest --testsuite=Cli --configuration=pincore/phpunit.xml
+```
+
+Helper: `pincore/tests/Support/CliTestHelpers.php`.
 
 ---
 

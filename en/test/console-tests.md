@@ -83,10 +83,35 @@ For commands that prompt for user input, pass full arguments in tests so they do
 ```bash
 # ✅ in tests
 php pinoox migrate com_my_shop
+php pinoox user:list com_my_shop --json
 
 # ❌ in tests — waits for user selection
 php pinoox migrate
+php pinoox user:list
 ```
+
+---
+
+## Isolated CLI tests (pincore)
+
+Framework CLI commands in `pincore/Terminal/` have isolated Pest tests under `pincore/tests/Feature/Cli/`:
+
+| Area | Test file |
+|------|-----------|
+| All commands (registry) | `CliRegistryTest.php` |
+| Database CLI | `DatabaseCliTest.php` |
+| Users / roles / permissions | `UserCliTest.php`, `RoleCliTest.php`, `PermissionCliTest.php` |
+| Tokens / files / query | `TokenCliTest.php`, `FileCliTest.php`, `QueryCliTest.php` |
+
+Tests use `CommandTester`, trait probes (`cliTraitProbe`), and sqlite `:memory:` — no real project DB required.
+
+```bash
+php vendor/bin/pest --testsuite=Cli --configuration=pincore/phpunit.xml
+```
+
+Helpers live in `pincore/tests/Support/CliTestHelpers.php`.
+
+For app-specific commands, prefer **unit tests** on extracted logic; use **Process** only for end-to-end integration.
 
 ---
 

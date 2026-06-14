@@ -187,6 +187,40 @@ $url = File::storage('s3')->temporaryUrl('private/doc.pdf', now()->addHour());
 
 ---
 
+## CLI (terminal)
+
+List and maintain `FileModel` records and storage assets from the terminal:
+
+| Command | Purpose |
+|---------|---------|
+| `file:list {package}` | List files with storage status |
+| `file:show {file}` | Details by `file_id` or `hash_id` |
+| `file:update {file}` | Update metadata JSON, access, or name |
+| `file:delete {file}` | Default: DB row **and** storage (original + thumb) |
+| `file:purge` | Bulk delete by group or age |
+
+Delete modes for `file:delete`:
+
+| Flag | Effect |
+|------|--------|
+| *(default)* | Delete model row; model hook removes storage |
+| `--db-only` | Remove DB row only (`FileModel::withoutEvents`) |
+| `--storage-only` | Remove files on disk/S3 only; keep DB row |
+| `--force` | Skip confirmation |
+
+```bash
+php pinoox file:list com_my_shop
+php pinoox file:show abc123hash
+php pinoox file:delete 12 --db-only --force
+php pinoox file:purge com_my_shop --group=avatar --force
+```
+
+Alias: `files` → `file:list`.
+
+See [CLI reference](../start/cli-reference.md).
+
+---
+
 ## Related docs
 
 - [User management](./user-management.md)

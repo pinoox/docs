@@ -93,6 +93,32 @@ On routes: `'flow' => ['manager.auth']`.
 
 ---
 
+## CLI (terminal)
+
+Roles and permissions are stored in the database when using platform/shared access transport. Manage them without custom scripts:
+
+| Command | Purpose |
+|---------|---------|
+| `role:list` / `role:create` / `role:show` / `role:update` / `role:delete` | Role CRUD |
+| `permission:list` / `permission:create` / `permission:show` / `permission:delete` | Permission CRUD |
+| `role:permission {role}` | `--attach` / `--detach` permission keys on a role |
+| `user:role {user}` | Assign roles to a user |
+
+Aliases: `roles`, `permissions`, `make:permission`.
+
+```bash
+php pinoox permission:create com_my_shop blog.posts.view --name="View posts"
+php pinoox role:create com_my_shop --key=editor --name=Editor
+php pinoox role:permission editor --attach=blog.posts.view --attach=blog.posts.edit
+php pinoox user:role 5 --attach=editor
+```
+
+Permission keys must match `[a-z0-9][a-z0-9_.*\-]*` (wildcards like `blog.*` are allowed in route checks via `Access` config groups).
+
+See [CLI reference](../start/cli-reference.md) and [User management](./user-management.md).
+
+---
+
 ## Related docs
 
 - [Flows](../basic/flows.md)

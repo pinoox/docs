@@ -93,6 +93,32 @@ Access::define('blog.posts.publish', function ($user, $post) {
 
 ---
 
+## CLI (ترمینال)
+
+نقش‌ها و permissionها در دیتابیس (با transport مشترک) ذخیره می‌شوند:
+
+| دستور | کاربرد |
+|--------|--------|
+| `role:list` / `role:create` / … | CRUD نقش |
+| `permission:list` / `permission:create` / … | CRUD permission |
+| `role:permission {role}` | `--attach` / `--detach` کلید permission |
+| `user:role {user}` | تخصیص نقش به کاربر |
+
+Alias: `roles`, `permissions`, `make:permission`.
+
+```bash
+php pinoox permission:create com_my_shop blog.posts.view --name="View posts"
+php pinoox role:create com_my_shop --key=editor --name=Editor
+php pinoox role:permission editor --attach=blog.posts.view
+php pinoox user:role 5 --attach=editor
+```
+
+کلید permission باید با `[a-z0-9][a-z0-9_.*\-]*` سازگار باشد.
+
+مرجع: [CLI](../start/cli-reference.md)، [مدیریت کاربر](./user-management.md).
+
+---
+
 ## مستندات مرتبط
 
 - [فلو — Flow](../basic/flows.md)

@@ -240,6 +240,34 @@ UserModel (pincore_user) + TokenModel (pincore_token)
 
 ---
 
+## CLI (terminal)
+
+Manage users from the project root. Commands use the app's `transport.user` scope (pick `platform` or an app package when prompted).
+
+| Command | Purpose |
+|---------|---------|
+| `user:list {package}` | List users; `--status=active`, `--json` |
+| `user:show {user}` | Show one user (id, username, or email) |
+| `user:create` | Create user (options or interactive) |
+| `user:update {user}` | Update profile (`--set fname=Ali`, `--meta theme=dark`) |
+| `user:delete {user}` | Remove user |
+| `user:password {user}` | Set password |
+| `user:status {user}` | Change status (`active`, `inactive`, `suspend`, `pending`) |
+| `user:role {user}` | Attach or detach roles |
+
+Alias: `users` → `user:list`.
+
+```bash
+php pinoox user:list com_my_shop --json
+php pinoox user:create com_my_shop --username=demo --email=demo@example.test
+php pinoox user:password 1 --password=secret
+php pinoox user:role 1 --attach=editor
+```
+
+Full list: [CLI reference](../start/cli-reference.md).
+
+---
+
 ## Related docs
 
 - [Token management](./token-management.md)

@@ -31,6 +31,13 @@ php pinoox help migrate
 | `make:app` | `app:create` |
 | `router` | `app:router` |
 | `routes` | `route:actions` |
+| `users` | `user:list` |
+| `roles` | `role:list` |
+| `permissions` | `permission:list` |
+| `tokens` | `token:list` |
+| `files` | `file:list` |
+| `databases` | `db:list` |
+| `make:permission` | `permission:create` |
 
 ---
 
@@ -70,7 +77,98 @@ php pinoox help migrate
 | `migrate:status` / `migrate:rollback` | وضعیت / برگشت |
 | `seeder:run` | اجرای seeder |
 | `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patch](../database/patches.md) |
-| `query` | SQL خام (debug) |
+| `query` | SQL خام (debug؛ `--dry-run` فقط چاپ بدون اجرا) |
+
+### مدیریت اتصال (`db:*`)
+
+مشاهده و ذخیره اتصال‌های پلتفرم (Pinker `~database`) و بلوک `database` هر اپ.
+
+| دستور | کاربرد |
+|--------|--------|
+| `db:list` | لیست اتصال پلتفرم یا تنظیمات DB اپ‌ها (`--all`, `--test`, `--json`) |
+| `db:show {target}` | جزئیات برای `platform`، نام connection، یا package اپ |
+| `db:test {target}` | تست اتصال؛ یا probe موقت با `--host`, `--database`, … |
+| `db:create {name}` | افزودن connection پلتفرم (تعاملی یا `--set key=value`) |
+| `db:update {target}` | به‌روزرسانی تنظیمات پلتفرم یا اپ |
+| `db:prefix {package} {prefix}` | تغییر prefix جدول اپ (`--use` برای connection پلتفرم) |
+
+```bash
+php pinoox db:list --test
+php pinoox db:show platform
+php pinoox db:show com_my_shop --json
+php pinoox db:test mysql
+php pinoox db:prefix com_my_shop shop_
+```
+
+> CLI در **Pinker** می‌نویسد. اگر `.env` کلید `DB_*` داشته باشد، runtime ممکن است مقادیر را override کند (`env-over-pinker`).
+
+جزئیات: [شروع دیتابیس](../database/getting-started.md).
+
+---
+
+## کاربر، نقش و دسترسی
+
+دستورات scope مربوط به `transport.user` / access را رعایت می‌کنند (معمولاً `platform`). بدون `{package}` لیست تعاملی نشان داده می‌شود.
+
+| دستور | کاربرد |
+|--------|--------|
+| `user:list` / `user:show` / `user:create` / `user:update` / `user:delete` | CRUD کاربر |
+| `user:password` / `user:status` / `user:role` | رمز، وضعیت، نقش |
+| `role:list` / `role:create` / … | CRUD نقش |
+| `role:permission` | اتصال/جداسازی permission روی نقش |
+| `permission:list` / `permission:create` / … | CRUD permission |
+
+```bash
+php pinoox user:list com_my_shop --status=active --json
+php pinoox role:create com_my_shop --key=editor --name=Editor
+php pinoox permission:create com_my_shop blog.posts.edit
+php pinoox role:permission editor --attach=blog.posts.edit
+```
+
+مستندات: [مدیریت کاربر](../advanced/user-management.md)، [دسترسی و permission](../advanced/access-permissions.md).
+
+---
+
+## توکن
+
+مدیریت ردیف‌های `TokenModel` برای scope تعریف‌شده در `transport.session_token`.
+
+| دستور | کاربرد |
+|--------|--------|
+| `token:list` / `token:show` | مشاهده توکن‌ها (کلید در list ماسک می‌شود) |
+| `token:create` | ساخت توکن برای کاربر (`--user`, `--lifetime`, `--unit`) |
+| `token:update` / `token:delete` | ویرایش یا حذف یک توکن |
+| `token:revoke-user` | لغو همه توکن‌های یک کاربر (مثل `Auth::revokeSessions`) |
+| `token:purge` | حذف توکن‌های منقضی |
+
+```bash
+php pinoox token:list platform
+php pinoox token:create com_my_shop --user=1 --lifetime=30 --unit=day
+php pinoox token:revoke-user 1
+```
+
+مستندات: [مدیریت توکن](../advanced/token-management.md).
+
+---
+
+## فایل
+
+مدیریت metadata و storage برای scope `FileModel` (`transport.file_storage`).
+
+| دستور | کاربرد |
+|--------|--------|
+| `file:list` / `file:show` | لیست یا جزئیات (وضعیت storage: `present` / `missing`) |
+| `file:update` | metadata، access، لینک |
+| `file:delete` | حذف ردیف DB، storage، یا هر دو (`--db-only`, `--storage-only`, `--force`) |
+| `file:purge` | پاکسازی گروهی |
+
+```bash
+php pinoox file:list com_my_shop
+php pinoox file:show 12
+php pinoox file:delete 12 --storage-only --force
+```
+
+مستندات: [مدیریت فایل](../advanced/file-management.md).
 
 ---
 
@@ -142,6 +240,10 @@ php pinoox help migrate
 - [ساخت اولین اپ](./your-first-app.md)
 - [Migration — مهاجرت](../database/migrations.md)
 - [Patch — پچ](../database/patches.md)
+- [مدیریت کاربر](../advanced/user-management.md)
+- [دسترسی و permission](../advanced/access-permissions.md)
+- [مدیریت توکن](../advanced/token-management.md)
+- [مدیریت فایل](../advanced/file-management.md)
 
 ---
 

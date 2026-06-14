@@ -150,6 +150,33 @@ Used to persist the JWT on the client after a token refresh.
 
 ---
 
+## CLI (terminal)
+
+Inspect and manage session rows in `TokenModel` for the active transport scope:
+
+| Command | Purpose |
+|---------|---------|
+| `token:list {package}` | List tokens (`--json`) |
+| `token:show {token}` | Details for id or `token_key` |
+| `token:create` | Create token (`--user`, `--name`, `--lifetime`, `--unit`) |
+| `token:update` / `token:delete` | Change metadata or remove one token |
+| `token:revoke-user {user}` | Same effect as `Auth::revokeSessions($userId)` |
+| `token:purge` | Delete expired tokens |
+
+Alias: `tokens` → `token:list`.
+
+```bash
+php pinoox token:list platform
+php pinoox token:create com_my_shop --user=1 --lifetime=7 --unit=day
+php pinoox token:revoke-user 1 --force
+```
+
+CLI token creation sets `ip=127.0.0.1` and `user_agent=pinoox-cli` so commands work outside HTTP requests.
+
+See [CLI reference](../start/cli-reference.md).
+
+---
+
 ## Related docs
 
 - [User management](./user-management.md)

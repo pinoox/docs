@@ -240,6 +240,34 @@ UserModel (pincore_user) + TokenModel (pincore_token)
 
 ---
 
+## CLI (ترمینال)
+
+مدیریت کاربر از ریشه پروژه. دستورات scope مربوط به `transport.user` را رعایت می‌کنند.
+
+| دستور | کاربرد |
+|--------|--------|
+| `user:list {package}` | لیست کاربران؛ `--status=active`, `--json` |
+| `user:show {user}` | نمایش یک کاربر (id، username، email) |
+| `user:create` | ساخت کاربر |
+| `user:update {user}` | ویرایش (`--set fname=Ali`, `--meta theme=dark`) |
+| `user:delete {user}` | حذف کاربر |
+| `user:password {user}` | تنظیم رمز |
+| `user:status {user}` | تغییر وضعیت |
+| `user:role {user}` | اتصال/جداسازی نقش |
+
+Alias: `users` → `user:list`.
+
+```bash
+php pinoox user:list com_my_shop --json
+php pinoox user:create com_my_shop --username=demo --email=demo@example.test
+php pinoox user:password 1 --password=secret
+php pinoox user:role 1 --attach=editor
+```
+
+فهرست کامل: [مرجع CLI](../start/cli-reference.md).
+
+---
+
 ## مستندات مرتبط
 
 - [مدیریت توکن](./token-management.md)
