@@ -4,6 +4,81 @@
 
 Помимо `routes/`, вы можете регистрировать маршруты, API-эндпоинты, flow, расписания и слушатели событий в **`boot.php`** — это полезно для **плагинов**, микромодулей или хуков в хост-приложение (например, manager).
 
+Каждое приложение может иметь `apps/{package}/boot.php`. Файл возвращает closure с `AppRegister` и выполняется **до** обработки запроса.
+
+---
+
+## Жизненный цикл
+
+```
+HTTP request
+  → BootPipeline (composer → loader → boot.global → app.boot → container → …)
+  → AppBootstrap::ensure($package)
+  → include boot.php → callable($register)
+  → commit registries → integrate (flows, listeners, events)
+  → router / API loaders apply registered entries
+```
+
+### Этапы pipeline
+
+| Этап | Назначение |
+|------|------------|
+| `boot.global` | Boot приложений с `boot-global => true` на каждый запрос |
+| `app.boot` | Boot активного route-приложения (+ extenders через `extends`) |
+
+### События boot
+
+| Имя | Когда |
+|-----|-------|
+| `app.booting` / `app.booting.{package}` | До commit |
+| `app.booted` / `app.booted.{package}` | После integrate |
+| `app.routes` / `app.routes.{package}` | При применении web-маршрутов |
+| `app.api` / `app.api.{package}` | При построении API registry |
+
+Слушать из `boot.php`:
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+
+$register->listen(
+    AppEventNames::package(AppEventNames::BOOTED, $register->package()),
+    $listener,
+);
+```
+
+### События запроса (ядро)
+
+Автоматически на каждый HTTP-запрос (`AppCoreEventSubscriber`):
+
+| Имя | Когда | Вариант package | Именованный канал |
+|-----|-------|-----------------|-------------------|
+| `app.route.matched` | После match маршрута | `app.route.matched.{package}` | `app.route.{routeName}` или `app.api.{routeName}` |
+| `app.controller` | Перед controller | `app.controller.{package}` | `app.controller.{Class}.{method}` |
+| `app.response` | Перед отправкой ответа | `app.response.{package}` | — |
+| `app.exception` | Необработанное исключение | `app.exception.{package}` | — |
+| `app.terminate` | После отправки ответа | `app.terminate.{package}` | — |
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+use Pinoox\Component\AppEvent\AppRouteMatchedEvent;
+
+$register->listen(AppEventNames::ROUTE_MATCHED, function (AppRouteMatchedEvent $event): void {
+    // $event->request, $event->route, $event->routeName(), $event->isApi()
+});
+
+$register->listen(
+    AppEventNames::route('app.run'),
+    function (AppRouteMatchedEvent $event): void {},
+);
+
+$register->listen(
+    AppEventNames::package(AppEventNames::CONTROLLER, $register->package()),
+    $listener,
+);
+```
+
+Для простых hook — **watches** (`onRoute`, `onApi`, …); для полного контроля — **listen** на события ядра.
+
 ---
 
 ## Три режима приложения

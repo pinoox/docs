@@ -4,6 +4,81 @@
 
 `routes/` के अलावा, आप routes, API endpoints, flows, schedules और listeners को **`boot.php`** में भी रजिस्टर कर सकते हैं — यह **plugins**, micro-modules, या किसी host ऐप (जैसे manager) में hooks के लिए उपयोगी है।
 
+प्रत्येक app `apps/{package}/boot.php` रख सकता है। फ़ाइल एक closure लौटाती है जो `AppRegister` लेता है और request handle होने से **पहले** चलता है।
+
+---
+
+## जीवनचक्र (Lifecycle)
+
+```
+HTTP request
+  → BootPipeline (composer → loader → boot.global → app.boot → container → …)
+  → AppBootstrap::ensure($package)
+  → include boot.php → callable($register)
+  → commit registries → integrate (flows, listeners, events)
+  → router / API loaders apply registered entries
+```
+
+### Pipeline चरण
+
+| चरण | उद्देश्य |
+|-----|----------|
+| `boot.global` | हर request पर `boot-global => true` वाले apps boot |
+| `app.boot` | सक्रिय route app boot (+ `extends` से extenders) |
+
+### Boot events
+
+| नाम | कब |
+|-----|-----|
+| `app.booting` / `app.booting.{package}` | commit से पहले |
+| `app.booted` / `app.booted.{package}` | integrate के बाद |
+| `app.routes` / `app.routes.{package}` | web routes लागू होने पर |
+| `app.api` / `app.api.{package}` | API registry बनते समय |
+
+`boot.php` से सुनें:
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+
+$register->listen(
+    AppEventNames::package(AppEventNames::BOOTED, $register->package()),
+    $listener,
+);
+```
+
+### Core request events
+
+हर HTTP request पर framework द्वारा स्वचालित (`AppCoreEventSubscriber`):
+
+| नाम | कब | package variant | नामित channel |
+|-----|-----|-----------------|---------------|
+| `app.route.matched` | route match के बाद | `app.route.matched.{package}` | `app.route.{routeName}` या `app.api.{routeName}` |
+| `app.controller` | controller से पहले | `app.controller.{package}` | `app.controller.{Class}.{method}` |
+| `app.response` | response भेजने से पहले | `app.response.{package}` | — |
+| `app.exception` | uncaught exception पर | `app.exception.{package}` | — |
+| `app.terminate` | response भेजने के बाद | `app.terminate.{package}` | — |
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+use Pinoox\Component\AppEvent\AppRouteMatchedEvent;
+
+$register->listen(AppEventNames::ROUTE_MATCHED, function (AppRouteMatchedEvent $event): void {
+    // $event->request, $event->route, $event->routeName(), $event->isApi()
+});
+
+$register->listen(
+    AppEventNames::route('app.run'),
+    function (AppRouteMatchedEvent $event): void {},
+);
+
+$register->listen(
+    AppEventNames::package(AppEventNames::CONTROLLER, $register->package()),
+    $listener,
+);
+```
+
+सरल hooks के लिए **watches** (`onRoute`, `onApi`, …); पूरा नियंत्रण के लिए core events पर **listen**।
+
 ---
 
 ## तीन ऐप मोड

@@ -4,6 +4,81 @@
 
 Además de `routes/`, puedes registrar rutas, endpoints API, flows, tareas programadas y listeners en **`boot.php`** — útil para **plugins**, micro-módulos o hooks en una app anfitriona (p. ej. manager).
 
+Cada app puede incluir `apps/{package}/boot.php`. El archivo devuelve un closure que recibe `AppRegister` y se ejecuta **antes** de manejar la petición.
+
+---
+
+## Ciclo de vida
+
+```
+HTTP request
+  → BootPipeline (composer → loader → boot.global → app.boot → container → …)
+  → AppBootstrap::ensure($package)
+  → include boot.php → callable($register)
+  → commit registries → integrate (flows, listeners, events)
+  → router / API loaders apply registered entries
+```
+
+### Etapas del pipeline
+
+| Etapa | Propósito |
+|-------|-----------|
+| `boot.global` | Boot de apps con `boot-global => true` en cada petición |
+| `app.boot` | Boot de la app activa (+ extenders vía `extends`) |
+
+### Eventos de boot
+
+| Nombre | Cuándo |
+|--------|--------|
+| `app.booting` / `app.booting.{package}` | Antes del commit |
+| `app.booted` / `app.booted.{package}` | Tras integrate |
+| `app.routes` / `app.routes.{package}` | Al aplicar rutas web |
+| `app.api` / `app.api.{package}` | Al construir el registry API |
+
+Escuchar desde `boot.php`:
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+
+$register->listen(
+    AppEventNames::package(AppEventNames::BOOTED, $register->package()),
+    $listener,
+);
+```
+
+### Eventos de petición (núcleo)
+
+Disparados automáticamente en cada petición HTTP por el framework (`AppCoreEventSubscriber`):
+
+| Nombre | Cuándo | Variante package | Canal nombrado |
+|--------|--------|------------------|----------------|
+| `app.route.matched` | Tras match de ruta | `app.route.matched.{package}` | `app.route.{routeName}` o `app.api.{routeName}` |
+| `app.controller` | Antes del controller | `app.controller.{package}` | `app.controller.{Class}.{method}` |
+| `app.response` | Antes de enviar respuesta | `app.response.{package}` | — |
+| `app.exception` | En excepción no capturada | `app.exception.{package}` | — |
+| `app.terminate` | Tras enviar respuesta | `app.terminate.{package}` | — |
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+use Pinoox\Component\AppEvent\AppRouteMatchedEvent;
+
+$register->listen(AppEventNames::ROUTE_MATCHED, function (AppRouteMatchedEvent $event): void {
+    // $event->request, $event->route, $event->routeName(), $event->isApi()
+});
+
+$register->listen(
+    AppEventNames::route('app.run'),
+    function (AppRouteMatchedEvent $event): void {},
+);
+
+$register->listen(
+    AppEventNames::package(AppEventNames::CONTROLLER, $register->package()),
+    $listener,
+);
+```
+
+Usa **watches** (`onRoute`, `onApi`, …) para hooks simples; **listen** en eventos del núcleo para control total o plugins cross-app.
+
 ---
 
 ## Tres modos de app

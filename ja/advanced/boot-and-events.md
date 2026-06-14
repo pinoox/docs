@@ -4,6 +4,81 @@
 
 `routes/` に加え、**`boot.php`** でルート、API エンドポイント、Flow、Schedule、リスナーを登録できます — **プラグイン**、マイクロモジュール、ホストアプリ（例: manager）へのフックに有用です。
 
+各 app は `apps/{package}/boot.php` を置けます。ファイルは `AppRegister` を受け取る closure を返し、リクエスト処理の**前**に実行されます。
+
+---
+
+## ライフサイクル
+
+```
+HTTP request
+  → BootPipeline (composer → loader → boot.global → app.boot → container → …)
+  → AppBootstrap::ensure($package)
+  → include boot.php → callable($register)
+  → commit registries → integrate (flows, listeners, events)
+  → router / API loaders apply registered entries
+```
+
+### パイプライン段階
+
+| 段階 | 目的 |
+|------|------|
+| `boot.global` | 各リクエストで `boot-global => true` の app を boot |
+| `app.boot` | アクティブな route app を boot（`extends` の extender 含む） |
+
+### boot イベント
+
+| 名前 | タイミング |
+|------|------------|
+| `app.booting` / `app.booting.{package}` | commit 前 |
+| `app.booted` / `app.booted.{package}` | integrate 後 |
+| `app.routes` / `app.routes.{package}` | Web ルート適用時 |
+| `app.api` / `app.api.{package}` | API registry 構築時 |
+
+`boot.php` から listen:
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+
+$register->listen(
+    AppEventNames::package(AppEventNames::BOOTED, $register->package()),
+    $listener,
+);
+```
+
+### コア request イベント
+
+各 HTTP リクエストでフレームワークが自動 dispatch（`AppCoreEventSubscriber`）:
+
+| 名前 | タイミング | package 変種 | 名前付きチャネル |
+|------|------------|--------------|------------------|
+| `app.route.matched` | ルート match 後 | `app.route.matched.{package}` | `app.route.{routeName}` または `app.api.{routeName}` |
+| `app.controller` | controller 実行前 | `app.controller.{package}` | `app.controller.{Class}.{method}` |
+| `app.response` | レスポンス送信前 | `app.response.{package}` | — |
+| `app.exception` | 未処理 exception 時 | `app.exception.{package}` | — |
+| `app.terminate` | レスポンス送信後 | `app.terminate.{package}` | — |
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+use Pinoox\Component\AppEvent\AppRouteMatchedEvent;
+
+$register->listen(AppEventNames::ROUTE_MATCHED, function (AppRouteMatchedEvent $event): void {
+    // $event->request, $event->route, $event->routeName(), $event->isApi()
+});
+
+$register->listen(
+    AppEventNames::route('app.run'),
+    function (AppRouteMatchedEvent $event): void {},
+);
+
+$register->listen(
+    AppEventNames::package(AppEventNames::CONTROLLER, $register->package()),
+    $listener,
+);
+```
+
+簡単な hook は **watch**（`onRoute`, `onApi`, …）、完全制御はコアイベントへの **listen**。
+
 ---
 
 ## 3 つのアプリモード

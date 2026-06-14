@@ -46,6 +46,39 @@ $register->listen(
 );
 ```
 
+### Core request events
+
+Dispatched automatically on every HTTP request by the framework (via `AppCoreEventSubscriber`):
+
+| Name | When | Package variant | Named channel |
+|------|------|-----------------|---------------|
+| `app.route.matched` | After router matches a route | `app.route.matched.{package}` | `app.route.{routeName}` or `app.api.{routeName}` |
+| `app.controller` | Before controller runs | `app.controller.{package}` | `app.controller.{Class}.{method}` |
+| `app.response` | Before response is sent | `app.response.{package}` | — |
+| `app.exception` | On uncaught exception | `app.exception.{package}` | — |
+| `app.terminate` | After response sent | `app.terminate.{package}` | — |
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+use Pinoox\Component\AppEvent\AppRouteMatchedEvent;
+
+$register->listen(AppEventNames::ROUTE_MATCHED, function (AppRouteMatchedEvent $event): void {
+    // $event->request, $event->route, $event->routeName(), $event->isApi()
+});
+
+$register->listen(
+    AppEventNames::route('app.run'),
+    function (AppRouteMatchedEvent $event): void {},
+);
+
+$register->listen(
+    AppEventNames::package(AppEventNames::CONTROLLER, $register->package()),
+    $listener,
+);
+```
+
+Use **watches** (`onRoute`, `onApi`, …) for simple hooks; use **listen** on core events for full control or cross-app plugins.
+
 ---
 
 ## Three app modes

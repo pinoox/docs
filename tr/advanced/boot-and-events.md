@@ -4,6 +4,81 @@
 
 `routes/` dışında route'ları, API endpoint'lerini, flow'ları, zamanlamaları ve listener'ları **`boot.php`** içinde kaydedebilirsiniz — **eklentiler**, mikro modüller veya host uygulamaya kancalar (ör. manager) için kullanışlıdır.
 
+Her app `apps/{package}/boot.php` sağlayabilir. Dosya `AppRegister` alan bir closure döndürür ve istek işlenmeden **önce** çalışır.
+
+---
+
+## Yaşam döngüsü
+
+```
+HTTP request
+  → BootPipeline (composer → loader → boot.global → app.boot → container → …)
+  → AppBootstrap::ensure($package)
+  → include boot.php → callable($register)
+  → commit registries → integrate (flows, listeners, events)
+  → router / API loaders apply registered entries
+```
+
+### Pipeline aşamaları
+
+| Aşama | Amaç |
+|-------|------|
+| `boot.global` | Her istekte `boot-global => true` app'leri boot et |
+| `app.boot` | Aktif route app boot (+ `extends` ile extender'lar) |
+
+### Boot event'leri
+
+| Ad | Ne zaman |
+|----|----------|
+| `app.booting` / `app.booting.{package}` | commit öncesi |
+| `app.booted` / `app.booted.{package}` | integrate sonrası |
+| `app.routes` / `app.routes.{package}` | web route uygulanırken |
+| `app.api` / `app.api.{package}` | API registry oluşturulurken |
+
+`boot.php` içinden dinleme:
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+
+$register->listen(
+    AppEventNames::package(AppEventNames::BOOTED, $register->package()),
+    $listener,
+);
+```
+
+### Çekirdek request event'leri
+
+Her HTTP isteğinde framework tarafından otomatik (`AppCoreEventSubscriber`):
+
+| Ad | Ne zaman | package varyantı | Adlandırılmış kanal |
+|----|----------|------------------|---------------------|
+| `app.route.matched` | route eşleşmesinden sonra | `app.route.matched.{package}` | `app.route.{routeName}` veya `app.api.{routeName}` |
+| `app.controller` | controller öncesi | `app.controller.{package}` | `app.controller.{Class}.{method}` |
+| `app.response` | yanıt gönderilmeden önce | `app.response.{package}` | — |
+| `app.exception` | yakalanmamış exception | `app.exception.{package}` | — |
+| `app.terminate` | yanıt gönderildikten sonra | `app.terminate.{package}` | — |
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+use Pinoox\Component\AppEvent\AppRouteMatchedEvent;
+
+$register->listen(AppEventNames::ROUTE_MATCHED, function (AppRouteMatchedEvent $event): void {
+    // $event->request, $event->route, $event->routeName(), $event->isApi()
+});
+
+$register->listen(
+    AppEventNames::route('app.run'),
+    function (AppRouteMatchedEvent $event): void {},
+);
+
+$register->listen(
+    AppEventNames::package(AppEventNames::CONTROLLER, $register->package()),
+    $listener,
+);
+```
+
+Basit hook'lar için **watch** (`onRoute`, `onApi`, …); tam kontrol için çekirdek event'lere **listen**.
+
 ---
 
 ## Üç uygulama modu

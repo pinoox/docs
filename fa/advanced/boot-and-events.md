@@ -46,6 +46,39 @@ $register->listen(
 );
 ```
 
+### رویدادهای درخواست (هسته)
+
+به‌صورت پیش‌فرض در هر درخواست HTTP توسط فریم‌ورک dispatch می‌شوند (`AppCoreEventSubscriber`):
+
+| نام | زمان | variant پکیج | کانال نام‌دار |
+|-----|------|--------------|---------------|
+| `app.route.matched` | بعد از match شدن route | `app.route.matched.{package}` | `app.route.{routeName}` یا `app.api.{routeName}` |
+| `app.controller` | قبل از اجرای controller | `app.controller.{package}` | `app.controller.{Class}.{method}` |
+| `app.response` | قبل از ارسال پاسخ | `app.response.{package}` | — |
+| `app.exception` | هنگام exception | `app.exception.{package}` | — |
+| `app.terminate` | بعد از ارسال پاسخ | `app.terminate.{package}` | — |
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+use Pinoox\Component\AppEvent\AppRouteMatchedEvent;
+
+$register->listen(AppEventNames::ROUTE_MATCHED, function (AppRouteMatchedEvent $event): void {
+    // $event->request, $event->route, $event->routeName(), $event->isApi()
+});
+
+$register->listen(
+    AppEventNames::route('app.run'),
+    function (AppRouteMatchedEvent $event): void {},
+);
+
+$register->listen(
+    AppEventNames::package(AppEventNames::CONTROLLER, $register->package()),
+    $listener,
+);
+```
+
+برای hook ساده از **watch** (`onRoute`, `onApi`, …) استفاده کنید؛ برای کنترل کامل از **listen** روی رویدادهای هسته.
+
 ---
 
 ## سه حالت اپ

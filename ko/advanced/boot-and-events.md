@@ -4,6 +4,81 @@
 
 `routes/` 외에 **`boot.php`**에서 route, API endpoint, Flow, schedule, listener를 등록할 수 있습니다 — **plugin**, micro-module, host app(예: manager) hook에 유용합니다.
 
+각 app은 `apps/{package}/boot.php`를 둘 수 있습니다. 파일은 `AppRegister`를 받는 closure를 반환하며 요청 처리 **전**에 실행됩니다.
+
+---
+
+## 라이프사이클
+
+```
+HTTP request
+  → BootPipeline (composer → loader → boot.global → app.boot → container → …)
+  → AppBootstrap::ensure($package)
+  → include boot.php → callable($register)
+  → commit registries → integrate (flows, listeners, events)
+  → router / API loaders apply registered entries
+```
+
+### pipeline 단계
+
+| 단계 | 목적 |
+|------|------|
+| `boot.global` | 매 요청마다 `boot-global => true` app boot |
+| `app.boot` | 활성 route app boot (`extends` extender 포함) |
+
+### boot 이벤트
+
+| 이름 | 시점 |
+|------|------|
+| `app.booting` / `app.booting.{package}` | commit 전 |
+| `app.booted` / `app.booted.{package}` | integrate 후 |
+| `app.routes` / `app.routes.{package}` | web route 적용 시 |
+| `app.api` / `app.api.{package}` | API registry 구성 시 |
+
+`boot.php`에서 listen:
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+
+$register->listen(
+    AppEventNames::package(AppEventNames::BOOTED, $register->package()),
+    $listener,
+);
+```
+
+### 코어 request 이벤트
+
+매 HTTP 요청마다 프레임워크가 자동 dispatch (`AppCoreEventSubscriber`):
+
+| 이름 | 시점 | package 변형 | 이름 채널 |
+|------|------|--------------|-----------|
+| `app.route.matched` | route match 후 | `app.route.matched.{package}` | `app.route.{routeName}` 또는 `app.api.{routeName}` |
+| `app.controller` | controller 실행 전 | `app.controller.{package}` | `app.controller.{Class}.{method}` |
+| `app.response` | response 전송 전 | `app.response.{package}` | — |
+| `app.exception` | 처리되지 않은 exception | `app.exception.{package}` | — |
+| `app.terminate` | response 전송 후 | `app.terminate.{package}` | — |
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+use Pinoox\Component\AppEvent\AppRouteMatchedEvent;
+
+$register->listen(AppEventNames::ROUTE_MATCHED, function (AppRouteMatchedEvent $event): void {
+    // $event->request, $event->route, $event->routeName(), $event->isApi()
+});
+
+$register->listen(
+    AppEventNames::route('app.run'),
+    function (AppRouteMatchedEvent $event): void {},
+);
+
+$register->listen(
+    AppEventNames::package(AppEventNames::CONTROLLER, $register->package()),
+    $listener,
+);
+```
+
+간단한 hook은 **watch** (`onRoute`, `onApi`, …), 전체 제어는 코어 이벤트 **listen**.
+
 ---
 
 ## 세 가지 앱 mode

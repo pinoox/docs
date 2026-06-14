@@ -4,6 +4,81 @@
 
 إلى جانب `routes/`، يمكنك تسجيل المسارات (Routes)، ونقاط نهاية API، والتدفقات (Flows)، والجداول الزمنية (Schedules)، والمستمعين (Listeners) في **`boot.php`** — وهو مفيد **للإضافات (Plugins)**، أو الوحدات الصغيرة، أو الربط مع تطبيق مضيف (مثل manager).
 
+يمكن لكل تطبيق أن يوفّر `apps/{package}/boot.php`. يُرجع الملف closure يستقبل `AppRegister` ويُنفَّذ **قبل** معالجة الطلب.
+
+---
+
+## دورة الإقلاع (Lifecycle)
+
+```
+HTTP request
+  → BootPipeline (composer → loader → boot.global → app.boot → container → …)
+  → AppBootstrap::ensure($package)
+  → include boot.php → callable($register)
+  → commit registries → integrate (flows, listeners, events)
+  → router / API loaders apply registered entries
+```
+
+### مراحل pipeline
+
+| المرحلة | الغرض |
+|---------|--------|
+| `boot.global` | boot التطبيقات ذات `boot-global => true` في كل طلب |
+| `app.boot` | boot التطبيق النشط (+ extenders عبر `extends`) |
+
+### أحداث boot
+
+| الاسم | متى |
+|-------|-----|
+| `app.booting` / `app.booting.{package}` | قبل commit |
+| `app.booted` / `app.booted.{package}` | بعد integrate |
+| `app.routes` / `app.routes.{package}` | عند تطبيق مسارات الويب |
+| `app.api` / `app.api.{package}` | عند بناء registry الـ API |
+
+الاستماع من `boot.php`:
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+
+$register->listen(
+    AppEventNames::package(AppEventNames::BOOTED, $register->package()),
+    $listener,
+);
+```
+
+### أحداث طلب HTTP (النواة)
+
+يُطلَقها الإطار تلقائياً في كل طلب HTTP (`AppCoreEventSubscriber`):
+
+| الاسم | متى | variant الحزمة | قناة مسماة |
+|-------|-----|----------------|------------|
+| `app.route.matched` | بعد تطابق المسار | `app.route.matched.{package}` | `app.route.{routeName}` أو `app.api.{routeName}` |
+| `app.controller` | قبل تشغيل المتحكم | `app.controller.{package}` | `app.controller.{Class}.{method}` |
+| `app.response` | قبل إرسال الاستجابة | `app.response.{package}` | — |
+| `app.exception` | عند استثناء غير معالج | `app.exception.{package}` | — |
+| `app.terminate` | بعد إرسال الاستجابة | `app.terminate.{package}` | — |
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+use Pinoox\Component\AppEvent\AppRouteMatchedEvent;
+
+$register->listen(AppEventNames::ROUTE_MATCHED, function (AppRouteMatchedEvent $event): void {
+    // $event->request, $event->route, $event->routeName(), $event->isApi()
+});
+
+$register->listen(
+    AppEventNames::route('app.run'),
+    function (AppRouteMatchedEvent $event): void {},
+);
+
+$register->listen(
+    AppEventNames::package(AppEventNames::CONTROLLER, $register->package()),
+    $listener,
+);
+```
+
+استخدم **watches** (`onRoute`, `onApi`, …) للخطافات البسيطة؛ و**listen** على أحداث النواة للتحكم الكامل أو إضافات cross-app.
+
 ---
 
 ## أنماط التطبيق الثلاثة

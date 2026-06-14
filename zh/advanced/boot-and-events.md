@@ -4,6 +4,81 @@
 
 除了 `routes/` 之外，你还可以在 **`boot.php`** 中注册路由、API 端点、Flow、计划任务和监听器 —— 这对 **插件**、微模块或挂接到宿主应用（如 manager）的钩子很有用。
 
+每个应用可提供 `apps/{package}/boot.php`。文件返回接收 `AppRegister` 的 closure，在请求处理**之前**执行。
+
+---
+
+## 生命周期
+
+```
+HTTP request
+  → BootPipeline (composer → loader → boot.global → app.boot → container → …)
+  → AppBootstrap::ensure($package)
+  → include boot.php → callable($register)
+  → commit registries → integrate (flows, listeners, events)
+  → router / API loaders apply registered entries
+```
+
+### 管道阶段
+
+| 阶段 | 作用 |
+|------|------|
+| `boot.global` | 每个请求 boot 带 `boot-global => true` 的应用 |
+| `app.boot` | boot 当前活跃应用（+ `extends` 的 extender） |
+
+### Boot 事件
+
+| 名称 | 时机 |
+|------|------|
+| `app.booting` / `app.booting.{package}` | commit 之前 |
+| `app.booted` / `app.booted.{package}` | integrate 之后 |
+| `app.routes` / `app.routes.{package}` | 应用 Web 路由时 |
+| `app.api` / `app.api.{package}` | 构建 API registry 时 |
+
+在 `boot.php` 中监听：
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+
+$register->listen(
+    AppEventNames::package(AppEventNames::BOOTED, $register->package()),
+    $listener,
+);
+```
+
+### 核心请求事件
+
+框架在每个 HTTP 请求上自动 dispatch（`AppCoreEventSubscriber`）：
+
+| 名称 | 时机 | package 变体 | 命名通道 |
+|------|------|--------------|----------|
+| `app.route.matched` | 路由匹配后 | `app.route.matched.{package}` | `app.route.{routeName}` 或 `app.api.{routeName}` |
+| `app.controller` | controller 执行前 | `app.controller.{package}` | `app.controller.{Class}.{method}` |
+| `app.response` | 发送响应前 | `app.response.{package}` | — |
+| `app.exception` | 未捕获异常 | `app.exception.{package}` | — |
+| `app.terminate` | 响应发送后 | `app.terminate.{package}` | — |
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+use Pinoox\Component\AppEvent\AppRouteMatchedEvent;
+
+$register->listen(AppEventNames::ROUTE_MATCHED, function (AppRouteMatchedEvent $event): void {
+    // $event->request, $event->route, $event->routeName(), $event->isApi()
+});
+
+$register->listen(
+    AppEventNames::route('app.run'),
+    function (AppRouteMatchedEvent $event): void {},
+);
+
+$register->listen(
+    AppEventNames::package(AppEventNames::CONTROLLER, $register->package()),
+    $listener,
+);
+```
+
+简单 hook 用 **watch**（`onRoute`、`onApi` 等）；完全控制用核心事件的 **listen**。
+
 ---
 
 ## 三种应用模式
