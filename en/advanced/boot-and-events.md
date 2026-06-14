@@ -243,6 +243,7 @@ return function (AppRegister $register): void {
 | `onRoute` / `onApi` / `onPath` | Watch matching requests (see below) |
 | `onController` / `onAction` | Watch controller or named action |
 | `onModel` | Watch Eloquent model events |
+| `onTheme` | Watch when a theme context or folder becomes active |
 
 ---
 
@@ -281,8 +282,15 @@ return function (AppRegister $register): void {
 | `onController` | Controller about to run |
 | `onAction` | Named action matched |
 | `onModel` | Eloquent lifecycle event |
+| `onTheme` | Theme context or folder name becomes active |
 
 Use **Flow** when you need middleware (block/redirect). Use **watch** for side effects (log, sync, metrics).
+
+```php
+$register->onTheme('panel', function (AppWatchContext $ctx): void {
+    // $ctx->themeContext(), $ctx->themeName(), $ctx->themeStack()
+});
+```
 
 Web route with permission:
 
@@ -293,6 +301,94 @@ $register->route([
     'flow' => ['auth'],
     'permission' => 'app.panel.view',
 ]);
+```
+
+---
+
+## Theme — contexts, inheritance, and boot hooks
+
+Theme folders live under `apps/{package}/theme/{name}/`. Configure the active theme in **`app.php`**; use **`boot.php`** for runtime hooks (global view data, switching context per route).
+
+### Keys in `app.php`
+
+| Key | Purpose |
+|-----|---------|
+| `theme` | Active theme folder (e.g. `'default'`) |
+| `theme-context` / `theme-contexts` | Multiple themes per app (site / panel / …) |
+| `theme-extends` | Inherit from another theme folder |
+| `path-theme` | Custom folder instead of `theme/` |
+| `frontend` | Vite profile, entry, manifest |
+
+Multi-context example:
+
+```php
+'theme-context' => 'site',
+'theme-contexts' => [
+    'site'  => ['theme' => 'site'],
+    'panel' => ['theme' => 'panel'],
+    'kids'  => ['theme' => 'kids', 'extends' => 'site'],
+],
+'alias' => array_merge(
+    ['auth' => AuthFlow::class],
+    theme_flow_aliases(['site', 'panel', 'kids']),
+),
+```
+
+Attach a context on routes via Flow:
+
+```php
+// routes/web.php
+get('/panel', [PanelController::class, 'index'], flows: ['auth', 'theme.panel']);
+```
+
+Inside `theme/{name}/`: `theme.php` (manifest + `extends`), Twig templates, optional `functions.php` (Twig helpers), `frontend.config.php`, `src/` / `dist/` for Vite. Child themes override parent templates; cross-app parent: `@com_base/default`.
+
+See [Views](../basic/views.md), [Twig templates](../basic/templates.md), [app.php manifest](../start/app-manifest.md).
+
+### From `boot.php`
+
+Use **`onTheme`** for declarative theme hooks, or **listen** / **watch** for finer control:
+
+```php
+use Pinoox\Component\AppEvent\AppControllerEvent;
+use Pinoox\Component\AppEvent\AppEventNames;
+use Pinoox\Component\AppEvent\AppWatchContext;
+use Pinoox\Component\Template\Theme\ThemeContext;
+use Pinoox\Portal\View;
+
+$register->onTheme('panel', function (AppWatchContext $ctx): void {
+    View::set('layout', 'compact');
+});
+
+// Global view data after boot
+$register->listen(
+    AppEventNames::package(AppEventNames::BOOTED, $register->package()),
+    function (): void {
+        View::set('brand', config('brand.name'));
+    },
+);
+
+// Manual context switch by path (alternative to theme Flow)
+$register->onPath('/panel/*', function (AppWatchContext $ctx): void {
+    ThemeContext::activate('panel');
+});
+```
+
+In controllers you can also call `View::changeTheme('panel')`, `ThemeContext::activate('panel')`, or `within_theme('panel', fn () => View::render('pages/dashboard'))`.
+
+| Need | Approach |
+|------|----------|
+| One fixed theme | `'theme' => 'default'` in `app.php` |
+| Site + admin UI | `theme-contexts` + `theme_flow_aliases` on routes |
+| Extend a base theme | `theme.php` → `'extends' => ['parent']` |
+| Global Twig variables | `View::set()` in boot listener or controller |
+| Theme only on some routes | Flow `theme.panel` or watch/listen on path |
+
+Build / cache:
+
+```bash
+php pinoox theme:frontend build {package}
+php pinoox cache:build {package} --only=twig
 ```
 
 ---
@@ -370,6 +466,8 @@ Build: `php pinoox cache:build {package}` (or via `.pinx install`). See [Pinker]
 
 - [Schedule](./schedule.md)
 - [Flows](../basic/flows.md)
+- [Views](../basic/views.md)
+- [Twig templates](../basic/templates.md)
 - [Routers](../basic/routers.md)
 - [Project structure](../start/structure.md)
 - [app.php manifest](../start/app-manifest.md)

@@ -193,6 +193,59 @@ return function (AppRegister $register): void {
 
 ---
 
+## Theme — context, kalıtım ve boot kancaları
+
+Klasörler `apps/{package}/theme/{name}/` altında. Aktif theme **`app.php`**; runtime kancalar **`boot.php`**.
+
+### `app.php` anahtarları
+
+| Anahtar | Amaç |
+|---------|------|
+| `theme` | Aktif theme klasörü |
+| `theme-context` / `theme-contexts` | Birden fazla theme |
+| `theme-extends` | Kalıtım |
+| `path-theme` | Özel yol |
+| `frontend` | Vite profile, entry, manifest |
+
+```php
+'theme-context' => 'site',
+'theme-contexts' => [
+    'site'  => ['theme' => 'site'],
+    'panel' => ['theme' => 'panel'],
+    'kids'  => ['theme' => 'kids', 'extends' => 'site'],
+],
+'alias' => array_merge(
+    ['auth' => AuthFlow::class],
+    theme_flow_aliases(['site', 'panel', 'kids']),
+),
+```
+
+Routes: `flows: ['auth', 'theme.panel']`. `theme/{name}/`: `theme.php`, Twig, `functions.php`, `frontend.config.php`, `src/` / `dist/`.
+
+Bkz. [Views](../basic/views.md), [Twig](../basic/templates.md), [app.php](../start/app-manifest.md).
+
+### `boot.php` içinden
+
+**`onTheme`** veya **listen** / **watch**:
+
+```php
+use Pinoox\Component\AppEvent\AppWatchContext;
+use Pinoox\Portal\View;
+
+$register->onTheme('panel', function (AppWatchContext $ctx): void {
+    View::set('layout', 'compact');
+});
+```
+
+Controller: `View::changeTheme('panel')`, `ThemeContext::activate('panel')`, `within_theme(...)`.
+
+```bash
+php pinoox theme:frontend build {package}
+php pinoox cache:build {package} --only=twig
+```
+
+---
+
 ## Event portal'ı
 
 ```php

@@ -243,6 +243,7 @@ return function (AppRegister $register): void {
 | `onRoute` / `onApi` / `onPath` | watch درخواست‌ها (پایین) |
 | `onController` / `onAction` | watch کنترلر یا action |
 | `onModel` | watch رویداد Eloquent |
+| `onTheme` | فعال شدن context یا پوشهٔ theme |
 
 ---
 
@@ -281,8 +282,15 @@ return function (AppRegister $register): void {
 | `onController` | قبل از اجرای controller |
 | `onAction` | named action match شد |
 | `onModel` | رویداد Eloquent |
+| `onTheme` | فعال شدن context یا نام پوشهٔ theme |
 
 **Flow** برای middleware (block/redirect). **Watch** برای side effect (log، sync).
+
+```php
+$register->onTheme('panel', function (AppWatchContext $ctx): void {
+    // $ctx->themeContext(), $ctx->themeName(), $ctx->themeStack()
+});
+```
 
 route با permission:
 
@@ -293,6 +301,90 @@ $register->route([
     'flow' => ['auth'],
     'permission' => 'app.panel.view',
 ]);
+```
+
+---
+
+## Theme — context، ارث‌بری، و hook در boot
+
+پوشه‌های theme در `apps/{package}/theme/{name}/` هستند. theme فعال را در **`app.php`** تنظیم کنید؛ برای runtime (دادهٔ global در view، عوض کردن context بر اساس route) از **`boot.php`** استفاده کنید.
+
+### کلیدها در `app.php`
+
+| کلید | کار |
+|------|-----|
+| `theme` | پوشهٔ theme فعال (مثلاً `'default'`) |
+| `theme-context` / `theme-contexts` | چند theme برای یک اپ (site / panel / …) |
+| `theme-extends` | ارث‌بری از theme دیگر |
+| `path-theme` | مسیر سفار به‌جای `theme/` |
+| `frontend` | پروفایل Vite، entry، manifest |
+
+مثال چند context:
+
+```php
+'theme-context' => 'site',
+'theme-contexts' => [
+    'site'  => ['theme' => 'site'],
+    'panel' => ['theme' => 'panel'],
+    'kids'  => ['theme' => 'kids', 'extends' => 'site'],
+],
+'alias' => array_merge(
+    ['auth' => AuthFlow::class],
+    theme_flow_aliases(['site', 'panel', 'kids']),
+),
+```
+
+اتصال context به route با Flow:
+
+```php
+// routes/web.php
+get('/panel', [PanelController::class, 'index'], flows: ['auth', 'theme.panel']);
+```
+
+داخل `theme/{name}/`: `theme.php` (manifest + `extends`)، قالب Twig، `functions.php` (اختیاری)، `frontend.config.php`، `src/` / `dist/` برای Vite. child روی parent override می‌کند؛ parent بین‌اپ: `@com_base/default`.
+
+بیشتر: [Views](../basic/views.md)، [Twig](../basic/templates.md)، [app.php](../start/app-manifest.md).
+
+### از `boot.php`
+
+از **`onTheme`** برای hook ساده استفاده کنید، یا **listen** / **watch** برای کنترل بیشتر:
+
+```php
+use Pinoox\Component\AppEvent\AppWatchContext;
+use Pinoox\Component\Template\Theme\ThemeContext;
+use Pinoox\Portal\View;
+
+$register->onTheme('panel', function (AppWatchContext $ctx): void {
+    View::set('layout', 'compact');
+});
+
+$register->listen(
+    AppEventNames::package(AppEventNames::BOOTED, $register->package()),
+    function (): void {
+        View::set('brand', config('brand.name'));
+    },
+);
+
+$register->onPath('/panel/*', function (AppWatchContext $ctx): void {
+    ThemeContext::activate('panel');
+});
+```
+
+در controller هم می‌توانید `View::changeTheme('panel')`، `ThemeContext::activate('panel')` یا `within_theme('panel', fn () => View::render('pages/dashboard'))` بزنید.
+
+| نیاز | راه |
+|------|-----|
+| یک theme ثابت | `'theme' => 'default'` در `app.php` |
+| site + پنل جدا | `theme-contexts` + `theme_flow_aliases` روی route |
+| extend روی base | `theme.php` → `'extends' => ['parent']` |
+| متغیر global Twig | `View::set()` در boot یا controller |
+| theme فقط برای بعضی routeها | Flow `theme.panel` یا watch/listen روی path |
+
+build / cache:
+
+```bash
+php pinoox theme:frontend build {package}
+php pinoox cache:build {package} --only=twig
 ```
 
 ---
@@ -368,6 +460,8 @@ app_boot(?string $package = null): AppRegister
 
 - [زمان‌بندی — Schedule](./schedule.md)
 - [فلو — Flow](../basic/flows.md)
+- [View](../basic/views.md)
+- [Twig](../basic/templates.md)
 - [روتر](../basic/routers.md)
 - [ساختار پروژه](../start/structure.md)
 - [manifest اپ](../start/app-manifest.md)

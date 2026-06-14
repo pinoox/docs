@@ -193,6 +193,59 @@ return function (AppRegister $register): void {
 
 ---
 
+## Theme — context, विरासत, boot hooks
+
+`apps/{package}/theme/{name}/` में folders। **`app.php`** में active theme; **`boot.php`** में runtime hooks।
+
+### `app.php` keys
+
+| Key | Purpose |
+|-----|---------|
+| `theme` | Active theme folder |
+| `theme-context` / `theme-contexts` | कई themes |
+| `theme-extends` | Inheritance |
+| `path-theme` | Custom path |
+| `frontend` | Vite profile, entry, manifest |
+
+```php
+'theme-context' => 'site',
+'theme-contexts' => [
+    'site'  => ['theme' => 'site'],
+    'panel' => ['theme' => 'panel'],
+    'kids'  => ['theme' => 'kids', 'extends' => 'site'],
+],
+'alias' => array_merge(
+    ['auth' => AuthFlow::class],
+    theme_flow_aliases(['site', 'panel', 'kids']),
+),
+```
+
+Routes: `flows: ['auth', 'theme.panel']`. `theme/{name}/`: `theme.php`, Twig, `functions.php`, `frontend.config.php`, `src/` / `dist/`.
+
+[Views](../basic/views.md), [Twig](../basic/templates.md), [app.php](../start/app-manifest.md) देखें।
+
+### `boot.php` से
+
+**`onTheme`** या **listen** / **watch**:
+
+```php
+use Pinoox\Component\AppEvent\AppWatchContext;
+use Pinoox\Portal\View;
+
+$register->onTheme('panel', function (AppWatchContext $ctx): void {
+    View::set('layout', 'compact');
+});
+```
+
+Controller: `View::changeTheme('panel')`, `ThemeContext::activate('panel')`, `within_theme(...)`.
+
+```bash
+php pinoox theme:frontend build {package}
+php pinoox cache:build {package} --only=twig
+```
+
+---
+
 ## Event portal
 
 ```php

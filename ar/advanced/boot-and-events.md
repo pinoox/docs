@@ -193,6 +193,59 @@ return function (AppRegister $register): void {
 
 ---
 
+## Theme — السياقات والوراثة وخطافات boot
+
+مجلدات theme في `apps/{package}/theme/{name}/`. اضبط theme النشط في **`app.php`**؛ استخدم **`boot.php`** للخطافات وقت التشغيل (بيانات view عامة، تبديل context حسب route).
+
+### مفاتيح `app.php`
+
+| المفتاح | الغرض |
+|---------|--------|
+| `theme` | مجلد theme النشط |
+| `theme-context` / `theme-contexts` | عدة themes (site / panel / …) |
+| `theme-extends` | الوراثة من theme آخر |
+| `path-theme` | مسار مخصص بدل `theme/` |
+| `frontend` | Vite: profile، entry، manifest |
+
+```php
+'theme-context' => 'site',
+'theme-contexts' => [
+    'site'  => ['theme' => 'site'],
+    'panel' => ['theme' => 'panel'],
+    'kids'  => ['theme' => 'kids', 'extends' => 'site'],
+],
+'alias' => array_merge(
+    ['auth' => AuthFlow::class],
+    theme_flow_aliases(['site', 'panel', 'kids']),
+),
+```
+
+على routes: `flows: ['auth', 'theme.panel']`. داخل `theme/{name}/`: `theme.php`، Twig، `functions.php`، `frontend.config.php`، `src/` / `dist/`.
+
+راجع [Views](../basic/views.md)، [Twig](../basic/templates.md)، [app.php](../start/app-manifest.md).
+
+### من `boot.php`
+
+استخدم **`onTheme`** أو **listen** / **watch**:
+
+```php
+use Pinoox\Component\AppEvent\AppWatchContext;
+use Pinoox\Portal\View;
+
+$register->onTheme('panel', function (AppWatchContext $ctx): void {
+    View::set('layout', 'compact');
+});
+```
+
+في Controller: `View::changeTheme('panel')`، `ThemeContext::activate('panel')`، `within_theme(...)`.
+
+```bash
+php pinoox theme:frontend build {package}
+php pinoox cache:build {package} --only=twig
+```
+
+---
+
 ## بوابة الأحداث (Event portal)
 
 ```php

@@ -193,6 +193,59 @@ return function (AppRegister $register): void {
 
 ---
 
+## Theme — 上下文、继承与 boot 钩子
+
+目录位于 `apps/{package}/theme/{name}/`。在 **`app.php`** 配置 active theme；在 **`boot.php`** 做 runtime 钩子。
+
+### `app.php` 键
+
+| 键 | 用途 |
+|----|------|
+| `theme` | 当前 theme 文件夹 |
+| `theme-context` / `theme-contexts` | 多 theme |
+| `theme-extends` | 继承 |
+| `path-theme` | 自定义路径 |
+| `frontend` | Vite profile、entry、manifest |
+
+```php
+'theme-context' => 'site',
+'theme-contexts' => [
+    'site'  => ['theme' => 'site'],
+    'panel' => ['theme' => 'panel'],
+    'kids'  => ['theme' => 'kids', 'extends' => 'site'],
+],
+'alias' => array_merge(
+    ['auth' => AuthFlow::class],
+    theme_flow_aliases(['site', 'panel', 'kids']),
+),
+```
+
+Routes：`flows: ['auth', 'theme.panel']`。`theme/{name}/`：`theme.php`、Twig、`functions.php`、`frontend.config.php`、`src/` / `dist/`。
+
+见 [Views](../basic/views.md)、[Twig](../basic/templates.md)、[app.php](../start/app-manifest.md)。
+
+### 在 `boot.php` 中
+
+**`onTheme`** 或 **listen** / **watch**：
+
+```php
+use Pinoox\Component\AppEvent\AppWatchContext;
+use Pinoox\Portal\View;
+
+$register->onTheme('panel', function (AppWatchContext $ctx): void {
+    View::set('layout', 'compact');
+});
+```
+
+Controller：`View::changeTheme('panel')`、`ThemeContext::activate('panel')`、`within_theme(...)`。
+
+```bash
+php pinoox theme:frontend build {package}
+php pinoox cache:build {package} --only=twig
+```
+
+---
+
 ## Event Portal
 
 ```php

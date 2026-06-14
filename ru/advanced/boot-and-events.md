@@ -193,6 +193,59 @@ return function (AppRegister $register): void {
 
 ---
 
+## Theme — контексты, наследование и boot-хуки
+
+Папки в `apps/{package}/theme/{name}/`. Активная тема в **`app.php`**; runtime-хуки в **`boot.php`**.
+
+### Ключи `app.php`
+
+| Ключ | Назначение |
+|------|------------|
+| `theme` | Активная папка theme |
+| `theme-context` / `theme-contexts` | Несколько themes |
+| `theme-extends` | Наследование |
+| `path-theme` | Свой путь |
+| `frontend` | Vite profile, entry, manifest |
+
+```php
+'theme-context' => 'site',
+'theme-contexts' => [
+    'site'  => ['theme' => 'site'],
+    'panel' => ['theme' => 'panel'],
+    'kids'  => ['theme' => 'kids', 'extends' => 'site'],
+],
+'alias' => array_merge(
+    ['auth' => AuthFlow::class],
+    theme_flow_aliases(['site', 'panel', 'kids']),
+),
+```
+
+Routes: `flows: ['auth', 'theme.panel']`. В `theme/{name}/`: `theme.php`, Twig, `functions.php`, `frontend.config.php`, `src/` / `dist/`.
+
+См. [Views](../basic/views.md), [Twig](../basic/templates.md), [app.php](../start/app-manifest.md).
+
+### Из `boot.php`
+
+**`onTheme`** или **listen** / **watch**:
+
+```php
+use Pinoox\Component\AppEvent\AppWatchContext;
+use Pinoox\Portal\View;
+
+$register->onTheme('panel', function (AppWatchContext $ctx): void {
+    View::set('layout', 'compact');
+});
+```
+
+Controller: `View::changeTheme('panel')`, `ThemeContext::activate('panel')`, `within_theme(...)`.
+
+```bash
+php pinoox theme:frontend build {package}
+php pinoox cache:build {package} --only=twig
+```
+
+---
+
 ## Портал Event
 
 ```php

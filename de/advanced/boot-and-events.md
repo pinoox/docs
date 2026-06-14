@@ -212,6 +212,59 @@ return function (AppRegister $register): void {
 
 ---
 
+## Theme — Kontexte, Vererbung und Boot-Hooks
+
+Theme-Ordner liegen unter `apps/{package}/theme/{name}/`. Aktives Theme in **`app.php`**; Runtime-Hooks in **`boot.php`**.
+
+### Schlüssel in `app.php`
+
+| Schlüssel | Zweck |
+|-----------|--------|
+| `theme` | Aktiver Theme-Ordner |
+| `theme-context` / `theme-contexts` | Mehrere Themes (site / panel / …) |
+| `theme-extends` | Vererbung |
+| `path-theme` | Custom-Pfad statt `theme/` |
+| `frontend` | Vite profile, entry, manifest |
+
+```php
+'theme-context' => 'site',
+'theme-contexts' => [
+    'site'  => ['theme' => 'site'],
+    'panel' => ['theme' => 'panel'],
+    'kids'  => ['theme' => 'kids', 'extends' => 'site'],
+],
+'alias' => array_merge(
+    ['auth' => AuthFlow::class],
+    theme_flow_aliases(['site', 'panel', 'kids']),
+),
+```
+
+Routes: `flows: ['auth', 'theme.panel']`. In `theme/{name}/`: `theme.php`, Twig, `functions.php`, `frontend.config.php`, `src/` / `dist/`.
+
+Siehe [Views](../basic/views.md), [Twig](../basic/templates.md), [app.php](../start/app-manifest.md).
+
+### Aus `boot.php`
+
+**`onTheme`** oder **listen** / **watch**:
+
+```php
+use Pinoox\Component\AppEvent\AppWatchContext;
+use Pinoox\Portal\View;
+
+$register->onTheme('panel', function (AppWatchContext $ctx): void {
+    View::set('layout', 'compact');
+});
+```
+
+Im Controller: `View::changeTheme('panel')`, `ThemeContext::activate('panel')`, `within_theme(...)`.
+
+```bash
+php pinoox theme:frontend build {package}
+php pinoox cache:build {package} --only=twig
+```
+
+---
+
 ## Event-Portal
 
 ```php

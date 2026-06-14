@@ -193,6 +193,59 @@ return function (AppRegister $register): void {
 
 ---
 
+## Theme — コンテキスト、継承、boot フック
+
+`apps/{package}/theme/{name}/` に配置。**`app.php`** で active theme、**`boot.php`** で runtime フック。
+
+### `app.php` キー
+
+| キー | 用途 |
+|------|------|
+| `theme` | アクティブ theme フォルダ |
+| `theme-context` / `theme-contexts` | 複数 theme |
+| `theme-extends` | 継承 |
+| `path-theme` | カスタムパス |
+| `frontend` | Vite profile, entry, manifest |
+
+```php
+'theme-context' => 'site',
+'theme-contexts' => [
+    'site'  => ['theme' => 'site'],
+    'panel' => ['theme' => 'panel'],
+    'kids'  => ['theme' => 'kids', 'extends' => 'site'],
+],
+'alias' => array_merge(
+    ['auth' => AuthFlow::class],
+    theme_flow_aliases(['site', 'panel', 'kids']),
+),
+```
+
+Routes: `flows: ['auth', 'theme.panel']`. `theme/{name}/`: `theme.php`, Twig, `functions.php`, `frontend.config.php`, `src/` / `dist/`.
+
+[Views](../basic/views.md)、[Twig](../basic/templates.md)、[app.php](../start/app-manifest.md) を参照。
+
+### `boot.php` から
+
+**`onTheme`** または **listen** / **watch**:
+
+```php
+use Pinoox\Component\AppEvent\AppWatchContext;
+use Pinoox\Portal\View;
+
+$register->onTheme('panel', function (AppWatchContext $ctx): void {
+    View::set('layout', 'compact');
+});
+```
+
+Controller: `View::changeTheme('panel')`、`ThemeContext::activate('panel')`、`within_theme(...)`。
+
+```bash
+php pinoox theme:frontend build {package}
+php pinoox cache:build {package} --only=twig
+```
+
+---
+
 ## Event Portal
 
 ```php

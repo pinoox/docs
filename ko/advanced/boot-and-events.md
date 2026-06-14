@@ -193,6 +193,59 @@ return function (AppRegister $register): void {
 
 ---
 
+## Theme — context, 상속, boot hook
+
+`apps/{package}/theme/{name}/` 폴더. **`app.php`**에서 active theme, **`boot.php`**에서 runtime hook.
+
+### `app.php` 키
+
+| 키 | 용도 |
+|----|------|
+| `theme` | active theme 폴더 |
+| `theme-context` / `theme-contexts` | 여러 theme |
+| `theme-extends` | 상속 |
+| `path-theme` | custom 경로 |
+| `frontend` | Vite profile, entry, manifest |
+
+```php
+'theme-context' => 'site',
+'theme-contexts' => [
+    'site'  => ['theme' => 'site'],
+    'panel' => ['theme' => 'panel'],
+    'kids'  => ['theme' => 'kids', 'extends' => 'site'],
+],
+'alias' => array_merge(
+    ['auth' => AuthFlow::class],
+    theme_flow_aliases(['site', 'panel', 'kids']),
+),
+```
+
+Routes: `flows: ['auth', 'theme.panel']`. `theme/{name}/`: `theme.php`, Twig, `functions.php`, `frontend.config.php`, `src/` / `dist/`.
+
+[Views](../basic/views.md), [Twig](../basic/templates.md), [app.php](../start/app-manifest.md) 참고.
+
+### `boot.php`에서
+
+**`onTheme`** 또는 **listen** / **watch**:
+
+```php
+use Pinoox\Component\AppEvent\AppWatchContext;
+use Pinoox\Portal\View;
+
+$register->onTheme('panel', function (AppWatchContext $ctx): void {
+    View::set('layout', 'compact');
+});
+```
+
+Controller: `View::changeTheme('panel')`, `ThemeContext::activate('panel')`, `within_theme(...)`.
+
+```bash
+php pinoox theme:frontend build {package}
+php pinoox cache:build {package} --only=twig
+```
+
+---
+
 ## Event portal
 
 ```php
