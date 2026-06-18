@@ -275,6 +275,14 @@ pinx doctor --no-fixes      # عدم نمایش دستورهای پیشنهاد�
 | `schedule:list` | `sched:ls` | لیست تسک‌های cron از `schedule.php` |
 | `schedule:run` | `sched:run` | اجرای تسک‌های موعددار (`--dry-run`) |
 
+### Pinion (آپلود تکه‌ای)
+
+| دستور | توضیح |
+|-------|-------|
+| `pinion:list` | لیست sessionها (`--status`, `--json`) |
+| `pinion:info {upload_id}` | جزئیات session |
+| `pinion:clean` | پاکسازی منقضی‌ها (`--abort={id}`) |
+
 ### Pinker
 
 | دستور | Alias | توضیح |

@@ -275,6 +275,23 @@ pinx doctor --no-fixes      # 隐藏建议的修复命令
 | `schedule:list` | `sched:ls` | 列出 `schedule.php` 中的定时任务 |
 | `schedule:run` | `sched:run` | 运行到期任务（`--dry-run`） |
 
+### Pinion（可恢复上传）
+
+转发到 `php pinoox pinion:*` — 管理临时分块上传 session。
+
+| 命令 | 说明 |
+|---------|-------------|
+| `pinion:list` | List sessions (`--status`, `--json`) |
+| `pinion:info {upload_id}` | Session detail |
+| `pinion:clean` | Remove expired sessions (`--abort={id}`) |
+
+```bash
+pinx pinion:list --status=pending
+pinx pinion:info {upload_id} --json
+```
+
+参见 [Pinion 协议](../advanced/pinion.md)。
+
 ### Pinker
 
 | 命令 | 别名 | 说明 |

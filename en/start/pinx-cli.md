@@ -275,6 +275,33 @@ Run `pinx list` for a sectioned overview. Shorthand aliases appear in brackets.
 | `schedule:list` | `sched:ls` | List cron tasks from `schedule.php` |
 | `schedule:run` | `sched:run` | Run due tasks (`--dry-run`) |
 
+### Files
+
+| Command | Aliases | Description |
+|---------|---------|-------------|
+| `file:list` | `files` | List uploaded files |
+| `file:show` | — | File metadata |
+| `file:update` | — | Update metadata or access |
+| `file:delete` | `file:remove` | Delete record and/or storage |
+| `file:purge` | `file:cleanup` | Bulk cleanup |
+
+### Pinion (resumable uploads)
+
+Forwarded to `php pinoox pinion:*` — manage temp chunked upload sessions.
+
+| Command | Description |
+|---------|-------------|
+| `pinion:list` | List sessions (`--status`, `--json`) |
+| `pinion:info {upload_id}` | Session detail |
+| `pinion:clean` | Remove expired sessions (`--abort={id}`) |
+
+```bash
+pinx pinion:list --status=pending
+pinx pinion:info {upload_id} --json
+```
+
+See [Pinion protocol](../advanced/pinion.md).
+
 ### Pinker
 
 | Command | Aliases | Description |

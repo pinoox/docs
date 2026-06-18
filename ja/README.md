@@ -60,6 +60,7 @@ Pinoox プラットフォーム（PHP 8.1+、HMVC アーキテクチャ）上で
 #### [HTTP Client](./advanced/http-client.md)
 #### [ユーザー管理](./advanced/user-management.md)
 #### [ファイル管理](./advanced/file-management.md)
+#### [Pinion プロトコル](./advanced/pinion.md)
 #### [トークン管理](./advanced/token-management.md)
 #### [アクセスと権限](./advanced/access-permissions.md)
 #### [Transport（共有リソース）](./advanced/transport.md)

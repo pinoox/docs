@@ -217,8 +217,26 @@ Alias: `files` → `file:list`.
 
 ---
 
+---
+
+## فایل‌های بزرگ
+
+برای فایل‌هایی که از `upload_max_filesize` بیشترند یا نیاز به resume دارند، از پروتکل **[Pinion](./pinion.md)** استفاده کنید. chunkها در `storage/pinion` نگه داشته می‌شوند و در `complete` به دیسک اپ (local یا S3) منتقل می‌شوند.
+
+```javascript
+import { uploadFile } from '@pinooxhq/pinion-client';
+
+await uploadFile(file, {
+  baseURL: '/api/v1/upload',
+  unwrapPreset: 'pinoox',
+});
+```
+
+---
+
 ## مستندات مرتبط
 
+- [پروتکل Pinion](./pinion.md)
 - [مدیریت کاربران](./user-management.md)
 - [ترنسپورت — Transport](./transport.md)
 - [اعتبارسنجی — Validation](../basic/validation.md)

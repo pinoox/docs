@@ -275,6 +275,23 @@ pinx doctor --no-fixes      # إخفاء الأوامر المقترحة
 | `schedule:list` | `sched:ls` | عرض مهام cron من `schedule.php` |
 | `schedule:run` | `sched:run` | تشغيل المهام المستحقة (`--dry-run`) |
 
+### Pinion (الرفع القابل للاستئناف)
+
+يُحوَّل إلى `php pinoox pinion:*` — إدارة جلسات الرفع المجزأ المؤقتة.
+
+| الأمر | الوصف |
+|---------|-------------|
+| `pinion:list` | List sessions (`--status`, `--json`) |
+| `pinion:info {upload_id}` | Session detail |
+| `pinion:clean` | Remove expired sessions (`--abort={id}`) |
+
+```bash
+pinx pinion:list --status=pending
+pinx pinion:info {upload_id} --json
+```
+
+مستندات: [بروتوكول Pinion](../advanced/pinion.md).
+
 ### Pinker
 
 | الأمر | الاختصارات | الوصف |

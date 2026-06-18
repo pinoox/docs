@@ -60,6 +60,7 @@
 #### [HTTP-клиент (HTTP Client)](./advanced/http-client.md)
 #### [Управление пользователями](./advanced/user-management.md)
 #### [Управление файлами (File Management)](./advanced/file-management.md)
+#### [Протокол Pinion](./advanced/pinion.md)
 #### [Управление токенами (Token Management)](./advanced/token-management.md)
 #### [Доступ и разрешения (Access & permissions)](./advanced/access-permissions.md)
 #### [Transport (общие ресурсы)](./advanced/transport.md)

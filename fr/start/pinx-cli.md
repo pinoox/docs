@@ -275,6 +275,23 @@ Exécutez `pinx list` pour un aperçu par section. Les alias courts apparaissent
 | `schedule:list` | `sched:ls` | Liste les tâches cron depuis `schedule.php` |
 | `schedule:run` | `sched:run` | Exécute les tâches dues (`--dry-run`) |
 
+### Pinion (téléversements reprise)
+
+Transmis à `php pinoox pinion:*` — gérer les sessions temporaires de téléversement par morceaux.
+
+| Commande | Description |
+|---------|-------------|
+| `pinion:list` | List sessions (`--status`, `--json`) |
+| `pinion:info {upload_id}` | Session detail |
+| `pinion:clean` | Remove expired sessions (`--abort={id}`) |
+
+```bash
+pinx pinion:list --status=pending
+pinx pinion:info {upload_id} --json
+```
+
+Voir [protocole Pinion](../advanced/pinion.md).
+
 ### Pinker
 
 | Commande | Alias | Description |

@@ -60,6 +60,7 @@ Cada guia descreve **uma abordagem recomendada** com exemplos práticos. Escolha
 #### [HTTP Client](./advanced/http-client.md)
 #### [Gerenciamento de Usuários](./advanced/user-management.md)
 #### [Gerenciamento de Arquivos](./advanced/file-management.md)
+#### [Protocolo Pinion](./advanced/pinion.md)
 #### [Gerenciamento de Tokens](./advanced/token-management.md)
 #### [Acesso e Permissões](./advanced/access-permissions.md)
 #### [Transport (recursos compartilhados)](./advanced/transport.md)

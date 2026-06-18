@@ -275,6 +275,23 @@ pinx doctor --no-fixes      # скрыть предлагаемые команд
 | `schedule:list` | `sched:ls` | Список cron-задач из `schedule.php` |
 | `schedule:run` | `sched:run` | Запуск задач, срок которых наступил (`--dry-run`) |
 
+### Pinion (возобновляемые загрузки)
+
+Передаётся в `php pinoox pinion:*` — управление временными сессиями поблочной загрузки.
+
+| Команда | Описание |
+|---------|-------------|
+| `pinion:list` | List sessions (`--status`, `--json`) |
+| `pinion:info {upload_id}` | Session detail |
+| `pinion:clean` | Remove expired sessions (`--abort={id}`) |
+
+```bash
+pinx pinion:list --status=pending
+pinx pinion:info {upload_id} --json
+```
+
+См. [протокол Pinion](../advanced/pinion.md).
+
 ### Pinker
 
 | Команда | Псевдонимы | Описание |

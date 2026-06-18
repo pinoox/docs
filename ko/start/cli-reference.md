@@ -35,7 +35,8 @@ package가 필요한데 생략하면 Pinoox가 대화형 picker를 표시합니�
 | `roles` | `role:list` |
 | `permissions` | `permission:list` |
 | `tokens` | `token:list` |
-| `files` | `file:list` |
+| `files` | `file:list` |
+| `pinion` | `pinion:list` |
 | `databases` | `db:list` |
 | `make:permission` | `permission:create` |
 
@@ -168,9 +169,27 @@ php pinoox file:show 12
 php pinoox file:delete 12 --storage-only --force
 ```
 
-See [File management](../advanced/file-management.md).
-
+See [File management](../advanced/file-management.md).
+
 ---
+
+## Pinion (재개 가능 업로드)
+
+진행 중인 청크 업로드 session 관리 (임시 저장: `storage/pinion`):
+
+| 명령 | 용도 |
+|---------|---------|
+| `pinion:list` | List sessions (`--status=pending`, `--json`) |
+| `pinion:info {upload_id}` | Session detail + missing parts |
+| `pinion:clean` | Remove expired sessions |
+| `pinion:clean --abort={upload_id}` | Abort one session |
+
+```bash
+php pinoox pinion:list --status=pending
+php pinoox pinion:info a1b2c3d4-...
+```
+
+문서: [Pinion 프로토콜](../advanced/pinion.md).
 
 ---
 

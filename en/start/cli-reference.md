@@ -37,6 +37,7 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | `tokens` | `token:list` |
 | `files` | `file:list` |
 | `databases` | `db:list` |
+| `pinion` | `pinion:list` |
 | `make:permission` | `permission:create` |
 
 ---
@@ -169,6 +170,26 @@ php pinoox file:delete 12 --storage-only --force
 ```
 
 See [File management](../advanced/file-management.md).
+
+---
+
+## Pinion (resumable uploads)
+
+Manage in-progress chunked upload sessions (temp storage under `storage/pinion`):
+
+| Command | Purpose |
+|---------|---------|
+| `pinion:list` | List sessions (`--status=pending`, `--json`) |
+| `pinion:info {upload_id}` | Session detail + missing parts |
+| `pinion:clean` | Remove expired sessions |
+| `pinion:clean --abort={upload_id}` | Abort one session |
+
+```bash
+php pinoox pinion:list --status=pending
+php pinoox pinion:info a1b2c3d4-...
+```
+
+See [Pinion protocol](../advanced/pinion.md).
 
 ---
 

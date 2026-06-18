@@ -275,6 +275,23 @@ Bölümlü genel bakış için `pinx list` çalıştırın. Kısaltma takma adla
 | `schedule:list` | `sched:ls` | `schedule.php`'den cron görevlerini listele |
 | `schedule:run` | `sched:run` | Vadesi gelen görevleri çalıştır (`--dry-run`) |
 
+### Pinion (devam ettirilebilir yüklemeler)
+
+`php pinoox pinion:*` komutlarına iletilir — geçici parçalı yükleme oturumlarını yönetin.
+
+| Komut | Açıklama |
+|---------|-------------|
+| `pinion:list` | List sessions (`--status`, `--json`) |
+| `pinion:info {upload_id}` | Session detail |
+| `pinion:clean` | Remove expired sessions (`--abort={id}`) |
+
+```bash
+pinx pinion:list --status=pending
+pinx pinion:info {upload_id} --json
+```
+
+Bkz. [Pinion protokolü](../advanced/pinion.md).
+
 ### Pinker
 
 | Komut | Takma adlar | Açıklama |

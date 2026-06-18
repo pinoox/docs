@@ -275,6 +275,23 @@ pinx doctor --no-fixes      # hide suggested commands
 | `schedule:list` | `sched:ls` | `schedule.php`의 cron tasks 목록 |
 | `schedule:run` | `sched:run` | Due tasks 실행 (`--dry-run`) |
 
+### Pinion (재개 가능 업로드)
+
+`php pinoox pinion:*`로 전달 — 임시 청크 업로드 session 관리.
+
+| 명령 | 설명 |
+|---------|-------------|
+| `pinion:list` | List sessions (`--status`, `--json`) |
+| `pinion:info {upload_id}` | Session detail |
+| `pinion:clean` | Remove expired sessions (`--abort={id}`) |
+
+```bash
+pinx pinion:list --status=pending
+pinx pinion:info {upload_id} --json
+```
+
+문서: [Pinion 프로토콜](../advanced/pinion.md).
+
 ### Pinker
 
 | Command | Aliases | Description |

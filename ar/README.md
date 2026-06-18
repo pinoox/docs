@@ -60,6 +60,7 @@
 #### [عميل HTTP (HTTP Client)](./advanced/http-client.md)
 #### [إدارة المستخدمين](./advanced/user-management.md)
 #### [إدارة الملفات (File Management)](./advanced/file-management.md)
+#### [بروتوكول Pinion](./advanced/pinion.md)
 #### [إدارة الرموز (Token Management)](./advanced/token-management.md)
 #### [الوصول والصلاحيات (Access & Permissions)](./advanced/access-permissions.md)
 #### [النقل (Transport) — الموارد المشتركة](./advanced/transport.md)

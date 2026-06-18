@@ -37,6 +37,7 @@ php pinoox help migrate
 | `tokens` | `token:list` |
 | `files` | `file:list` |
 | `databases` | `db:list` |
+| `pinion` | `pinion:list` |
 | `make:permission` | `permission:create` |
 
 ---
@@ -169,6 +170,26 @@ php pinoox file:delete 12 --storage-only --force
 ```
 
 مستندات: [مدیریت فایل](../advanced/file-management.md).
+
+---
+
+## Pinion (آپلود تکه‌ای)
+
+مدیریت sessionهای آپلود در حال انجام (فضای موقت: `storage/pinion`):
+
+| دستور | کاربرد |
+|--------|--------|
+| `pinion:list` | لیست sessionها (`--status=pending`, `--json`) |
+| `pinion:info {upload_id}` | جزئیات و partهای باقی‌مانده |
+| `pinion:clean` | حذف sessionهای منقضی |
+| `pinion:clean --abort={upload_id}` | لغو یک session |
+
+```bash
+php pinoox pinion:list --status=pending
+pinx pinion:info {upload_id} --json
+```
+
+مستندات: [پروتکل Pinion](../advanced/pinion.md).
 
 ---
 

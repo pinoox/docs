@@ -60,6 +60,7 @@
 #### [HTTP 客户端（HTTP Client）](./advanced/http-client.md)
 #### [用户管理（User Management）](./advanced/user-management.md)
 #### [文件管理（File Management）](./advanced/file-management.md)
+#### [Pinion 协议](./advanced/pinion.md)
 #### [令牌管理（Token Management）](./advanced/token-management.md)
 #### [访问与权限（Access & permissions）](./advanced/access-permissions.md)
 #### [Transport（共享资源）](./advanced/transport.md)

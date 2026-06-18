@@ -275,6 +275,23 @@ pinx doctor --no-fixes      # 提案コマンドを非表示
 | `schedule:list` | `sched:ls` | `schedule.php` から cron タスク一覧 |
 | `schedule:run` | `sched:run` | 期限到来タスクを実行（`--dry-run`） |
 
+### Pinion（再開可能なアップロード）
+
+`php pinoox pinion:*` に転送 — 一時的なチャンクアップロード session を管理。
+
+| コマンド | 説明 |
+|---------|-------------|
+| `pinion:list` | List sessions (`--status`, `--json`) |
+| `pinion:info {upload_id}` | Session detail |
+| `pinion:clean` | Remove expired sessions (`--abort={id}`) |
+
+```bash
+pinx pinion:list --status=pending
+pinx pinion:info {upload_id} --json
+```
+
+参照: [Pinion プロトコル](../advanced/pinion.md).
+
 ### Pinker
 
 | コマンド | エイリアス | 説明 |

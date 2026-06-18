@@ -60,6 +60,7 @@ Jeder Leitfaden beschreibt **einen empfohlenen Ansatz** mit praktischen Beispiel
 #### [HTTP-Client](./advanced/http-client.md)
 #### [Benutzerverwaltung (User Management)](./advanced/user-management.md)
 #### [Dateiverwaltung (File Management)](./advanced/file-management.md)
+#### [Pinion-Protokoll](./advanced/pinion.md)
 #### [Token-Verwaltung](./advanced/token-management.md)
 #### [Zugriff & Berechtigungen](./advanced/access-permissions.md)
 #### [Transport (gemeinsame Ressourcen)](./advanced/transport.md)

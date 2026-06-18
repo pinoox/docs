@@ -35,7 +35,8 @@ Paket gerekli olduğunda ve belirtilmediğinde Pinoox etkileşimli bir seçici g
 | `roles` | `role:list` |
 | `permissions` | `permission:list` |
 | `tokens` | `token:list` |
-| `files` | `file:list` |
+| `files` | `file:list` |
+| `pinion` | `pinion:list` |
 | `databases` | `db:list` |
 | `make:permission` | `permission:create` |
 
@@ -168,9 +169,27 @@ php pinoox file:show 12
 php pinoox file:delete 12 --storage-only --force
 ```
 
-See [File management](../advanced/file-management.md).
-
+See [File management](../advanced/file-management.md).
+
 ---
+
+## Pinion (devam ettirilebilir yüklemeler)
+
+Devam eden parçalı yükleme oturumlarını yönetin (geçici depolama: `storage/pinion`):
+
+| Komut | Amaç |
+|---------|---------|
+| `pinion:list` | List sessions (`--status=pending`, `--json`) |
+| `pinion:info {upload_id}` | Session detail + missing parts |
+| `pinion:clean` | Remove expired sessions |
+| `pinion:clean --abort={upload_id}` | Abort one session |
+
+```bash
+php pinoox pinion:list --status=pending
+php pinoox pinion:info a1b2c3d4-...
+```
+
+Bkz. [Pinion protokolü](../advanced/pinion.md).
 
 ---
 

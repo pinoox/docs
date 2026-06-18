@@ -275,6 +275,23 @@ Führen Sie `pinx list` für eine nach Abschnitten gegliederte Übersicht aus. K
 | `schedule:list` | `sched:ls` | Cron-Aufgaben aus `schedule.php` auflisten |
 | `schedule:run` | `sched:run` | Fällige Aufgaben ausführen (`--dry-run`) |
 
+### Pinion (wiederaufnahmefähige Uploads)
+
+Weitergeleitet an `php pinoox pinion:*` — temporäre Chunk-Upload-Sessions verwalten.
+
+| Befehl | Beschreibung |
+|---------|-------------|
+| `pinion:list` | List sessions (`--status`, `--json`) |
+| `pinion:info {upload_id}` | Session detail |
+| `pinion:clean` | Remove expired sessions (`--abort={id}`) |
+
+```bash
+pinx pinion:list --status=pending
+pinx pinion:info {upload_id} --json
+```
+
+Siehe [Pinion-Protokoll](../advanced/pinion.md).
+
 ### Pinker
 
 | Befehl | Aliase | Beschreibung |

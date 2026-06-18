@@ -35,7 +35,8 @@ Lorsqu'un paquet est requis et omis, Pinoox affiche un sélecteur interactif.
 | `roles` | `role:list` |
 | `permissions` | `permission:list` |
 | `tokens` | `token:list` |
-| `files` | `file:list` |
+| `files` | `file:list` |
+| `pinion` | `pinion:list` |
 | `databases` | `db:list` |
 | `make:permission` | `permission:create` |
 
@@ -168,9 +169,27 @@ php pinoox file:show 12
 php pinoox file:delete 12 --storage-only --force
 ```
 
-See [File management](../advanced/file-management.md).
-
+See [File management](../advanced/file-management.md).
+
 ---
+
+## Pinion (téléversements reprise)
+
+Gérer les sessions de téléversement par morceaux en cours (stockage temporaire sous `storage/pinion`) :
+
+| Commande | Rôle |
+|---------|---------|
+| `pinion:list` | List sessions (`--status=pending`, `--json`) |
+| `pinion:info {upload_id}` | Session detail + missing parts |
+| `pinion:clean` | Remove expired sessions |
+| `pinion:clean --abort={upload_id}` | Abort one session |
+
+```bash
+php pinoox pinion:list --status=pending
+php pinoox pinion:info a1b2c3d4-...
+```
+
+Voir [protocole Pinion](../advanced/pinion.md).
 
 ---
 

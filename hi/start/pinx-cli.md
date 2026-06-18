@@ -275,6 +275,23 @@ pinx doctor --no-fixes      # सुझाए गए कमांड छिप�
 | `schedule:list` | `sched:ls` | `schedule.php` से cron कार्यों की सूची |
 | `schedule:run` | `sched:run` | नियत (due) कार्य चलाएँ (`--dry-run`) |
 
+### Pinion (resumable uploads)
+
+Forwarded to `php pinoox pinion:*` — manage temp chunked upload sessions.
+
+| Command | Description |
+|---------|-------------|
+| `pinion:list` | List sessions (`--status`, `--json`) |
+| `pinion:info {upload_id}` | Session detail |
+| `pinion:clean` | Remove expired sessions (`--abort={id}`) |
+
+```bash
+pinx pinion:list --status=pending
+pinx pinion:info {upload_id} --json
+```
+
+See [Pinion प्रोटोकॉल](../advanced/pinion.md).
+
 ### Pinker
 
 | कमांड | Aliases | विवरण |

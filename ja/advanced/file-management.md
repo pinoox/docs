@@ -187,8 +187,27 @@ $url = File::storage('s3')->temporaryUrl('private/doc.pdf', now()->addHour());
 
 ---
 
+
+---
+
+## 大きなファイル
+
+For files that exceed `upload_max_filesize` or need resume/progress, use the **[Pinion](./pinion.md)** protocol. Pinion stages chunks under `storage/pinion`, then on `complete` publishes to your app disk (local or S3) via `Portal\File` when `mode` is `auto` or `storage`.
+
+```javascript
+import { uploadFile } from '@pinooxhq/pinion-client';
+
+await uploadFile(file, {
+  baseURL: '/api/v1/upload',
+  unwrapPreset: 'pinoox',
+});
+```
+
+---
+
 ## 関連ドキュメント
 
+- [Pinion プロトコル](./pinion.md)
 - [ユーザー管理](./user-management.md)
 - [Transport](./transport.md)
 - [Validation](../basic/validation.md)
