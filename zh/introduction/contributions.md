@@ -51,7 +51,7 @@ Pinoox 是一个开源项目。你的贡献 — 从 Bug 报告到 Pull Request �
 
 - 代码风格遵循 [PSR-12](https://www.php-fig.org/psr/psr-12/)
 - 自动加载遵循 [PSR-4](https://www.php-fig.org/psr/psr-4/)
-- PHP 8.1+
+- PHP 8.2+
 - 提交信息使用清晰的祈使句（例如 `Fix route validation for missing actions`）
 
 ---

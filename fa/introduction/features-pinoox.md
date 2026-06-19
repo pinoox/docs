@@ -95,6 +95,12 @@ return response()->json(['ok' => true, 'data' => $items]);
 
 ---
 
+## تاریخ و تقویم
+
+فرمت یکپارچه جلالی و میلادی از Portal `Date` — بدون پکیج اضافه در اپ. با `'date' => 'jalali'` در `app.php` تنظیم کنید. جزئیات: [تاریخ و تقویم](../basic/date-and-calendar.md).
+
+---
+
 ## مستندات مرتبط
 
 - [پینوکس چیست؟](./what-is-pinoox.md)

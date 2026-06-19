@@ -12,7 +12,7 @@ Build a **Vue 3 single-page panel** that reads notes from a Pinoox API and perfo
 
 ## Prerequisites
 
-- Pinoox 3.x with PHP 8.1+
+- Pinoox 3.x with PHP 8.2+
 - Node.js 18+ and npm
 - Familiarity with the [Notes API walkthrough](./simple-api-app.md) and [Twig templates](../basic/templates.md)
 

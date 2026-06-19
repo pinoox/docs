@@ -12,7 +12,7 @@ Practical fixes for frequent errors during installation, runtime, and developmen
 
 **Fix:**
 
-1. Enable PHP 8.1+ and extensions `mysqli`, `zip`, `mbstring`, `json`.
+1. Enable PHP 8.2+ and extensions `mysqli`, `zip`, `mbstring`, `json`.
 2. Run the platform check before install:
 
 ```bash

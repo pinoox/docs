@@ -12,7 +12,7 @@ Construye un **panel de una sola página con Vue 3** que lee notas desde una API
 
 ## Requisitos previos
 
-- Pinoox 3.x con PHP 8.1+
+- Pinoox 3.x con PHP 8.2+
 - Node.js 18+ y npm
 - Familiaridad con el [tutorial de API de notas](./simple-api-app.md) y [plantillas Twig](../basic/templates.md)
 

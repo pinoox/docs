@@ -27,6 +27,7 @@
 | `runtime()` | kernel HTTP جاری | `runtime()->getRequest()` |
 | `_env()` | متغیر محیط | `_env('APP_DEBUG', false)` |
 | `alias()` | Flow/class alias | `alias('auth')` |
+| `jalali()`, `gregorian()`, `date_display()` | تاریخ / تقویم | `date_display($time, 'datetime')` |
 
 برای رندر HTML در کنترلر از **`View::render()`** استفاده کنید (مثل اپ‌های سیستمی). تابع `view()` هم وجود دارد اما در کنترلر Portal را ترجیح دهید.
 
@@ -115,6 +116,19 @@ $link = url('api/v1/orders');
 $file = path('storage/export.csv');
 $css = assets('dist/panel.css');
 ```
+
+---
+
+## تاریخ و تقویم
+
+```php
+use Pinoox\Portal\Date;
+
+$label = Date::display($order->created_at, 'datetime');
+$jalali = jformat($order->paid_at, 'Y/m/d H:i');
+```
+
+با `'date' => 'jalali'` در `app.php`، `Date::display()` و `date_smart()` خودکار از تقویم اپ استفاده می‌کنند. جزئیات: [تاریخ و تقویم](../basic/date-and-calendar.md).
 
 ---
 

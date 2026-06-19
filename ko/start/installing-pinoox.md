@@ -15,7 +15,7 @@
 
 | 도구 | 버전 |
 |------|---------|
-| PHP | 8.1 이상 (ext-mysqli, ext-zip 포함) |
+| PHP | 8.2 이상 (ext-mysqli, ext-zip 포함) |
 | MySQL / MariaDB | 5.7+ |
 | Composer | 2.x |
 | Node.js (선택) | 18+ — frontend theme 빌드에만 필요 |

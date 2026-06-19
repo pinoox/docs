@@ -56,7 +56,7 @@ Exemplo: `com_acme_shop` — o nome da pasta, o valor de `package` em `app.php` 
 
 - Sites com múltiplas seções e painéis administrativos, onde cada seção pode ser um app separado
 - Equipes que querem desenvolver, testar e manter módulos de forma independente
-- Projetos PHP 8.1+ com Composer e a CLI integrada (`php pinoox …`)
+- Projetos PHP 8.2+ com Composer e a CLI integrada (`php pinoox …`)
 
 ---
 

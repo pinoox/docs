@@ -56,7 +56,7 @@ Beispiel: `com_acme_shop` — der Ordnername, der `package`-Wert in `app.php` un
 
 - Websites mit mehreren Bereichen und Admin-Panels, bei denen jeder Bereich eine eigene App sein kann
 - Teams, die Module unabhängig entwickeln, testen und warten möchten
-- PHP-8.1+-Projekte mit Composer und der integrierten CLI (`php pinoox …`)
+- PHP-8.2+-Projekte mit Composer und der integrierten CLI (`php pinoox …`)
 
 ---
 

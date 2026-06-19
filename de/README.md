@@ -1,6 +1,6 @@
 # Pinoox-Dokumentation
 
-Offizielle Entwicklerdokumentation für das Erstellen von Apps auf der Pinoox-Plattform (PHP 8.1+, HMVC-Architektur).
+Offizielle Entwicklerdokumentation für das Erstellen von Apps auf der Pinoox-Plattform (PHP 8.2+, HMVC-Architektur).
 
 Jeder Leitfaden beschreibt **einen empfohlenen Ansatz** mit praktischen Beispielen. Wählen Sie unten einen Abschnitt oder stöbern Sie nach Thema.
 

@@ -176,7 +176,7 @@ Doctor는 구조화된 진단을 실행하고 실패 시 fix command를 제안�
 | Group | Checks |
 |-------|--------|
 | **Project** | `app.php`, package identity, `platform/` layout |
-| **Runtime** | PHP version (≥ 8.1), extensions, writable paths |
+| **Runtime** | PHP version (≥ 8.2), extensions, writable paths |
 | **Dependencies** | Composer vendor, optional Node/npm |
 | **Environment** | `.env` presence and key variables |
 | **Database** | Connection (skippable with `--skip-db`) |
@@ -338,7 +338,7 @@ Pinx는 현재 작업 디렉터리에서 위로 올라가며 유효한 단일 �
 
 ## 요구 사항
 
-- **PHP** ≥ 8.1 (`pinoox/pincore`가 요구하는 extensions 포함)
+- **PHP** ≥ 8.2 (`pinoox/pincore`가 요구하는 extensions 포함)
 - **Composer** 2.x
 - **Node.js** + npm — Vite/Vue/React frontend 사용 시에만
 - **Database** — MySQL/MariaDB 또는 `.env`가 설정한 DB (static/Twig-only 앱에서는 선택)

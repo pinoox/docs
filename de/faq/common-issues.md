@@ -12,7 +12,7 @@ Praktische Lösungen für häufige Fehler bei Installation, Laufzeit und Entwick
 
 **Lösung:**
 
-1. PHP 8.1+ und die Extensions `mysqli`, `zip`, `mbstring`, `json` aktivieren.
+1. PHP 8.2+ und die Extensions `mysqli`, `zip`, `mbstring`, `json` aktivieren.
 2. Vor der Installation die Plattformprüfung ausführen:
 
 ```bash

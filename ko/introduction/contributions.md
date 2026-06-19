@@ -51,7 +51,7 @@ Issue를 열 때 다음을 포함하세요:
 
 - 코드 스타일: [PSR-12](https://www.php-fig.org/psr/psr-12/)
 - autoloading: [PSR-4](https://www.php-fig.org/psr/psr-4/)
-- PHP 8.1+
+- PHP 8.2+
 - 명확하고 명령형 commit 메시지 (예: `Fix route validation for missing actions`)
 
 ---

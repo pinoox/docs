@@ -15,8 +15,10 @@ use Pinoox\Portal\Path;
 use Pinoox\Portal\Lang;
 use Pinoox\Portal\Validation;
 use Pinoox\Portal\Database\DB;
+use Pinoox\Portal\Date;
 
 View::render('home', $data);
+Date::display($item->created_at, 'datetime');
 Url::link('products');
 Url::forApp('com_acme_shop');
 Path::get('storage/logs');

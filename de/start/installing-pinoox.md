@@ -15,7 +15,7 @@ Dieser Leitfaden behandelt die Installation von Pinoox 3.x. Es gibt zwei Wege zu
 
 | Werkzeug | Version |
 |------|---------|
-| PHP | 8.1 oder höher (mit ext-mysqli, ext-zip) |
+| PHP | 8.2 oder höher (mit ext-mysqli, ext-zip) |
 | MySQL / MariaDB | 5.7+ |
 | Composer | 2.x |
 | Node.js (optional) | 18+ — nur für Frontend-Theme-Builds |

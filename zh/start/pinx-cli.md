@@ -176,7 +176,7 @@ Doctor 会运行结构化诊断，并在检查失败时给出修复命令建议�
 | 分组 | 检查项 |
 |-------|--------|
 | **Project** | `app.php`、包标识、`platform/` 布局 |
-| **Runtime** | PHP 版本（≥ 8.1）、扩展、可写路径 |
+| **Runtime** | PHP 版本（≥ 8.2）、扩展、可写路径 |
 | **Dependencies** | Composer vendor、可选的 Node/npm |
 | **Environment** | `.env` 是否存在及关键变量 |
 | **Database** | 连接（可用 `--skip-db` 跳过） |
@@ -338,7 +338,7 @@ Pinx 会从当前工作目录向上查找，直到找到一个有效的单应用
 
 ## 环境要求
 
-- **PHP** ≥ 8.1，并安装 `pinoox/pincore` 所需的扩展
+- **PHP** ≥ 8.2，并安装 `pinoox/pincore` 所需的扩展
 - **Composer** 2.x
 - **Node.js** + npm — 仅在使用 Vite/Vue/React 前端时需要
 - **数据库** — MySQL/MariaDB 或你在 `.env` 中配置的任何数据库（纯静态/Twig 应用可不配置）

@@ -12,7 +12,7 @@ Corrections pratiques pour les erreurs fréquentes lors de l'installation, de l'
 
 **Correction :**
 
-1. Activez PHP 8.1+ et les extensions `mysqli`, `zip`, `mbstring`, `json`.
+1. Activez PHP 8.2+ et les extensions `mysqli`, `zip`, `mbstring`, `json`.
 2. Exécutez la vérification plateforme avant l'installation :
 
 ```bash

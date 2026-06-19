@@ -176,7 +176,7 @@ Doctor executa diagnóstico estruturado e sugere comandos de correção quando a
 | Grupo | Verificações |
 |-------|--------|
 | **Project** | `app.php`, identidade do pacote, layout de `platform/` |
-| **Runtime** | Versão PHP (≥ 8.1), extensões, caminhos graváveis |
+| **Runtime** | Versão PHP (≥ 8.2), extensões, caminhos graváveis |
 | **Dependencies** | Vendor Composer, Node/npm opcional |
 | **Environment** | Presença de `.env` e variáveis-chave |
 | **Database** | Conexão (pulável com `--skip-db`) |
@@ -338,7 +338,7 @@ Sobrescreva o pacote detectado com variáveis de ambiente:
 
 ## Requisitos
 
-- **PHP** ≥ 8.1 com extensões exigidas por `pinoox/pincore`
+- **PHP** ≥ 8.2 com extensões exigidas por `pinoox/pincore`
 - **Composer** 2.x
 - **Node.js** + npm — apenas ao usar frontends Vite/Vue/React
 - **Banco de dados** — MySQL/MariaDB ou o que seu `.env` configurar (opcional para apps estáticos/só Twig)

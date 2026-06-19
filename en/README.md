@@ -1,6 +1,6 @@
 # Pinoox Documentation
 
-Official developer documentation for building apps on the Pinoox platform (PHP 8.1+, HMVC architecture).
+Official developer documentation for building apps on the Pinoox platform (PHP 8.2+, HMVC architecture).
 
 Each guide describes **one recommended approach** with practical examples. Choose a section below or browse by topic.
 
@@ -50,6 +50,7 @@ Each guide describes **one recommended approach** with practical examples. Choos
 #### [Portal (Facade)](./basic/portal.md)
 #### [Config](./basic/config.md)
 #### [Language and Translation](./basic/language.md)
+#### [Date and calendar](./basic/date-and-calendar.md)
 
 ### Advanced Topics
 

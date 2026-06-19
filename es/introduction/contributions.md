@@ -51,7 +51,7 @@ Envía los cambios del núcleo a pincore, no solo a la copia local de `vendor/` 
 
 - [PSR-12](https://www.php-fig.org/psr/psr-12/) para el estilo de código
 - [PSR-4](https://www.php-fig.org/psr/psr-4/) para el autoloading
-- PHP 8.1+
+- PHP 8.2+
 - Mensajes de commit claros e imperativos (p. ej. `Fix route validation for missing actions`)
 
 ---

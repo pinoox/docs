@@ -176,7 +176,7 @@ Doctor は構造化された診断を実行し、失敗時に修正コマンド�
 | グループ | チェック内容 |
 |-------|--------|
 | **Project** | `app.php`、パッケージ ID、`platform/` レイアウト |
-| **Runtime** | PHP バージョン（≥ 8.1）、拡張機能、書き込み可能なパス |
+| **Runtime** | PHP バージョン（≥ 8.2）、拡張機能、書き込み可能なパス |
 | **Dependencies** | Composer vendor、任意の Node/npm |
 | **Environment** | `.env` の存在とキー変数 |
 | **Database** | 接続（`--skip-db` でスキップ可能） |
@@ -338,7 +338,7 @@ Pinx は現在の作業ディレクトリから上方向に走査し、有効な
 
 ## 要件
 
-- **PHP** ≥ 8.1（`pinoox/pincore` が要求する拡張機能付き）
+- **PHP** ≥ 8.2（`pinoox/pincore` が要求する拡張機能付き）
 - **Composer** 2.x
 - **Node.js** + npm — Vite/Vue/React フロントエンド使用時のみ
 - **Database** — MySQL/MariaDB または `.env` で設定するもの（静的/Twig のみのアプリでは任意）

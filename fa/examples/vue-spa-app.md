@@ -12,7 +12,7 @@
 
 ## پیش‌نیاز
 
-- پینوکس ۳.x با PHP 8.1+
+- پینوکس ۳.x با PHP 8.2+
 - Node.js 18+ و npm
 - آشنایی با [نمونه API یادداشت](./simple-api-app.md) و [قالب Twig](../basic/templates.md)
 

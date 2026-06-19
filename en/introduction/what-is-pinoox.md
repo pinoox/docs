@@ -56,7 +56,7 @@ Example: `com_acme_shop` — the folder name, the `package` value in `app.php`, 
 
 - Multi-section sites and admin panels where each section can be a separate app
 - Teams that want to develop, test, and maintain modules independently
-- PHP 8.1+ projects with Composer and the integrated CLI (`php pinoox …`)
+- PHP 8.2+ projects with Composer and the integrated CLI (`php pinoox …`)
 
 ---
 

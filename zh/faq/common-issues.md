@@ -12,7 +12,7 @@
 
 **解决方法：**
 
-1. 启用 PHP 8.1+ 及扩展 `mysqli`、`zip`、`mbstring`、`json`。
+1. 启用 PHP 8.2+ 及扩展 `mysqli`、`zip`、`mbstring`、`json`。
 2. 安装前先运行平台检查：
 
 ```bash

@@ -176,7 +176,7 @@ Doctor एक संरचित डायग्नोस्टिक चला�
 | समूह | जाँचें |
 |-------|--------|
 | **Project** | `app.php`, package पहचान, `platform/` लेआउट |
-| **Runtime** | PHP संस्करण (≥ 8.1), एक्सटेंशन, writable पाथ |
+| **Runtime** | PHP संस्करण (≥ 8.2), एक्सटेंशन, writable पाथ |
 | **Dependencies** | Composer vendor, वैकल्पिक Node/npm |
 | **Environment** | `.env` की मौजूदगी और मुख्य वेरिएबल |
 | **Database** | कनेक्शन (`--skip-db` से छोड़ा जा सकता है) |
@@ -338,7 +338,7 @@ Pinx वर्तमान कार्यशील डायरेक्टर�
 
 ## आवश्यकताएँ
 
-- **PHP** ≥ 8.1, `pinoox/pincore` द्वारा आवश्यक एक्सटेंशनों के साथ
+- **PHP** ≥ 8.2, `pinoox/pincore` द्वारा आवश्यक एक्सटेंशनों के साथ
 - **Composer** 2.x
 - **Node.js** + npm — केवल Vite/Vue/React फ्रंटएंड उपयोग करते समय
 - **डेटाबेस** — MySQL/MariaDB या जो भी आपका `.env` कॉन्फ़िगर करे (स्टैटिक/केवल-Twig ऐप्स के लिए वैकल्पिक)

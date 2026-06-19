@@ -98,6 +98,12 @@ Translation files in `lang/{locale}/*.lang.php` — suitable for multilingual ap
 
 ---
 
+## Date and calendar
+
+Unified Jalali and Gregorian formatting via the `Date` Portal — no extra Composer packages in apps. Configure with `'date' => 'jalali'` in `app.php`. See [Date and calendar](../basic/date-and-calendar.md).
+
+---
+
 ## Related docs
 
 - [What is Pinoox?](./what-is-pinoox.md)

@@ -51,7 +51,7 @@ Senden Sie Core-Änderungen an pincore, nicht nur an die lokale `vendor/`-Kopie 
 
 - [PSR-12](https://www.php-fig.org/psr/psr-12/) für den Code-Stil
 - [PSR-4](https://www.php-fig.org/psr/psr-4/) für das Autoloading
-- PHP 8.1+
+- PHP 8.2+
 - Klare Commit-Nachrichten im Imperativ (z. B. `Fix route validation for missing actions`)
 
 ---

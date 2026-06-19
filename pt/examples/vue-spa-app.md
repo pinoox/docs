@@ -12,7 +12,7 @@ Construa um **painel single-page Vue 3** que lê notas de uma API Pinoox e faz C
 
 ## Pré-requisitos
 
-- Pinoox 3.x com PHP 8.1+
+- Pinoox 3.x com PHP 8.2+
 - Node.js 18+ e npm
 - Familiaridade com o [tutorial da API de notas](./simple-api-app.md) e [templates Twig](../basic/templates.md)
 

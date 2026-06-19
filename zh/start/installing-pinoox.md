@@ -15,7 +15,7 @@
 
 | 工具 | 版本 |
 |------|---------|
-| PHP | 8.1 或更高（需启用 ext-mysqli、ext-zip） |
+| PHP | 8.2 或更高（需启用 ext-mysqli、ext-zip） |
 | MySQL / MariaDB | 5.7+ |
 | Composer | 2.x |
 | Node.js（可选） | 18+ — 仅用于前端主题构建 |

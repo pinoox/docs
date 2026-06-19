@@ -12,7 +12,7 @@
 
 **راه‌حل:**
 
-1. PHP 8.1+ و extensionهای `mysqli`، `zip`، `mbstring`، `json` را فعال کنید.
+1. PHP 8.2+ و extensionهای `mysqli`، `zip`، `mbstring`، `json` را فعال کنید.
 2. قبل از install، چک پلتفرم را اجرا کنید:
 
 ```bash

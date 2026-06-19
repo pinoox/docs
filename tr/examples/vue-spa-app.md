@@ -12,7 +12,7 @@ Pinoox API'den notları okuyan ve basit CRUD yapan **Vue 3 tek sayfalı panel** 
 
 ## Ön koşullar
 
-- PHP 8.1+ ile Pinoox 3.x
+- PHP 8.2+ ile Pinoox 3.x
 - Node.js 18+ ve npm
 - [Notes API uygulamalı rehber](./simple-api-app.md) ve [Twig şablonları](../basic/templates.md) bilgisi
 

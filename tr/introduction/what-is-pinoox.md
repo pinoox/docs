@@ -56,7 +56,7 @@ com_{vendor}_{name}
 
 - Her bölümün ayrı bir uygulama olabildiği çok bölümlü siteler ve yönetim panelleri
 - Modülleri bağımsız geliştirmek, test etmek ve sürdürmek isteyen ekipler
-- Composer ve entegre CLI (`php pinoox …`) ile PHP 8.1+ projeleri
+- Composer ve entegre CLI (`php pinoox …`) ile PHP 8.2+ projeleri
 
 ---
 

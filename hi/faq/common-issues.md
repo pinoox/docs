@@ -12,7 +12,7 @@ Pinoox पर installation, runtime, और development के दौरान f
 
 **Fix:**
 
-1. PHP 8.1+ और extensions `mysqli`, `zip`, `mbstring`, `json` enable करें।
+1. PHP 8.2+ और extensions `mysqli`, `zip`, `mbstring`, `json` enable करें।
 2. Install से पहले platform check चलाएँ:
 
 ```bash

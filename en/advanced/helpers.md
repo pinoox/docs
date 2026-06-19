@@ -27,6 +27,7 @@ Pinoox 3.x loads global helpers from `pincore/functions/`. For day-to-day app de
 | `runtime()` | Active HTTP kernel | `runtime()->getRequest()` |
 | `_env()` | Environment variable | `_env('APP_DEBUG', false)` |
 | `alias()` | Flow/class alias | `alias('auth')` |
+| `jalali()`, `gregorian()`, `date_display()` | Date / calendar | `date_display($time, 'datetime')` |
 
 For HTML in controllers use **`View::render()`** (same as system apps). The `view()` helper exists but prefer the Portal in controllers.
 
@@ -118,6 +119,19 @@ $link = url('api/v1/orders');
 $file = path('storage/export.csv');
 $css = assets('dist/panel.css');
 ```
+
+---
+
+## Date and calendar
+
+```php
+use Pinoox\Portal\Date;
+
+$label = Date::display($order->created_at, 'datetime');
+$jalali = jformat($order->paid_at, 'Y/m/d H:i');
+```
+
+Set `'date' => 'jalali'` in `app.php` so `Date::display()` and `date_smart()` use the app calendar automatically. See [Date and calendar](../basic/date-and-calendar.md).
 
 ---
 

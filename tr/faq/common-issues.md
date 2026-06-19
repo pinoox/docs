@@ -12,7 +12,7 @@ Pinoox'ta kurulum, çalışma zamanı ve geliştirme sırasında sık görülen 
 
 **Çözüm:**
 
-1. PHP 8.1+ ve `mysqli`, `zip`, `mbstring`, `json` extension'larını etkinleştirin.
+1. PHP 8.2+ ve `mysqli`, `zip`, `mbstring`, `json` extension'larını etkinleştirin.
 2. Kurulumdan önce platform kontrolünü çalıştırın:
 
 ```bash

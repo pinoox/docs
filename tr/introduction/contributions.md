@@ -51,7 +51,7 @@ Issue açarken şunları ekleyin:
 
 - Kod stili için [PSR-12](https://www.php-fig.org/psr/psr-12/)
 - Autoloading için [PSR-4](https://www.php-fig.org/psr/psr-4/)
-- PHP 8.1+
+- PHP 8.2+
 - Açık, emir kipi commit mesajları (ör. `Fix route validation for missing actions`)
 
 ---

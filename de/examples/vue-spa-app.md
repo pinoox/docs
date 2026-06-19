@@ -12,7 +12,7 @@ Ein **Vue-3-Single-Page-Panel** bauen, das Notizen aus einer Pinoox-API liest un
 
 ## Voraussetzungen
 
-- Pinoox 3.x mit PHP 8.1+
+- Pinoox 3.x mit PHP 8.2+
 - Node.js 18+ und npm
 - Vertrautheit mit dem [Notes-API-Walkthrough](./simple-api-app.md) und [Twig-Templates](../basic/templates.md)
 

@@ -81,6 +81,20 @@ See [Flows](../basic/flows.md), [User management](../advanced/user-management.md
 | `log`, `redis`, `date` | Per-app overrides |
 | `container` | DI bindings |
 
+### Date and timezone
+
+Configure calendar and timezone per app. Shorthand forms are normalized when the manifest loads.
+
+| Form | Example |
+|------|---------|
+| String shorthand | `'date' => 'jalali'` |
+| Full block | `'date' => ['calendar' => 'jalali', 'timezone' => 'Asia/Tehran']` |
+| Root aliases | `'calendar' => 'jalali'`, `'timezone' => 'Asia/Tehran'` |
+
+Values: `jalali` \| `gregorian`. When omitted, `lang` locale hints and platform defaults apply.
+
+See [Date and calendar](../basic/date-and-calendar.md).
+
 ---
 
 ## Pinker / Pinx

@@ -12,7 +12,7 @@
 
 ## 前置条件
 
-- 已安装 PHP 8.1+ 的 Pinoox 3.x
+- 已安装 PHP 8.2+ 的 Pinoox 3.x
 - Node.js 18+ 与 npm
 - 熟悉[笔记 API 演练](./simple-api-app.md)与 [Twig 模板](../basic/templates.md)
 

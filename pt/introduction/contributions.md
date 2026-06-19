@@ -51,7 +51,7 @@ Envie mudanças no core para o pincore, e não apenas para a cópia local em `ve
 
 - [PSR-12](https://www.php-fig.org/psr/psr-12/) para estilo de código
 - [PSR-4](https://www.php-fig.org/psr/psr-4/) para autoloading
-- PHP 8.1+
+- PHP 8.2+
 - Mensagens de commit claras e no imperativo (ex.: `Fix route validation for missing actions`)
 
 ---

@@ -12,7 +12,7 @@ Soluciones prácticas para errores habituales durante la instalación, el runtim
 
 **Solución:**
 
-1. Habilita PHP 8.1+ y las extensiones `mysqli`, `zip`, `mbstring`, `json`.
+1. Habilita PHP 8.2+ y las extensiones `mysqli`, `zip`, `mbstring`, `json`.
 2. Ejecuta la comprobación de plataforma antes de instalar:
 
 ```bash

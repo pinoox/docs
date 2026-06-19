@@ -15,7 +15,7 @@
 
 | ابزار | نسخه |
 |-------|------|
-| PHP | 8.1 یا بالاتر (با ext-mysqli، ext-zip) |
+| PHP | 8.2 یا بالاتر (با ext-mysqli، ext-zip) |
 | MySQL / MariaDB | 5.7+ |
 | Composer | 2.x |
 | Node.js (اختیاری) | 18+ — فقط برای build فرانت‌اند تم |

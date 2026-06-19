@@ -43,7 +43,7 @@ Suggested issue template:
 ```markdown
 ## Environment
 - Pinoox: 3.1-beta
-- PHP: 8.1.x
+- PHP: 8.2.x
 - OS: Windows / Linux
 
 ## Expected

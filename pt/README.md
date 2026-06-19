@@ -1,6 +1,6 @@
 # Documentação Pinoox
 
-Documentação oficial para desenvolver aplicativos na plataforma Pinoox (PHP 8.1+, arquitetura HMVC).
+Documentação oficial para desenvolver aplicativos na plataforma Pinoox (PHP 8.2+, arquitetura HMVC).
 
 Cada guia descreve **uma abordagem recomendada** com exemplos práticos. Escolha uma seção abaixo ou navegue por tópico.
 

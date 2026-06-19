@@ -51,7 +51,7 @@
 
 - [PSR-12](https://www.php-fig.org/psr/psr-12/) برای سبک کد
 - [PSR-4](https://www.php-fig.org/psr/psr-4/) برای autoload
-- PHP 8.1+
+- PHP 8.2+
 - پیام commit واضح و imperative (مثلاً `Fix route validation for missing actions`)
 
 ---

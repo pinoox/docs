@@ -51,7 +51,7 @@ Issue を開く際は、以下を含めてください。
 
 - コードスタイル: [PSR-12](https://www.php-fig.org/psr/psr-12/)
 - オートロード: [PSR-4](https://www.php-fig.org/psr/psr-4/)
-- PHP 8.1+
+- PHP 8.2+
 - 明確で命令形のコミットメッセージ（例: `Fix route validation for missing actions`）
 
 ---

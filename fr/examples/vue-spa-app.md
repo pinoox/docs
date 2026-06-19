@@ -13,7 +13,7 @@ Construisez un **panneau single-page Vue 3** qui lit les notes depuis une API Pi
 
 ## Prérequis
 
-- Pinoox 3.x avec PHP 8.1+
+- Pinoox 3.x avec PHP 8.2+
 - Node.js 18+ et npm
 - Familiarité avec le [guide API Notes](./simple-api-app.md) et les [modèles Twig](../basic/templates.md)
 

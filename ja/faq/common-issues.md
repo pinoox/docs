@@ -12,7 +12,7 @@ Pinoox のインストール、実行時、開発中によく発生するエラ�
 
 **修正:**
 
-1. PHP 8.1+ と拡張機能 `mysqli`、`zip`、`mbstring`、`json` を有効化。
+1. PHP 8.2+ と拡張機能 `mysqli`、`zip`、`mbstring`、`json` を有効化。
 2. インストール前にプラットフォームチェックを実行:
 
 ```bash

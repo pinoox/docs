@@ -51,7 +51,7 @@ Pinoox — проект с открытым исходным кодом. Ваш 
 
 - [PSR-12](https://www.php-fig.org/psr/psr-12/) для стиля кода
 - [PSR-4](https://www.php-fig.org/psr/psr-4/) для автозагрузки
-- PHP 8.1+
+- PHP 8.2+
 - Чёткие сообщения коммитов в повелительном наклонении (например, `Fix route validation for missing actions`)
 
 ---

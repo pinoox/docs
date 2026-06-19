@@ -12,7 +12,7 @@ Pinoox API에서 note를 읽고 simple CRUD를 수행하는 **Vue 3 single-page 
 
 ## 사전 요구 사항
 
-- PHP 8.1+ 환경의 Pinoox 3.x
+- PHP 8.2+ 환경의 Pinoox 3.x
 - Node.js 18+ 및 npm
 - [Notes API 실습 가이드](./simple-api-app.md) 및 [Twig 템플릿](../basic/templates.md)에 대한 이해
 

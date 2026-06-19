@@ -51,7 +51,7 @@ Issue खोलते समय, इन्हें शामिल करें
 
 - कोड स्टाइल के लिए [PSR-12](https://www.php-fig.org/psr/psr-12/)
 - ऑटोलोडिंग के लिए [PSR-4](https://www.php-fig.org/psr/psr-4/)
-- PHP 8.1+
+- PHP 8.2+
 - स्पष्ट, आदेशात्मक (imperative) कमिट संदेश (जैसे `Fix route validation for missing actions`)
 
 ---

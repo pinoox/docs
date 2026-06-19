@@ -176,7 +176,7 @@ Doctor yapılandırılmış bir tanı çalıştırır ve bir şey başarısız o
 | Grup | Kontroller |
 |-------|--------|
 | **Proje** | `app.php`, paket kimliği, `platform/` düzeni |
-| **Runtime** | PHP sürümü (≥ 8.1), extension'lar, yazılabilir yollar |
+| **Runtime** | PHP sürümü (≥ 8.2), extension'lar, yazılabilir yollar |
 | **Bağımlılıklar** | Composer vendor, isteğe bağlı Node/npm |
 | **Ortam** | `.env` varlığı ve anahtar değişkenler |
 | **Veritabanı** | Bağlantı (`--skip-db` ile atlanabilir) |
@@ -338,7 +338,7 @@ Algılanan paketi ortam değişkenleriyle geçersiz kılın:
 
 ## Gereksinimler
 
-- **PHP** ≥ 8.1, `pinoox/pincore` tarafından gerekli extension'larla
+- **PHP** ≥ 8.2, `pinoox/pincore` tarafından gerekli extension'larla
 - **Composer** 2.x
 - **Node.js** + npm — yalnızca Vite/Vue/React frontend'leri kullanıldığında
 - **Veritabanı** — MySQL/MariaDB veya `.env`'inizin yapılandırdığı (statik/yalnızca Twig uygulamaları için isteğe bağlı)

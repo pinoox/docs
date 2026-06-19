@@ -56,7 +56,7 @@ com_{vendor}_{name}
 
 - 多板块网站和管理面板，每个板块都可以是一个独立应用
 - 希望独立开发、测试和维护各模块的团队
-- 使用 Composer 和集成 CLI（`php pinoox …`）的 PHP 8.1+ 项目
+- 使用 Composer 和集成 CLI（`php pinoox …`）的 PHP 8.2+ 项目
 
 ---
 

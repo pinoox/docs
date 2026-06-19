@@ -15,7 +15,7 @@
 
 | ツール | バージョン |
 |------|---------|
-| PHP | 8.1 以上（ext-mysqli、ext-zip が必要） |
+| PHP | 8.2 以上（ext-mysqli、ext-zip が必要） |
 | MySQL / MariaDB | 5.7+ |
 | Composer | 2.x |
 | Node.js（任意） | 18+ — フロントエンドテーマのビルド時のみ |

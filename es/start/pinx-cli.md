@@ -176,7 +176,7 @@ Doctor ejecuta un diagnóstico estructurado y sugiere comandos de corrección cu
 | Grupo | Comprobaciones |
 |-------|--------|
 | **Proyecto** | `app.php`, identidad del paquete, estructura de `platform/` |
-| **Runtime** | Versión de PHP (≥ 8.1), extensiones, rutas con permiso de escritura |
+| **Runtime** | Versión de PHP (≥ 8.2), extensiones, rutas con permiso de escritura |
 | **Dependencias** | Vendor de Composer, Node/npm opcional |
 | **Entorno** | Presencia de `.env` y variables clave |
 | **Base de datos** | Conexión (omitible con `--skip-db`) |
@@ -338,7 +338,7 @@ Sobrescribe el paquete detectado con variables de entorno:
 
 ## Requisitos
 
-- **PHP** ≥ 8.1 con las extensiones requeridas por `pinoox/pincore`
+- **PHP** ≥ 8.2 con las extensiones requeridas por `pinoox/pincore`
 - **Composer** 2.x
 - **Node.js** + npm — solo cuando se usan frontends con Vite/Vue/React
 - **Base de datos** — MySQL/MariaDB o lo que configure tu `.env` (opcional para apps estáticas o solo Twig)

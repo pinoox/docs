@@ -176,7 +176,7 @@ Doctor führt eine strukturierte Diagnose durch und schlägt Korrekturbefehle vo
 | Gruppe | Prüfungen |
 |-------|--------|
 | **Projekt** | `app.php`, Paketidentität, `platform/`-Layout |
-| **Laufzeit** | PHP-Version (≥ 8.1), Erweiterungen, beschreibbare Pfade |
+| **Laufzeit** | PHP-Version (≥ 8.2), Erweiterungen, beschreibbare Pfade |
 | **Abhängigkeiten** | Composer-Vendor, optional Node/npm |
 | **Umgebung** | Vorhandensein der `.env` und Schlüsselvariablen |
 | **Datenbank** | Verbindung (überspringbar mit `--skip-db`) |
@@ -338,7 +338,7 @@ Pinx wandert vom aktuellen Arbeitsverzeichnis nach oben, bis es ein gültiges Si
 
 ## Voraussetzungen
 
-- **PHP** ≥ 8.1 mit den von `pinoox/pincore` benötigten Erweiterungen
+- **PHP** ≥ 8.2 mit den von `pinoox/pincore` benötigten Erweiterungen
 - **Composer** 2.x
 - **Node.js** + npm — nur bei Verwendung von Vite/Vue/React-Frontends
 - **Datenbank** — MySQL/MariaDB oder was Ihre `.env` konfiguriert (optional für statische/Twig-only-Apps)

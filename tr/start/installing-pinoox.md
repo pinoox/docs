@@ -15,7 +15,7 @@ Bu rehber Pinoox 3.x kurulumunu kapsar. Başlamanın iki yolu vardır:
 
 | Araç | Sürüm |
 |------|---------|
-| PHP | 8.1 veya üzeri (ext-mysqli, ext-zip ile) |
+| PHP | 8.2 veya üzeri (ext-mysqli, ext-zip ile) |
 | MySQL / MariaDB | 5.7+ |
 | Composer | 2.x |
 | Node.js (isteğe bağlı) | 18+ — yalnızca frontend tema derlemeleri için |

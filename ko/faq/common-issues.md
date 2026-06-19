@@ -12,7 +12,7 @@ Pinoox 설치, 실행, 개발 중 자주 발생하는 오류에 대한 실용적
 
 **해결:**
 
-1. PHP 8.1+와 `mysqli`, `zip`, `mbstring`, `json` extension을 활성화하세요.
+1. PHP 8.2+와 `mysqli`, `zip`, `mbstring`, `json` extension을 활성화하세요.
 2. 설치 전 platform check를 실행하세요:
 
 ```bash

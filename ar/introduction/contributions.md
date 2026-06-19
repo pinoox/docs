@@ -51,7 +51,7 @@ Pinoox مشروع مفتوح المصدر. مساهماتك — من تقاري�
 
 - [PSR-12](https://www.php-fig.org/psr/psr-12/) لأسلوب الكود
 - [PSR-4](https://www.php-fig.org/psr/psr-4/) للتحميل التلقائي (autoloading)
-- PHP 8.1+
+- PHP 8.2+
 - رسائل commit واضحة وبصيغة الأمر (مثل `Fix route validation for missing actions`)
 
 ---

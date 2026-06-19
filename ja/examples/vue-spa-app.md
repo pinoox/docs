@@ -12,7 +12,7 @@ Pinoox API からメモを読み取り、シンプルな CRUD を行う **Vue 3 
 
 ## 前提条件
 
-- PHP 8.1+ 付き Pinoox 3.x
+- PHP 8.2+ 付き Pinoox 3.x
 - Node.js 18+ と npm
 - [Notes API ウォークスルー](./simple-api-app.md) と [Twig テンプレート](../basic/templates.md) の理解
 

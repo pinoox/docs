@@ -51,7 +51,7 @@ Envoyez les changements du cœur vers pincore, pas seulement vers la copie local
 
 - [PSR-12](https://www.php-fig.org/psr/psr-12/) pour le style de code
 - [PSR-4](https://www.php-fig.org/psr/psr-4/) pour l'autoloading
-- PHP 8.1+
+- PHP 8.2+
 - Messages de commit clairs et impératifs (ex. `Fix route validation for missing actions`)
 
 ---

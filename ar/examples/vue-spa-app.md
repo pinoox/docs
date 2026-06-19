@@ -12,7 +12,7 @@
 
 ## المتطلبات المسبقة
 
-- Pinoox 3.x مع PHP 8.1+
+- Pinoox 3.x مع PHP 8.2+
 - Node.js 18+ و npm
 - الإلمام بـ [شرح Notes API](./simple-api-app.md) و [قوالب Twig](../basic/templates.md)
 

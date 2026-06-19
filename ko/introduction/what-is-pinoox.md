@@ -56,7 +56,7 @@ com_{vendor}_{name}
 
 - 각 섹션을 별도 앱으로 구성할 수 있는 다중 섹션 사이트 및 관리 패널
 - 모듈을 독립적으로 개발, 테스트, 유지보수하려는 팀
-- Composer와 통합 CLI(`php pinoox …`)를 사용하는 PHP 8.1+ 프로젝트
+- Composer와 통합 CLI(`php pinoox …`)를 사용하는 PHP 8.2+ 프로젝트
 
 ---
 

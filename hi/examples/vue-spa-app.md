@@ -12,7 +12,7 @@ Pinoox API से notes read करने और simple CRUD करने वा
 
 ## Prerequisites
 
-- PHP 8.1+ के साथ Pinoox 3.x
+- PHP 8.2+ के साथ Pinoox 3.x
 - Node.js 18+ and npm
 - [Notes API walkthrough](./simple-api-app.md) और [Twig templates](../basic/templates.md) से familiarity
 

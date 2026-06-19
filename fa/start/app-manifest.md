@@ -81,6 +81,20 @@
 | `log`, `redis`, `date` | per-app override |
 | `container` | DI bindings |
 
+### تاریخ و timezone
+
+تقویم و منطقه زمانی را در سطح اپ تنظیم کنید. فرم‌های کوتاه هنگام load manifest نرمال می‌شوند.
+
+| فرم | مثال |
+|------|------|
+| رشته کوتاه | `'date' => 'jalali'` |
+| بلوک کامل | `'date' => ['calendar' => 'jalali', 'timezone' => 'Asia/Tehran']` |
+| alias ریشه | `'calendar' => 'jalali'`, `'timezone' => 'Asia/Tehran'` |
+
+مقادیر: `jalali` \| `gregorian`. در صورت عدم تنظیم، از `lang` و پیش‌فرض پلتفرم استفاده می‌شود.
+
+جزئیات: [تاریخ و تقویم](../basic/date-and-calendar.md).
+
 ---
 
 ## Pinker / Pinx
