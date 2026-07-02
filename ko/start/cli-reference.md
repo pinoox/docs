@@ -63,7 +63,7 @@ package가 필요한데 생략하면 Pinoox가 대화형 picker를 표시합니�
 | `model:create` | `Model/` |
 | `portal:create` | `Portal/` |
 | `form-request:create` | FormRequest class |
-| `seeder:create` | `database/seed/` |
+| `seeder:create` | `database/seeders/` |
 | `test:create` | Pest file |
 | `theme:frontend` | Frontend tooling (Vue/React/Twig) |
 

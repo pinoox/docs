@@ -45,7 +45,7 @@ apps/com_acme_shop/
 ├── lang/fa/                 ← ترجمه
 ├── config/                  ← تنظیمات اپ
 ├── database/migrations/
-├── database/seed/
+├── database/seeders/
 ├── patches/                 ← Patch داده (یک‌باره)
 └── pinker/                  ← mirror برای build
 ```

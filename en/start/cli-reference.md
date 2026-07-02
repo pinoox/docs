@@ -63,7 +63,8 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | `model:create` | `Model/` |
 | `portal:create` | `Portal/` |
 | `form-request:create` | FormRequest class |
-| `seeder:create` | `database/seed/` |
+| `seeder:create` | `database/seeders/` |
+| `factory:create` | `database/factories/` |
 | `test:create` | Pest file |
 | `theme:frontend` | Frontend tooling (Vue/React/Twig) |
 

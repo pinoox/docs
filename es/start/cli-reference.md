@@ -63,7 +63,7 @@ Cuando se requiere un paquete y se omite, Pinoox muestra un selector interactivo
 | `model:create` | `Model/` |
 | `portal:create` | `Portal/` |
 | `form-request:create` | Clase FormRequest |
-| `seeder:create` | `database/seed/` |
+| `seeder:create` | `database/seeders/` |
 | `test:create` | Archivo Pest |
 | `theme:frontend` | Herramientas de frontend (Vue/React/Twig) |
 

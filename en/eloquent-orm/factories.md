@@ -1,79 +1,96 @@
-# Test Data — Seeders
+# Test Data - Factories and Seeders
 
-[← Back to index](../README.md)
+[Back to index](../README.md)
 
-Pinoox 3.x does not include a **Model Factory** (Laravel-style) in the CLI. The recommended approach for initial and development data is **Seeders** with `SeederBase` in `apps/{package}/database/seed/`.
+Pinoox supports Laravel-style model factories in `apps/{package}/database/factories/`.
+Use factories for repeatable test/dev records and seeders for initial or demo data.
 
 ---
 
-## Create a seeder
+## Create a Factory
+
+```bash
+php pinoox factory:create PostFactory com_acme_blog
+```
+
+```text
+apps/com_acme_blog/database/factories/PostFactory.php
+```
+
+```php
+<?php
+namespace App\com_acme_blog\database\factories;
+
+use App\com_acme_blog\Model\PostModel;
+use Pinoox\Component\Database\Factories\Factory;
+
+class PostFactory extends Factory
+{
+    protected ?string $model = PostModel::class;
+
+    public function definition(): array
+    {
+        return [
+            'user_id' => 1,
+            'title' => 'Sample post',
+            'body' => 'Sample content',
+            'status' => 'draft',
+        ];
+    }
+}
+```
+
+Use it from tests or seeders:
+
+```php
+PostModel::factory()->make();
+PostModel::factory()->create();
+PostModel::factory()->count(10)->create();
+PostModel::factory()->state(['status' => 'published'])->create();
+```
+
+Factories also support `sequence()`, `raw()`, `afterMaking()`, and `afterCreating()`.
+If `fakerphp/faker` is installed, call `$this->faker()` inside `definition()`.
+
+---
+
+## Create a Seeder
 
 ```bash
 php pinoox seeder:create PostSeeder com_acme_blog
 ```
 
 ```text
-apps/com_acme_blog/database/seed/PostSeeder.php
+apps/com_acme_blog/database/seeders/PostSeeder.php
 ```
-
----
-
-## Structure
 
 ```php
 <?php
-namespace App\com_acme_blog\database\seed;
+namespace App\com_acme_blog\database\seeders;
 
 use App\com_acme_blog\Model\PostModel;
 use Pinoox\Component\Database\Seeder\SeederBase;
-use Pinoox\Portal\Hash;
 
 return new class extends SeederBase
 {
     public function run(): void
     {
-        PostModel::insert([
-            [
-                'user_id' => 1,
-                'title' => 'First post',
-                'body' => 'Sample content',
-                'status' => 'published',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'user_id' => 1,
-                'title' => 'Second post',
-                'body' => '...',
-                'status' => 'draft',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        PostModel::factory()
+            ->count(20)
+            ->sequence(
+                ['status' => 'published'],
+                ['status' => 'draft'],
+            )
+            ->create();
     }
 };
 ```
 
 ---
 
-## Call another seeder
+## Create With Model
 
-```php
-public function run(): void
-{
-    $this->call([
-        RoleSeeder::class,
-        UserSeeder::class,
-    ]);
-
-    // dependent data after users
-    PostModel::factory(); // ❌ not available — use insert or create manually
-}
-```
-
----
-
-## create with Model
+Factories are optional. You can still write seeders manually:
 
 ```php
 for ($i = 1; $i <= 20; $i++) {
@@ -88,7 +105,7 @@ for ($i = 1; $i <= 20; $i++) {
 
 ---
 
-## Run seeders
+## Run Seeders
 
 ```bash
 php pinoox seeder:run com_acme_blog
@@ -98,17 +115,17 @@ php pinoox seeder:run com_acme_blog -c PostSeeder
 
 ---
 
-## Recommended order
+## Recommended Order
 
 1. `php pinoox migrate com_acme_blog`
 2. `php pinoox seeder:run com_acme_blog`
 
 ---
 
-## Seeders in production
+## Seeders In Production
 
-- Only **essential** data (roles, default settings).
-- Guard fake/dev data with `APP_ENV`:
+- Only seed essential data such as roles and default settings.
+- Guard fake/dev data with `APP_ENV`.
 
 ```php
 public function run(): void
@@ -116,30 +133,33 @@ public function run(): void
     if (env('APP_ENV') === 'production') {
         return;
     }
-    // sample data
+
+    PostModel::factory()->count(20)->create();
 }
 ```
 
 ---
 
-## Seeder vs Patch
+## Seeder Vs Patch
 
 | Seeder | Patch |
 |--------|-------|
-| Initial / sample data | One-time fix for existing data |
-| `seeder:run` — repeatable with caution | `patch:run` — tracked once |
+| Initial or sample data | One-time fix for existing data |
+| `seeder:run` is repeatable with caution | `patch:run` is tracked once |
 
 ---
 
 ## Tips
 
-- Write idempotent seeders (`firstOrCreate` instead of blind `insert`).
-- Do not commit real credentials in seeders.
-- For unit tests, use Pest fixtures or `:memory:` sqlite.
+- Keep factories focused on one model's default attributes.
+- Use factory states for variants such as `published` or `admin`.
+- Write seeders idempotently when they may run more than once.
+- Do not commit real credentials in seeders or factories.
+- For unit tests, prefer factories with `make()` or `:memory:` sqlite.
 
 ---
 
-## Related docs
+## Related Docs
 
 - [Migrations](../database/migrations.md)
 - [Eloquent getting started](./getting-started.md)
@@ -147,4 +167,4 @@ public function run(): void
 
 ---
 
-[← Back to index](../README.md)
+[Back to index](../README.md)

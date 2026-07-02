@@ -2,7 +2,7 @@
 
 [← Вернуться к оглавлению](../README.md)
 
-Pinoox 3.x не включает **Model Factory** (в стиле Laravel) в CLI. Рекомендуемый подход для начальных и dev-данных — **Seeders** с `SeederBase` в `apps/{package}/database/seed/`.
+Pinoox 3.x не включает **Model Factory** (в стиле Laravel) в CLI. Рекомендуемый подход для начальных и dev-данных — **Seeders** с `SeederBase` в `apps/{package}/database/seeders/`.
 
 ---
 
@@ -13,7 +13,7 @@ php pinoox seeder:create PostSeeder com_acme_blog
 ```
 
 ```text
-apps/com_acme_blog/database/seed/PostSeeder.php
+apps/com_acme_blog/database/seeders/PostSeeder.php
 ```
 
 ---
@@ -22,7 +22,7 @@ apps/com_acme_blog/database/seed/PostSeeder.php
 
 ```php
 <?php
-namespace App\com_acme_blog\database\seed;
+namespace App\com_acme_blog\database\seeders;
 
 use App\com_acme_blog\Model\PostModel;
 use Pinoox\Component\Database\Seeder\SeederBase;

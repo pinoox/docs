@@ -2,7 +2,7 @@
 
 [← بازگشت به فهرست](../README.md)
 
-پینوکس 3.x **Model Factory** (Laravel-style) در CLI ندارد. روش پیشنهادی برای داده اولیه و توسعه: **Seeder** با `SeederBase` در `apps/{package}/database/seed/`.
+پینوکس 3.x **Model Factory** (Laravel-style) در CLI ندارد. روش پیشنهادی برای داده اولیه و توسعه: **Seeder** با `SeederBase` در `apps/{package}/database/seeders/`.
 
 ---
 
@@ -13,7 +13,7 @@ php pinoox seeder:create PostSeeder com_acme_blog
 ```
 
 ```text
-apps/com_acme_blog/database/seed/PostSeeder.php
+apps/com_acme_blog/database/seeders/PostSeeder.php
 ```
 
 ---
@@ -22,7 +22,7 @@ apps/com_acme_blog/database/seed/PostSeeder.php
 
 ```php
 <?php
-namespace App\com_acme_blog\database\seed;
+namespace App\com_acme_blog\database\seeders;
 
 use App\com_acme_blog\Model\PostModel;
 use Pinoox\Component\Database\Seeder\SeederBase;

@@ -2,7 +2,7 @@
 
 [← 返回索引](../README.md)
 
-Pinoox 3.x 的 CLI 中**不包含** Laravel 风格的 **Model Factory**。初始数据和开发数据的推荐方式是使用 **`SeederBase`** 在 `apps/{package}/database/seed/` 中编写 **填充器（Seeder）**。
+Pinoox 3.x 的 CLI 中**不包含** Laravel 风格的 **Model Factory**。初始数据和开发数据的推荐方式是使用 **`SeederBase`** 在 `apps/{package}/database/seeders/` 中编写 **填充器（Seeder）**。
 
 ---
 
@@ -13,7 +13,7 @@ php pinoox seeder:create PostSeeder com_acme_blog
 ```
 
 ```text
-apps/com_acme_blog/database/seed/PostSeeder.php
+apps/com_acme_blog/database/seeders/PostSeeder.php
 ```
 
 ---
@@ -22,7 +22,7 @@ apps/com_acme_blog/database/seed/PostSeeder.php
 
 ```php
 <?php
-namespace App\com_acme_blog\database\seed;
+namespace App\com_acme_blog\database\seeders;
 
 use App\com_acme_blog\Model\PostModel;
 use Pinoox\Component\Database\Seeder\SeederBase;

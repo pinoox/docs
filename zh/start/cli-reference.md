@@ -63,7 +63,7 @@ php pinoox help migrate
 | `model:create` | `Model/` |
 | `portal:create` | `Portal/` |
 | `form-request:create` | FormRequest 类 |
-| `seeder:create` | `database/seed/` |
+| `seeder:create` | `database/seeders/` |
 | `test:create` | Pest 文件 |
 | `theme:frontend` | 前端工具链（Vue/React/Twig） |
 

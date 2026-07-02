@@ -63,7 +63,7 @@ Quando um pacote é obrigatório e omitido, o Pinoox exibe um seletor interativo
 | `model:create` | `Model/` |
 | `portal:create` | `Portal/` |
 | `form-request:create` | Classe FormRequest |
-| `seeder:create` | `database/seed/` |
+| `seeder:create` | `database/seeders/` |
 | `test:create` | Arquivo Pest |
 | `theme:frontend` | Ferramentas de frontend (Vue/React/Twig) |
 

@@ -63,7 +63,7 @@ Wenn ein Paket erforderlich ist und nicht angegeben wird, zeigt Pinoox eine inte
 | `model:create` | `Model/` |
 | `portal:create` | `Portal/` |
 | `form-request:create` | FormRequest-Klasse |
-| `seeder:create` | `database/seed/` |
+| `seeder:create` | `database/seeders/` |
 | `test:create` | Pest-Datei |
 | `theme:frontend` | Frontend-Tooling (Vue/React/Twig) |
 

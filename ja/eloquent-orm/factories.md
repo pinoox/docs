@@ -2,7 +2,7 @@
 
 [← 索引に戻る](../README.md)
 
-Pinoox 3.x の CLI には **Model Factory**（Laravel スタイル）は含まれていません。初期データと開発データの推奨アプローチは、`apps/{package}/database/seed/` の **Seeder** と `SeederBase` です。
+Pinoox 3.x の CLI には **Model Factory**（Laravel スタイル）は含まれていません。初期データと開発データの推奨アプローチは、`apps/{package}/database/seeders/` の **Seeder** と `SeederBase` です。
 
 ---
 
@@ -13,7 +13,7 @@ php pinoox seeder:create PostSeeder com_acme_blog
 ```
 
 ```text
-apps/com_acme_blog/database/seed/PostSeeder.php
+apps/com_acme_blog/database/seeders/PostSeeder.php
 ```
 
 ---
@@ -22,7 +22,7 @@ apps/com_acme_blog/database/seed/PostSeeder.php
 
 ```php
 <?php
-namespace App\com_acme_blog\database\seed;
+namespace App\com_acme_blog\database\seeders;
 
 use App\com_acme_blog\Model\PostModel;
 use Pinoox\Component\Database\Seeder\SeederBase;

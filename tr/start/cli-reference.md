@@ -63,7 +63,7 @@ Paket gerekli olduğunda ve belirtilmediğinde Pinoox etkileşimli bir seçici g
 | `model:create` | `Model/` |
 | `portal:create` | `Portal/` |
 | `form-request:create` | FormRequest sınıfı |
-| `seeder:create` | `database/seed/` |
+| `seeder:create` | `database/seeders/` |
 | `test:create` | Pest dosyası |
 | `theme:frontend` | Frontend araçları (Vue/React/Twig) |
 
