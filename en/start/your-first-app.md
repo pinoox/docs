@@ -1,177 +1,224 @@
-# Your first app
+# Create Your First Pinx App
 
-[← Back to index](../README.md)
+[Back to index](../README.md)
 
-The fastest way to create an app in Pinoox 3.x is the CLI command `app:create`. It scaffolds the standard MVC structure under `apps/{package}/`: `routes/`, `Controller/`, `theme/`, `config/`.
+This guide builds a small single-app project from zero. You will create the project, run it locally, add a route, add a controller, create a table with a migration, use a model, and prepare the app for release.
 
 ---
 
-## Create the app
-
-From the project root:
+## 1. Create The Project
 
 ```bash
-php pinoox app:create com_acme_blog
+pinx new blog
+cd blog
 ```
 
-| CLI prompt | Example |
-|------------|---------|
-| Package name | `com_acme_blog` (format: `com_{vendor}_{name}`) |
-| Display name | `Blog` |
-| URL path | `/blog` (optional — registered in `config/app-router.config.php`) |
-
-Simple mode (Twig-only, no wizard):
+Or with Composer only:
 
 ```bash
-php pinoox app:create com_acme_blog --simple
+composer create-project pinoox/app blog
+cd blog
+```
+
+Check the project:
+
+```bash
+pinx doctor
 ```
 
 ---
 
-## Generated structure
+## 2. Run Migrations
 
+The default `.env` uses DevDB:
+
+```dotenv
+APP_ENV=development
+DB_CONNECTION=devdb
 ```
-apps/com_acme_blog/
-├── app.php
-├── Controller/
-│   └── MainController.php
-├── routes/
-│   ├── actions.php
-│   └── web.php
-├── Router/
-│   └── Actions.php
-├── theme/
-│   └── default/
-│       └── hello.twig
-└── config/
+
+Run migrations:
+
+```bash
+pinx migrate
 ```
+
+If no real database is configured, DevDB stores local development schema and data under `storage/devdb/`.
 
 ---
 
-## app.php — register routes
+## 3. Start The Dev Server
 
-The `app.php` manifest lists the app's route files:
-
-```php
-<?php
-
-return [
-    'package' => 'com_acme_blog',
-    'name' => 'Blog',
-    'enable' => true,
-    'theme' => 'default',
-    'router' => [
-        'routes' => [
-            'routes/web.php',
-            'routes/actions.php',
-        ],
-    ],
-];
+```bash
+pinx dev --open
 ```
+
+Open Pinx Inspector:
+
+```text
+http://127.0.0.1:8000/~inspector
+```
+
+Use Inspector to check routes, database tables, logs, config, migrations, and project health while developing.
 
 ---
 
-## Named Actions and routes
+## Build The First Feature
 
-**actions.php** — define the handler:
+The app root is the project root. You do not work inside `apps/{package}` in a Pinx project.
 
-```php
-<?php
+### Create A Controller
 
-use App\com_acme_blog\Controller\MainController;
-use App\com_acme_blog\Router\Actions;
-use function Pinoox\Router\action;
-
-action(Actions::HOME, [MainController::class, 'index']);
+```bash
+pinx make controller PostController
 ```
 
-**web.php** — map the URL:
+Example:
 
 ```php
 <?php
 
-use App\com_acme_blog\Router\Actions;
-use function Pinoox\Router\get;
-
-get('/', '@' . Actions::HOME)->name('home');
-```
-
----
-
-## Controller
-
-```php
-<?php
-
-namespace App\com_acme_blog\Controller;
+namespace App\Controller;
 
 use Pinoox\Component\Kernel\Controller\Controller;
 use Pinoox\Portal\View;
 
-class MainController extends Controller
+class PostController extends Controller
 {
     public function index()
     {
-        return View::render('hello', [
-            'title' => 'My first app',
+        return View::render('posts/index', [
+            'title' => 'Posts',
         ]);
     }
 }
 ```
 
-Namespace: `App\{package}\Controller` — folder is `Controller/` (not `Controllers/`).
+### Add A Route
 
----
-
-## Register app URL (project level)
-
-If you registered `/blog` during the wizard, an entry is added to `config/app-router.config.php`:
+Edit `routes/web.php`:
 
 ```php
-return [
-    '/' => 'com_pinoox_installer',
-    '/blog' => 'com_acme_blog',
-];
+<?php
+
+use App\Controller\PostController;
+use function Pinoox\Router\get;
+
+get('/posts', [PostController::class, 'index'])->name('posts.index');
 ```
 
-Manually or via CLI:
+Check routes:
 
 ```bash
-php pinoox app:router set /blog com_acme_blog
+pinx routes
+```
+
+### Add A View
+
+Create `theme/default/posts/index.twig`:
+
+```twig
+<h1>{{ title }}</h1>
+<p>Your first Pinx page is running.</p>
+```
+
+Open:
+
+```text
+http://127.0.0.1:8000/posts
 ```
 
 ---
 
-## View in the browser
+## Add Data
 
-```
-http://localhost/blog
-```
-
----
-
-## Useful next commands
+Create a migration and model:
 
 ```bash
-php pinoox controller:create PostController com_acme_blog
-php pinoox migrate -p com_acme_blog
-php pinoox route:actions com_acme_blog
+pinx make migration create_posts_table
+pinx make model Post
+```
+
+Example migration:
+
+```php
+<?php
+
+use Illuminate\Database\Schema\Blueprint;
+use Pinoox\Component\Migration\Migration;
+use Pinoox\Portal\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('status')->default('draft');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('posts');
+    }
+};
+```
+
+Run:
+
+```bash
+pinx migrate
+```
+
+Example model:
+
+```php
+<?php
+
+namespace App\Model;
+
+use Pinoox\Component\Database\Model;
+
+class Post extends Model
+{
+    protected $fillable = ['title', 'status'];
+}
+```
+
+Use it:
+
+```php
+Post::create(['title' => 'Hello Pinoox', 'status' => 'published']);
+
+$posts = Post::where('status', 'published')
+    ->orderBy('id', 'desc')
+    ->get();
 ```
 
 ---
 
-## Related docs
+## Test, Build, Release
+
+```bash
+pinx make test PostTest --feature
+pinx test
+pinx doctor
+pinx build
+pinx release --bump=patch
+```
+
+See [Build and release](./build-release.md) for signing and production packaging.
+
+---
+
+## Next
 
 - [Project structure](./structure.md)
-- [Router](../basic/routers.md)
+- [DevDB](./devdb.md)
+- [Routes](../basic/routers.md)
 - [Controllers](../basic/controllers.md)
-- [Notes API walkthrough](../examples/simple-api-app.md)
-- [Phonebook web walkthrough](../examples/phonebook-app.md)
-- [Contact form walkthrough](../examples/contact-form-app.md)
-- [Simple blog walkthrough](../examples/blog-app.md)
-- [Task board walkthrough](../examples/task-board-app.md)
-- [Image gallery walkthrough](../examples/gallery-app.md)
-
----
-
-[← Back to index](../README.md)
+- [Migrations](../database/migrations.md)
+- [Eloquent ORM](../eloquent-orm/getting-started.md)

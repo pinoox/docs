@@ -1,123 +1,139 @@
-# Project structure
+# Single-App Project Structure
 
-[← Back to index](../README.md)
+[Back to index](../README.md)
 
-Pinoox uses HMVC architecture: each app under `apps/{package}/` is a complete, independent MVC module. The framework core lives in `vendor/pinoox/pincore/` and is edited only when changing the platform itself.
+In the recommended Pinx workflow, the project root is the app root.
+
+There is no `apps/{package}` folder in day-to-day development. Your controllers, models, routes, theme, migrations, and config live directly in the project.
 
 ---
 
-## Project layout
+## Pinx Project Layout
 
-```
-{project_root}/
-├── index.php
-├── pinoox
+```text
+my-shop/
+├── app.php
+├── .env
 ├── composer.json
-├── vendor/pinoox/pincore/   ← core (Composer package)
-├── apps/                    ← all apps
-│   ├── com_pinoox_manager/
-│   └── com_acme_shop/
-├── config/
-└── storage/                 ← uploaded files & app storage
-```
-
----
-
-## App layout
-
-```
-apps/com_acme_shop/
-├── app.php                  ← manifest (required)
-├── boot.php                 ← programmatic routes/events (optional)
-├── schedule.php             ← cron tasks (optional)
-├── Controller/              ← HTTP handlers
-├── Model/                   ← Eloquent models
-├── Flow/                    ← middleware
-├── Component/               ← business logic
-├── Portal/                  ← app facades (optional)
+├── index.php
+├── bin/pinx
+├── Controller/
+├── Model/
 ├── routes/
 │   ├── web.php
-│   ├── actions.php
-│   └── api.php
-├── Router/                  ← action name constants (optional)
-├── theme/default/           ← Twig + assets
-├── lang/en/                 ← translations
-├── config/                  ← app config
-├── database/migrations/
-└── pinker/                  ← build mirror
+│   └── actions.php
+├── database/
+│   ├── migrations/
+│   ├── seeders/
+│   └── factories/
+├── theme/
+│   └── default/
+├── lang/
+├── config/
+├── schedule.php
+├── platform/
+├── storage/
+├── pinker/
+├── export/
+└── vendor/
 ```
 
-Views are not in a separate `View/` folder — templates live in `theme/{themeName}/`.
+| Path | Purpose |
+| --- | --- |
+| `app.php` | app identity, version, theme, build, signing, frontend settings |
+| `.env` | local environment; minimal by default |
+| `Controller/` | HTTP controllers |
+| `Model/` | Eloquent-style models |
+| `routes/` | web/API/action routes |
+| `database/migrations/` | schema changes |
+| `database/seeders/` | local/demo/initial data |
+| `database/factories/` | test and development records |
+| `theme/default/` | Twig templates and assets |
+| `lang/` | app translations |
+| `config/` | app configuration |
+| `schedule.php` | scheduled jobs |
+| `platform/` | local platform launcher and routing; excluded from `.pinx` |
+| `storage/` | logs, sessions, DevDB data, uploaded files |
+| `pinker/` | build/cache metadata |
+| `export/` | generated `.pinx` packages |
 
 ---
 
-## app.php — key fields
+## Namespace Rules
+
+Pinx maps your project app code to the `App\` namespace.
+
+| File | Namespace |
+| --- | --- |
+| `Controller/PostController.php` | `App\Controller` |
+| `Model/Post.php` | `App\Model` |
+| `Flow/AuthFlow.php` | `App\Flow` |
+| `database/factories/PostFactory.php` | `App\database\factories` |
+
+---
+
+## The app.php Manifest
+
+Example:
 
 ```php
 <?php
 
 return [
-    'package' => 'com_acme_shop',   // = folder name
-    'name' => 'Shop',
+    'package' => 'com_acme_shop',
+    'name' => 'Acme Shop',
+    'description' => 'Shop app built with Pinoox',
+    'developer' => 'Acme',
+    'icon' => 'resource/icon.png',
+    'version-name' => '1.0.0',
+    'version-code' => 1,
     'enable' => true,
     'theme' => 'default',
-    'flow' => [
-        App\com_acme_shop\Flow\BootFlow::class,
-    ],
-    'alias' => [
-        'auth' => App\com_acme_shop\Flow\AuthFlow::class,
-    ],
+    'lang' => 'en',
     'router' => [
         'routes' => [
             'routes/web.php',
             'routes/actions.php',
         ],
     ],
+    'pinx' => [
+        'sign' => [
+            'enabled' => false,
+            'key' => null,
+            'key_id' => null,
+        ],
+    ],
 ];
 ```
 
----
-
-## Namespaces
-
-PSR-4: `App\` → `apps/`
-
-| File | Namespace |
-|------|-----------|
-| `apps/com_acme_shop/Controller/OrderController.php` | `App\com_acme_shop\Controller` |
-| `apps/com_acme_shop/Model/OrderModel.php` | `App\com_acme_shop\Model` |
-| `apps/com_acme_shop/Flow/AuthFlow.php` | `App\com_acme_shop\Flow` |
+See [app.php manifest reference](./app-manifest.md).
 
 ---
 
-## Naming rules
+## What Is Excluded From Builds
 
-- Package: `com_{vendor}_{name}` — e.g. `com_acme_shop`
-- Folder name = `package` in `app.php` = namespace segment
-- DB table prefix: `{package}_` (e.g. `com_acme_shop_orders`)
+`pinx build` creates a `.pinx` app package. It excludes local-only files by default:
 
----
+- `vendor/`
+- `bin/`
+- `.env`
+- `platform/`
+- `storage/`
+- `export/`
+- development tooling
 
-## App vs core boundary
-
-| Change | Location |
-|--------|----------|
-| New endpoint | `apps/{package}/Controller/` + `routes/` |
-| Migration | `apps/{package}/database/migrations/` |
-| Framework bug | `pinoox/pincore` (upstream) |
-| UI | `apps/{package}/theme/` |
-
-Keep apps independent — use `Pinoox\Portal\*` facades rather than coupling apps to each other.
+Configure exceptions in `app.php` only when needed.
 
 ---
 
-## Related docs
+## Classic Platform Layout
 
-- [Your first app](./your-first-app.md)
-- [Router](../basic/routers.md)
-- [Controllers](../basic/controllers.md)
-- [Flow](../basic/flows.md)
+The full platform still supports multiple apps under `apps/{package}`. That layout is useful for platform maintainers and multi-app hosting. For new app development, prefer Pinx single-app projects.
 
 ---
 
-[← Back to index](../README.md)
+## Next
+
+- [Create your first app](./your-first-app.md)
+- [Pinx CLI](./pinx-cli.md)
+- [Build and release](./build-release.md)

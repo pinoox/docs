@@ -1,58 +1,89 @@
-# Installing Pinoox
+# Install Pinoox And Pinx
 
-[← Back to index](../README.md)
+[Back to index](../README.md)
 
-This guide covers installing Pinoox 3.x. There are two ways to start:
+The recommended way to build a Pinoox app is a **Pinx single-app project**.
 
-| Route | Best for |
-|-------|----------|
-| **A. Single-app with [Pinx CLI](./pinx-cli.md)** | Building one app — fastest start, no manager UI |
-| **B. Full platform (classic)** | Hosting multiple apps with the graphical installer and manager |
+Pinx gives you a normal project folder, a local dev server, DevDB for database-free development, Pinx Inspector, testing commands, and `.pinx` build/release commands.
 
 ---
 
 ## Requirements
 
-| Tool | Version |
-|------|---------|
-| PHP | 8.2 or higher (with ext-mysqli, ext-zip) |
-| MySQL / MariaDB | 5.7+ |
-| Composer | 2.x |
-| Node.js (optional) | 18+ — only for frontend theme builds |
+| Tool | Version | Notes |
+| --- | --- | --- |
+| PHP | 8.2+ | Required |
+| Composer | 2.x | Required |
+| ext-zip | enabled | Required for `.pinx` packages |
+| Node.js | 18+ | Optional, only for Vue/React/Vite themes |
+| MySQL/PostgreSQL/SQLite | optional | DevDB is the default local development database |
 
 ---
 
-## Route A — Single-app with Pinx CLI
+## Option A: Install Pinx Globally
 
-Install the [Pinx CLI](./pinx-cli.md) once, create a new app, run it:
+Use this if you create multiple Pinoox apps.
 
 ```bash
 composer global require pinoox/pinx-cli
-
-pinx new my-shop              # suggests com_my_shop — confirm or edit in the wizard
+pinx new my-shop
 cd my-shop
-cp .env.example .env          # set DB_* if you use a database
-pinx setup                    # migrate platform + app, run seeders
-pinx dev                      # http://127.0.0.1:8000
+pinx doctor
+pinx migrate
+pinx dev
 ```
 
-Or without a global install, via the project template:
+Open:
+
+```text
+http://127.0.0.1:8000
+http://127.0.0.1:8000/~inspector
+```
+
+The generated `.env` is intentionally small:
+
+```dotenv
+APP_ENV=development
+DB_CONNECTION=devdb
+```
+
+That is enough for local development. Add MySQL/PostgreSQL/SQLite credentials only when you want to use a real database.
+
+---
+
+## Option B: Use The Project Template
+
+Use this if you do not want a global command first.
 
 ```bash
 composer create-project pinoox/app my-shop
 cd my-shop
-cp .env.example .env
-pinx setup
-pinx dev
+php bin/pinx doctor
+php bin/pinx migrate
+php bin/pinx dev
 ```
 
-Run `pinx doctor` at any time to check PHP, env, DB, and build readiness. See the full [Pinx CLI guide](./pinx-cli.md) for the day-to-day workflow and command reference.
+You can still install the global `pinx` command later.
 
 ---
 
-## Route B — Full platform (classic)
+## What Gets Installed
 
-### 1. Get the project
+A Pinx project includes:
+
+- `pinoox/pincore` as the framework core
+- `pinoox/pinx-cli` in `require-dev`
+- `pinoox/devdb` in `require-dev`
+- `pinoox/pinx-inspector` in `require-dev`
+- a minimal `.env`
+- app files at the project root
+- `platform/` files for local routing and dev server integration
+
+---
+
+## Classic Platform Install
+
+Use the full platform only when you need a multi-app installation with platform-level management.
 
 ```bash
 git clone https://github.com/pinoox/pinoox.git
@@ -60,89 +91,15 @@ cd pinoox
 composer install
 ```
 
-Alternatively, download the latest release from [GitHub](https://github.com/pinoox/pinoox), extract it, then run `composer install`.
+Then configure your web server and database and run the installer in the browser.
+
+For single-app development, prefer Pinx.
 
 ---
 
-### 2. Place it in your web server
+## Next
 
-Put the project folder in your document root:
-
-| Environment | Example path |
-|-------------|--------------|
-| MAMP | `C:/MAMP/htdocs/pinoox` |
-| XAMPP | `C:/xampp/htdocs/pinoox` |
-| WAMP | `C:/wamp64/www/pinoox` |
-
-Set the document root to the **project root** (the folder that contains `index.php`) — not a `public` subfolder.
-
----
-
-### 3. Create the database
-
-```sql
-CREATE DATABASE pinoox_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
----
-
-### 4. Run the installer
-
-Open your browser:
-
-```
-http://localhost/pinoox
-```
-
-The system app `com_pinoox_installer` runs. The GUI steps are:
-
-1. Check PHP requirements
-2. Accept the license agreement
-3. Enter database credentials
-4. Create the admin account
-5. Finish installation
-
----
-
-### 5. After installation
-
-Main layout:
-
-```
-pinoox/
-├── index.php
-├── pinoox              ← CLI
-├── apps/               ← apps
-├── vendor/pinoox/pincore/  ← core
-└── config/             ← project config
-```
-
-Create your first app:
-
-```bash
-php pinoox app:create com_acme_blog
-```
-
----
-
-## Quick troubleshooting
-
-| Problem | Fix |
-|---------|-----|
-| Blank page | Run `composer install` and check PHP error logs |
-| 404 on sub-routes | Enable mod_rewrite / `.htaccess` |
-| Missing extension error | Enable ext-mysqli and ext-zip in php.ini |
-| Installer does not open | Verify document root and write permissions on runtime folders |
-
----
-
-## Related docs
-
-- [Pinx CLI (single-app)](./pinx-cli.md)
-- [Your first app](./your-first-app.md)
-- [Project structure](./structure.md)
-- [What is Pinoox?](../introduction/what-is-pinoox.md)
-
----
-
-[← Back to index](../README.md)
+- [Create your first app](./your-first-app.md)
+- [Single-app structure](./structure.md)
+- [DevDB](./devdb.md)
+- [Pinx CLI](./pinx-cli.md)

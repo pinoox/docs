@@ -140,6 +140,31 @@ pinx pinker:df              # diff
 
 ---
 
+## Pinx Inspector
+
+When `pinoox/pinx-inspector` is installed in `require-dev`, `pinx dev` exposes a local dashboard on the same server:
+
+```bash
+pinx dev
+# http://127.0.0.1:8000/~inspector
+```
+
+Inspector is local-only and helps you view routes, database connections, tables, migrations, logs, config, language files, schedules, Pinker cache, and build readiness.
+
+Disable it when needed:
+
+```bash
+pinx dev --no-inspector
+```
+
+Run it directly:
+
+```bash
+pinx inspector
+```
+
+---
+
 ## Ship to production
 
 Build a `.pinx` package for installation on a full Pinoox platform (Manager → Applications):
