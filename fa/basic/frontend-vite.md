@@ -35,6 +35,7 @@ apps/com_my_shop/theme/default/
 | `info` | `php pinoox fe info {package}` | stack، manifest، فایل hot، wiring Vite |
 | `install` | `php pinoox fe install {package}` | `npm install` / `npm ci` در تم |
 | `dev` | `php pinoox fe dev {package}` | PHP `serve` + Vite HMR (URLهای zero-config) |
+| `dev:apps` | `php pinoox fe dev:apps` | یک `serve` PHP + Vite برای **چند** اپ |
 | `build` | `php pinoox fe build {package}` | build تولید (`dist/`) |
 | `watch` | `php pinoox fe watch {package}` | rebuild با ذخیره (بدون HMR) |
 | `scaffold` | `php pinoox fe scaffold {package} vue` | کپی stubهای vue/react/vite در تم |
@@ -53,6 +54,49 @@ apps/com_my_shop/theme/default/
 | `--env-file` | نام فایل env تم (پیش‌فرض `.env`) |
 | `--no-install` | رد کردن npm install |
 | `--install` | اجبار npm install |
+
+### `fe dev:apps` — چند اپ همزمان
+
+وقتی روی **بیش از یک اپ** در یک پلتفرم کار می‌کنید (مثلاً welcome در `/` و manager در `/manager`)، از این دستور استفاده کنید. یک ترمینال یک `php pinoox serve` مشترک و برای هر اپ یک سرور Vite — هر کدام روی port خودش.
+
+```bash
+# تعاملی — جدول packageها، سپس شماره یا نام را تایپ کنید
+php pinoox fe dev:apps
+
+# نام package صریح (فقط نام کامل com_*)
+php pinoox fe dev:apps com_pinoox_manager,com_pinoox_welcome
+php pinoox fe dev:apps --apps=com_pinoox_manager,com_pinoox_welcome
+```
+
+**ورودی تعاملی** (بعد از جدول):
+
+| ورودی | نتیجه |
+|--------|--------|
+| `1,7` | اپ‌ها با شماره ردیف جدول |
+| `com_pinoox_manager,com_pinoox_welcome` | نام کامل package (جدا شده با کاما) |
+| `all` | همه اپ‌هایی که تم فرانت‌اند دارند |
+
+نام‌های کوتاه مثل `manager` یا `welcome` **پذیرفته نمی‌شوند** — از نام کامل package (`com_*`) استفاده کنید.
+
+| Option | Description |
+|--------|-------------|
+| `--apps` | لیست package با کاما (برای اسکریپت / CI) |
+| `--serve-host` | host سرور dev PHP |
+| `--serve-port` | port سرور dev PHP (پیش‌فرض `8000`) |
+| `--fix-vite` | اتصال خودکار `vite.config.js` برای هر تم |
+| `--no-install` | رد کردن npm install |
+
+CLI برای هر اپ یک URL چاپ می‌کند و لاگ Vite را با پیشوند می‌نویسد (`[manager]`، `[welcome]`، …). **Ctrl+C** سرور PHP و همه پروسه‌های Vite را متوقف می‌کند.
+
+وقتی portهای پیش‌فرض تداخل دارند، در `frontend.config.php` هر تم port منحصربه‌فرد بدهید:
+
+```php
+'dev' => ['port' => 5174],
+```
+
+`dev-stack` نام مستعار منسوخ‌شده برای `dev:apps` است.
+
+**دو بار** `fe dev` بدون `--no-serve` اجرا نکنید — هر دو port `8000` را می‌گیرند و فقط یک اپ route می‌شود. از `fe dev:apps` استفاده کنید، یا: یک `php pinoox serve` به‌علاوه `fe dev {package} --no-serve` برای هر اپ.
 
 **گردش کار:** **URL اپ PHP** را در مرورگر باز کنید (مثلاً `http://127.0.0.1:8000/manager`)، نه port Vite. CLI یک URL اپلیکیشن چاپ می‌کند؛ خطوط URL Vite مخفی هستند. وقتی فایل hot وجود دارد، PHP تگ‌های HMR را inject می‌کند.
 
@@ -249,6 +293,8 @@ CLI globهای مطلق PHP را از طریق `VITE_DEV_REFRESH` inject می‌
 ## mount path و چند اپ
 
 در نصب پلتفرم، `fe dev` mount روتر هر اپ را می‌خواند (مثلاً `com_pinoox_manager` → `/manager`). `VITE_SERVER_URL` می‌شود `http://host:port/manager` و پیشوندهای proxy آن مسیر را شامل می‌شوند.
+
+برای **دو اپ یا بیشتر همزمان**، از `php pinoox fe dev:apps` استفاده کنید (بالا). هر package یک `FrontendDevSession`، port Vite و فایل `dist/hot` جدا دارد؛ PHP یک‌بار از طریق روتر کامل سرو می‌شود.
 
 وقتی تشخیص روتر اشتباه است با `frontend.config.php` یا مقادیر دستی `.env` override کنید.
 

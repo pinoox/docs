@@ -35,6 +35,7 @@ Run from the **platform root**. Omit the package to pick from a list.
 | `info` | `php pinoox fe info {package}` | Stack, manifest, hot file, Vite wiring |
 | `install` | `php pinoox fe install {package}` | `npm install` / `npm ci` in the theme |
 | `dev` | `php pinoox fe dev {package}` | PHP `serve` + Vite HMR (zero-config URLs) |
+| `dev:apps` | `php pinoox fe dev:apps` | One PHP `serve` + Vite for **multiple** apps |
 | `build` | `php pinoox fe build {package}` | Production build (`dist/`) |
 | `watch` | `php pinoox fe watch {package}` | Rebuild on save (no HMR) |
 | `scaffold` | `php pinoox fe scaffold {package} vue` | Copy vue/react/vite stub into theme |
@@ -53,6 +54,49 @@ Run from the **platform root**. Omit the package to pick from a list.
 | `--env-file` | Theme env file name (default `.env`) |
 | `--no-install` | Skip npm install |
 | `--install` | Force npm install |
+
+### `fe dev:apps` — multiple apps
+
+Use when you develop **more than one app** on the same platform (e.g. welcome at `/` and manager at `/manager`). One terminal runs a shared `php pinoox serve` plus a Vite dev server per app — each on its own port.
+
+```bash
+# Interactive — table of packages, then type numbers or names
+php pinoox fe dev:apps
+
+# Explicit package names (full com_* names only)
+php pinoox fe dev:apps com_pinoox_manager,com_pinoox_welcome
+php pinoox fe dev:apps --apps=com_pinoox_manager,com_pinoox_welcome
+```
+
+**Interactive input** (after the table):
+
+| You type | Result |
+|----------|--------|
+| `1,7` | Apps by row number from the table |
+| `com_pinoox_manager,com_pinoox_welcome` | Full package names (comma-separated) |
+| `all` | Every app that has a frontend theme |
+
+Short aliases like `manager` or `welcome` are **not** accepted — use full package names (`com_*`).
+
+| Option | Description |
+|--------|-------------|
+| `--apps` | Comma-separated package list (for scripts / CI) |
+| `--serve-host` | PHP dev server host |
+| `--serve-port` | PHP dev server port (default `8000`) |
+| `--fix-vite` | Auto-wire `vite.config.js` for each theme |
+| `--no-install` | Skip npm install |
+
+The CLI prints one URL per app and prefixes Vite logs (`[manager]`, `[welcome]`, …). **Ctrl+C** stops PHP and all Vite processes.
+
+Assign a unique Vite port per theme in `frontend.config.php` when defaults collide:
+
+```php
+'dev' => ['port' => 5174],
+```
+
+`dev-stack` is a deprecated alias for `dev:apps`.
+
+**Do not** run two `fe dev` commands without `--no-serve` — both try to bind port `8000` and only one app is routed. Prefer `fe dev:apps` or: one `php pinoox serve` plus `fe dev {package} --no-serve` per app.
 
 **Workflow:** open the **PHP app URL** in the browser (e.g. `http://127.0.0.1:8000/manager`), not the Vite port. The CLI prints one application URL; Vite URL lines are hidden. PHP injects HMR tags when the hot file exists.
 
@@ -249,6 +293,8 @@ When `APP_ENV=production`, Pinoox **never** enables Vite HMR — even if `dist/h
 ## Mount paths and multi-app
 
 For platform installs, `fe dev` reads each app’s router mount (e.g. `com_pinoox_manager` → `/manager`). `VITE_SERVER_URL` becomes `http://host:port/manager` and proxy prefixes include that path.
+
+For **two or more apps at once**, use `php pinoox fe dev:apps` (see above). Each package gets its own `FrontendDevSession`, Vite port, and `dist/hot` file while PHP is served once through the full router.
 
 Override with `frontend.config.php` or manual `.env` values when router detection is wrong.
 

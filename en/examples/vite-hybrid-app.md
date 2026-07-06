@@ -266,6 +266,8 @@ ENV_SERVER_SYNC=false
 php pinoox fe com_acme_vite_shop dev --no-serve
 ```
 
+On a **multi-app platform** (e.g. welcome + manager), run `php pinoox fe dev:apps` with full package names instead of several `fe dev` terminals. See [Frontend & Vite — dev:apps](../basic/frontend-vite.md#fe-devapps--multiple-apps).
+
 Open the **PHP** page URL in the browser (not the Vite port). Changing quantity updates the live total.
 
 ---

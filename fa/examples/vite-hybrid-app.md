@@ -266,6 +266,8 @@ ENV_SERVER_SYNC=false
 php pinoox fe com_acme_vite_shop dev --no-serve
 ```
 
+در **پلتفرم چند اپ** (مثلاً welcome + manager)، به‌جای چند ترمینال `fe dev` از `php pinoox fe dev:apps` با نام کامل package استفاده کنید. [فرانت‌اند و Vite — dev:apps](../basic/frontend-vite.md) را ببینید.
+
 صفحه **PHP** را در مرورگر باز کنید (نه port Vite). با تغییر تعداد، جمع لحظه‌ای به‌روز می‌شود.
 
 ---
