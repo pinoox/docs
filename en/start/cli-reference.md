@@ -66,7 +66,7 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | `seeder:create` | `database/seeders/` |
 | `factory:create` | `database/factories/` |
 | `test:create` | Pest file |
-| `theme:frontend` | Frontend tooling (Vue/React/Twig) |
+| `theme:frontend` | Frontend tooling (Vue/React/Vite) — see [Frontend & Vite](../basic/frontend-vite.md) |
 
 ---
 
@@ -240,9 +240,25 @@ See [Schedule](../advanced/schedule.md).
 |---------|---------|
 | `test` | Pest tests |
 | `serve` | Built-in dev server |
+| `theme:frontend` / `fe` | Vite dev, build, watch — [Frontend & Vite](../basic/frontend-vite.md) |
 | `log:view` / `log:clear` | Logs |
 | `deps` | Composer/npm across apps |
 | `version` / `mode:show` | Version / runtime mode |
+
+### `theme:frontend` (`fe`)
+
+```bash
+php pinoox fe info com_my_shop
+php pinoox fe install com_my_shop
+php pinoox fe dev com_my_shop              # PHP serve + Vite HMR
+php pinoox fe dev com_my_shop --no-serve   # Vite only (MAMP / external PHP)
+php pinoox fe dev com_my_shop --fix-vite   # Wire vite.pinoox.mjs into vite.config.js
+php pinoox fe build com_my_shop
+php pinoox fe watch com_my_shop
+php pinoox fe scaffold com_my_shop vue
+```
+
+`fe dev` resolves `VITE_*` URLs from the app router and injects missing values at runtime. It does **not** change theme `.env` unless `ENV_SERVER_SYNC=true`. See [Frontend & Vite](../basic/frontend-vite.md).
 
 ---
 
@@ -259,6 +275,7 @@ See [Schedule](../advanced/schedule.md).
 
 ## Related docs
 
+- [Frontend & Vite](../basic/frontend-vite.md)
 - [Your first app](./your-first-app.md)
 - [Migrations](../database/migrations.md)
 - [Patches](../database/patches.md)

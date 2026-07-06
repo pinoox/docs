@@ -315,6 +315,7 @@ Output goes to `theme/default/dist/` — Twig reads the manifest for production 
 ## Related docs
 
 - [Templates & `vite_tags()`](../basic/templates.md)
+- [Frontend & Vite](../basic/frontend-vite.md)
 - [CLI — `theme:frontend`](../start/cli-reference.md)
 - [app.php — `frontend` key](../start/app-manifest.md)
 

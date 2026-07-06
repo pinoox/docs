@@ -315,7 +315,8 @@ php pinoox fe com_acme_vue_notes build
 ## مستندات مرتبط
 
 - [قالب Twig و vite_tags() — Templates](../basic/templates.md)
-- [CLI فرانت — theme:frontend](../start/cli-reference.md)
+- [فرانت‌اند و Vite](../basic/frontend-vite.md)
+- [مرجع CLI — theme:frontend](../start/cli-reference.md)
 - [app.php — کلید `frontend`](../start/app-manifest.md)
 
 ---

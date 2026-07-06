@@ -38,6 +38,7 @@ Read these in order if you are building a new app.
 - [Validation](./basic/validation.md)
 - [Views](./basic/views.md)
 - [Twig templates](./basic/templates.md)
+- [Frontend & Vite](./basic/frontend-vite.md)
 - [Config](./basic/config.md)
 - [Language and translation](./basic/language.md)
 - [Date and calendar](./basic/date-and-calendar.md)

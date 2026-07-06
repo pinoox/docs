@@ -62,7 +62,10 @@ apps/com_acme_shop/theme/default/
 | `{{ assets('dist/app.js') }}` | فایل theme |
 | `{{ t('welcome.title') }}` | ترجمه |
 | `{{ seo_tags()\|raw }}` | meta SEO |
-| `{{ vite_tags('src/main.js')\|raw }}` | تگ‌های Vite |
+| `{{ vite_tags('src/main.js')\|raw }}` | تگ‌های dev HMR یا production با Vite |
+| `{{ vite_css_tags('src/main.js')\|raw }}` | فقط تگ‌های stylesheet |
+| `{{ vite_js_tags('src/main.js')\|raw }}` | فقط تگ‌های script |
+| `{{ vite_asset('src/logo.png') }}` | URL نسخه‌دار از manifest |
 
 ---
 
@@ -100,11 +103,14 @@ const PINOOX = {
 </html>
 ```
 
-Build:
+Build و dev:
 
 ```bash
-php pinoox theme:frontend build com_acme_shop
+php pinoox fe build com_acme_shop
+php pinoox fe dev com_acme_shop
 ```
+
+برای متغیرهای env، `vite.pinoox.mjs` و تنظیم mount path به [فرانت‌اند و Vite](./frontend-vite.md) مراجعه کنید.
 
 ---
 
@@ -143,6 +149,7 @@ php pinoox cache:build com_acme_shop --only=twig
 - [View — ویو](views.md)
 - [URL — آدرس](url.md)
 - [زبان](language.md)
+- [فرانت‌اند و Vite](./frontend-vite.md)
 - [ساختار پروژه](../start/structure.md)
 
 ---

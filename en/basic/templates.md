@@ -62,7 +62,10 @@ apps/com_acme_shop/theme/default/
 | `{{ assets('dist/app.js') }}` | theme file |
 | `{{ t('welcome.title') }}` | translation |
 | `{{ seo_tags()\|raw }}` | SEO meta tags |
-| `{{ vite_tags('src/main.js')\|raw }}` | Vite tags |
+| `{{ vite_tags('src/main.js')\|raw }}` | Vite dev HMR or production tags |
+| `{{ vite_css_tags('src/main.js')\|raw }}` | Stylesheet tags only |
+| `{{ vite_js_tags('src/main.js')\|raw }}` | Script tags only |
+| `{{ vite_asset('src/logo.png') }}` | Versioned asset URL from manifest |
 
 ---
 
@@ -100,11 +103,14 @@ This file is usually served from the `@pinooxjs` route via `View::jsResponse('pi
 </html>
 ```
 
-Build:
+Build and dev:
 
 ```bash
-php pinoox theme:frontend build com_acme_shop
+php pinoox fe build com_acme_shop
+php pinoox fe dev com_acme_shop
 ```
+
+See [Frontend & Vite](./frontend-vite.md) for env variables, `vite.pinoox.mjs`, and mount-path setup.
 
 ---
 
@@ -143,6 +149,7 @@ php pinoox cache:build com_acme_shop --only=twig
 - [Views](./views.md)
 - [URL](./url.md)
 - [Language](./language.md)
+- [Frontend & Vite](./frontend-vite.md)
 - [Project structure](../start/structure.md)
 
 ---
