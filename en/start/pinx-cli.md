@@ -35,7 +35,7 @@ Add Composer's global `bin` to your `PATH` if `pinx` is not found:
 | `pinx new my-shop` | Scaffolds from `pinoox/app`; wizard suggests a 3-part package (e.g. `com_my_shop`) |
 | `.env` | Database and project paths — copy from `.env.example` |
 | `pinx setup` | One-shot: platform migrations → app migrations → seeders |
-| `pinx dev` | PHP dev server; starts Vite too when a frontend stack is configured |
+| `pinx dev` | PHP serve + Vite HMR when a frontend stack is configured; open the **PHP URL** in the terminal output |
 
 Package names follow `com_{vendor}_{name}` — e.g. `com_acme_shop`, `ir_yekdo_app`. Already inside an empty folder? Use `pinx init` instead of `pinx new`.
 
@@ -95,9 +95,10 @@ pinx help setup  # detail for one command
 ## Day-to-day workflow
 
 ```bash
-pinx dev                    # local server (+ Vite when app.php → frontend.stack is set)
-pinx dev --open             # open browser after start
-pinx dev --no-frontend      # PHP only
+pinx dev                    # PHP + Vite HMR (forwards to pincore dev)
+pinx dev --network          # bind PHP + Vite on LAN
+pinx dev --no-frontend      # PHP serve only — built manifest assets (no HMR)
+pinx dev --open             # open browser (--no-frontend only)
 
 pinx migrate                # run app migrations (--platform runs platform first)
 pinx migrate:st             # migration status
@@ -117,10 +118,13 @@ pinx test                   # run app tests (Pest)
 ```bash
 pinx fe:info                # stack, npm scripts, paths
 pinx fe:i                   # npm install
-pinx fe:d                   # Vite dev server
+pinx fe:d                   # PHP + Vite HMR (same as pinx dev with frontend stack)
+pinx fe:w                   # watch — rebuild production assets on save
 pinx fe:b                   # production build
 pinx fe:sc --stack=vue      # scaffold starter files
 ```
+
+Open the **PHP URL** printed by `pinx dev` or `pinx fe:d` — not the Vite port. See [Frontend & Vite](../basic/frontend-vite.md) and [@pinooxhq/vite-plugin](../basic/vite-plugin.md).
 
 **Dependencies:**
 
@@ -235,7 +239,7 @@ Run `pinx list` for a sectioned overview. Shorthand aliases appear in brackets.
 
 | Command | Description |
 |---------|-------------|
-| `dev` | Dev server; Vite when `frontend.stack` is vue/react |
+| `dev` | PHP + Vite HMR when `frontend.stack` is vue/react/vite; `--no-frontend` for manifest-only serve |
 
 ### Database
 
@@ -290,7 +294,8 @@ Run `pinx list` for a sectioned overview. Shorthand aliases appear in brackets.
 | `fe:info` | `fe:inf` | Theme stack and npm scripts |
 | `fe:install` | `fe:i` | npm install |
 | `fe:build` | `fe:b` | Production build |
-| `fe:dev` | `fe:d` | Vite dev server |
+| `fe:dev` | `fe:d` | PHP + Vite HMR |
+| `fe:watch` | `fe:w` | Rebuild on save (no HMR) |
 | `fe:scaffold` | `fe:sc` | Starter files (`--stack=vue\|react\|twig`) |
 
 ### Schedule
@@ -382,6 +387,8 @@ Override the detected package with environment variables:
 
 ## Related docs
 
+- [Frontend & Vite](../basic/frontend-vite.md)
+- [@pinooxhq/vite-plugin](../basic/vite-plugin.md)
 - [Installing Pinoox](./installing-pinoox.md)
 - [Pinoox CLI reference (multi-app)](./cli-reference.md)
 - [Your first app](./your-first-app.md)

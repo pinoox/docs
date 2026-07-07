@@ -49,6 +49,7 @@
 #### [ویو (View)](./basic/views.md)
 #### [قالب Twig](./basic/templates.md)
 #### [فرانت‌اند و Vite](./basic/frontend-vite.md)
+#### [@pinooxhq/vite-plugin](./basic/vite-plugin.md)
 #### [Portal (فاساد)](./basic/portal.md)
 #### [پیکربندی (Config)](./basic/config.md)
 #### [زبان و ترجمه (Lang)](./basic/language.md)

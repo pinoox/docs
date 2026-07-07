@@ -35,7 +35,7 @@ pinx dev                      # http://127.0.0.1:8000
 | `pinx new my-shop` | اسکلت از `pinoox/app`؛ ویزارد یک پکیج سه‌بخشی پیشنهاد می‌دهد (مثل `com_my_shop`) |
 | `.env` | دیتابیس و مسیرهای پروژه — از `.env.example` کپی کنید |
 | `pinx setup` | یک‌جا: مایگریشن platform ← مایگریشن اپ ← seeder ها |
-| `pinx dev` | سرور توسعه PHP؛ اگر استک فرانت‌اند تنظیم باشد Vite هم اجرا می‌شود |
+| `pinx dev` | PHP serve + Vite HMR وقتی استک فرانت‌اند تنظیم باشد؛ **URL PHP** چاپ‌شده در ترمینال را باز کنید |
 
 نام پکیج‌ها از الگوی `com_{vendor}_{name}` پیروی می‌کند — مثلاً `com_acme_shop`، `ir_yekdo_app`. اگر داخل یک پوشه خالی هستید، به‌جای `pinx new` از `pinx init` استفاده کنید.
 
@@ -95,9 +95,10 @@ pinx help setup  # جزئیات یک دستور
 ## گردش کار روزانه
 
 ```bash
-pinx dev                    # سرور لوکال (+ Vite وقتی app.php → frontend.stack تنظیم باشد)
-pinx dev --open             # باز کردن مرورگر بعد از شروع
-pinx dev --no-frontend      # فقط PHP
+pinx dev                    # PHP + Vite HMR (فوروارد به pincore dev)
+pinx dev --network          # bind PHP + Vite روی LAN
+pinx dev --no-frontend      # فقط PHP serve — دارایی manifest (بدون HMR)
+pinx dev --open             # باز کردن مرورگر (فقط با --no-frontend)
 
 pinx migrate                # اجرای مایگریشن‌های اپ (--platform اول platform را اجرا می‌کند)
 pinx migrate:st             # وضعیت مایگریشن
@@ -117,10 +118,13 @@ pinx test                   # اجرای تست‌های اپ (Pest)
 ```bash
 pinx fe:info                # استک، اسکریپت‌های npm، مسیرها
 pinx fe:i                   # npm install
-pinx fe:d                   # سرور توسعه Vite
+pinx fe:d                   # PHP + Vite HMR (همان pinx dev با استک فرانت‌اند)
+pinx fe:w                   # watch — rebuild دارایی production با ذخیره
 pinx fe:b                   # بیلد production
 pinx fe:sc --stack=vue      # ساخت فایل‌های شروع
 ```
+
+**URL PHP** چاپ‌شده توسط `pinx dev` یا `pinx fe:d` را باز کنید — نه port Vite. [فرانت‌اند و Vite](../basic/frontend-vite.md) و [@pinooxhq/vite-plugin](../basic/vite-plugin.md) را ببینید.
 
 **وابستگی‌ها:**
 
@@ -210,7 +214,7 @@ pinx doctor --no-fixes      # عدم نمایش دستورهای پیشنهاد�
 
 | دستور | توضیح |
 |-------|-------|
-| `dev` | سرور توسعه؛ Vite وقتی `frontend.stack` برابر vue/react باشد |
+| `dev` | PHP + Vite HMR وقتی `frontend.stack` برابر vue/react/vite باشد؛ `--no-frontend` برای serve فقط با manifest |
 
 ### دیتابیس
 
@@ -265,7 +269,8 @@ pinx doctor --no-fixes      # عدم نمایش دستورهای پیشنهاد�
 | `fe:info` | `fe:inf` | استک تم و اسکریپت‌های npm |
 | `fe:install` | `fe:i` | npm install |
 | `fe:build` | `fe:b` | بیلد production |
-| `fe:dev` | `fe:d` | سرور توسعه Vite |
+| `fe:dev` | `fe:d` | PHP + Vite HMR |
+| `fe:watch` | `fe:w` | rebuild با ذخیره (بدون HMR) |
 | `fe:scaffold` | `fe:sc` | فایل‌های شروع (`--stack=vue\|react\|twig`) |
 
 ### زمان‌بندی
@@ -338,6 +343,8 @@ Pinx از پوشه جاری به سمت بالا حرکت می‌کند تا ی�
 
 ## مستندات مرتبط
 
+- [فرانت‌اند و Vite](../basic/frontend-vite.md)
+- [@pinooxhq/vite-plugin](../basic/vite-plugin.md)
 - [نصب و راه‌اندازی](./installing-pinoox.md)
 - [مرجع CLI پینوکس (چنداپه)](./cli-reference.md)
 - [ساخت اولین اپلیکیشن](./your-first-app.md)

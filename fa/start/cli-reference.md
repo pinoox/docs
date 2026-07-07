@@ -249,17 +249,19 @@ pinx pinion:info {upload_id} --json
 ```bash
 php pinoox fe info com_my_shop
 php pinoox fe install com_my_shop
-php pinoox fe dev com_my_shop              # PHP serve + Vite HMR
+php pinoox fe dev com_my_shop              # PHP serve + Vite HMR (تا آماده شدن Vite)
+php pinoox dev com_my_shop                 # میانبر fe dev
 php pinoox fe dev com_my_shop --no-serve   # فقط Vite (MAMP / PHP خارجی)
-php pinoox fe dev com_my_shop --fix-vite   # اتصال vite.pinoox.mjs به vite.config.js
+php pinoox fe dev com_my_shop --fix-vite   # اتصال @pinooxhq/vite-plugin به vite.config.js
 php pinoox fe dev:apps                     # چند اپ: یک serve + Vite برای هر package
 php pinoox fe dev:apps --apps=com_pinoox_manager,com_pinoox_welcome
 php pinoox fe build com_my_shop
 php pinoox fe watch com_my_shop
 php pinoox fe scaffold com_my_shop vue
+php pinoox serve --app=com_my_shop@/manager # فقط manifest (PINOOX_VITE_HMR=0)
 ```
 
-`fe dev` مقادیر `VITE_*` را از روتر اپ resolve می‌کند و مقادیر خالی را در runtime inject می‌کند. فایل `.env` تم را **تغییر نمی‌دهد** مگر `ENV_SERVER_SYNC=true` باشد. برای چند اپ در یک ترمینال از `fe dev:apps` با نام کامل package (`com_*`) استفاده کنید. [فرانت‌اند و Vite](../basic/frontend-vite.md) را ببینید.
+`fe dev` مقدار `PINOOX_VITE_HMR=1` را تنظیم می‌کند، URLهای `VITE_*` را از روتر اپ resolve می‌کند و مقادیر خالی را در runtime inject می‌کند. **URL PHP** چاپ‌شده در ترمینال را باز کنید — نه port Vite. `php pinoox serve` همیشه از دارایی‌های build‌شده manifest استفاده می‌کند. [فرانت‌اند و Vite](../basic/frontend-vite.md) و [@pinooxhq/vite-plugin](../basic/vite-plugin.md) را ببینید.
 
 ---
 

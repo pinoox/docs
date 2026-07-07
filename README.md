@@ -39,6 +39,8 @@ Read these in order if you are building a new app.
 - [Validation](./en/basic/validation.md)
 - [Views](./en/basic/views.md)
 - [Twig templates](./en/basic/templates.md)
+- [Frontend & Vite](./en/basic/frontend-vite.md)
+- [@pinooxhq/vite-plugin](./en/basic/vite-plugin.md)
 - [Config](./en/basic/config.md)
 - [Language and translation](./en/basic/language.md)
 - [Date and calendar](./en/basic/date-and-calendar.md)

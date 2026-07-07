@@ -1,33 +1,39 @@
 # Pinoox frontend dev (Vite + Twig hybrid themes)
 
-Unified local development: **one command** starts PHP + Vite.
+> **Moved:** This quick reference is superseded by the official docs:
+> - English: [Frontend & Vite](./en/basic/frontend-vite.md) · [@pinooxhq/vite-plugin](./en/basic/vite-plugin.md)
+> - فارسی: [فرانت‌اند و Vite](./fa/basic/frontend-vite.md) · [@pinooxhq/vite-plugin](./fa/basic/vite-plugin.md)
+
+Unified local development: **one command** starts PHP + Vite HMR.
 
 ```bash
-php pinoox dev              # interactive pick
-php pinoox dev spark        # manager theme
-php pinoox dev welcome      # welcome theme
-composer run dev            # same as php pinoox dev
+php pinoox dev com_pinoox_manager    # shortcut for fe dev
+php pinoox fe dev com_pinoox_manager   # PHP serve + Vite HMR
+php pinoox fe dev:apps                 # platform — multiple apps
+composer run dev                       # same as php pinoox dev (when configured)
 ```
 
-Browse the **PHP app URL** in your browser. Twig injects HMR via `vite_tags()`; `dist/hot` is written automatically.
+Browse the **PHP app URL** printed in the terminal. Twig injects HMR via `vite_tags()`; `dist/hot` is written by `@pinooxhq/vite-plugin`.
 
 ## Commands
 
 | Command | Action |
 |---------|--------|
-| `php pinoox dev` | PHP serve + Vite HMR |
-| `php pinoox fe {theme} dev` | Same (alias `fe`, `frontend`) |
-| `php pinoox fe {theme} build` | Production build + WebServerFix sync |
-| `php pinoox fe {theme} info` | Stack, hot file, recommended Twig |
-| `php pinoox dev --no-serve` | Vite only (MAMP, Docker PHP) |
+| `php pinoox dev {package}` | PHP serve + Vite HMR (shortcut) |
+| `php pinoox fe {package} dev` | Same (`fe`, `frontend` aliases) |
+| `php pinoox fe {package} build` | Production build |
+| `php pinoox fe {package} watch` | Rebuild on save (no HMR) |
+| `php pinoox fe dev:apps` | One PHP serve + Vite per app (platform) |
+| `php pinoox serve --app=...` | Manifest only — no HMR |
+| `php pinoox fe dev --no-serve` | Vite only (MAMP, Docker PHP) |
 
 ## Theme layout
 
 ```text
 apps/{package}/theme/{name}/
 ├── frontend.config.php   # profile + stack (entry/manifest auto)
-├── vite.config.js        # imports ./vite.pinoox.mjs
-├── vite.pinoox.mjs       # synced by fe dev/build from pincore / packages
+├── vite.config.js        # pinoox() from @pinooxhq/vite-plugin
+├── package.json          # @pinooxhq/vite-plugin in devDependencies
 ├── partials/scripts.twig # pinoox_bootstrap() + vite_tags('src/main.js')
 └── dist/hot              # written by Vite when dev runs (gitignore)
 ```
@@ -39,81 +45,20 @@ apps/{package}/theme/{name}/
 {{ vite_tags('src/main.js')|raw }}
 ```
 
-Production: reads `dist/.vite/manifest.json`. Dev: reads `dist/hot` or `VITE_DEV` + `VITE_DEV_SERVER`.
-
-## Environment
-
-### Project root `.env`
-
-```env
-VITE_DEV=true
-VITE_DEV_SERVER=http://127.0.0.1:5173
-APP_URL=http://127.0.0.1:8000
-```
-
-`VITE_DEV` is a fallback when `dist/hot` is missing. Prefer the hot file (automatic with `php pinoox dev`).
-
-### Theme `.env` (optional)
-
-```env
-VITE_SERVER_URL=http://127.0.0.1:8000
-```
-
-Set for MAMP/subfolder installs. `php pinoox dev` auto-sets `VITE_SERVER_URL` and `VITE_DEV_PROXY` from app routes when possible.
-
-| Variable | Set by | Purpose |
-|----------|--------|---------|
-| `PINOOX_HOT_FILE` | CLI | Hot file path (default `dist/hot`) |
-| `VITE_DEV_PORT` | theme `.env` | Pin Vite port; omit for auto (5173→5174→…) |
-| `VITE_SERVER_URL` | CLI / theme `.env` | PHP backend for API proxy |
-| `VITE_DEV_PROXY` | CLI | Comma-separated proxy prefixes |
-
-## Vite plugin
-
-Themes use `vite.pinoox.mjs` (synced locally) or npm `@pinoox/vite-plugin` from `packages/pinoox-vite-plugin`.
+## vite.config.js (Vue)
 
 ```js
-import pinooxHot, { pinooxRefresh, pinooxServer } from './vite.pinoox.mjs';
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import pinoox from '@pinooxhq/vite-plugin';
+import { pinooxVueTemplateOptions } from '@pinooxhq/vite-plugin/vue';
 
-export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, process.cwd(), '');
-    return {
-        plugins: [vue(), pinooxHot(), pinooxRefresh()],
-        server: pinooxServer(env),
-    };
+export default defineConfig({
+    plugins: [
+        pinoox(['src/main.js']),
+        vue(pinooxVueTemplateOptions()),
+    ],
 });
 ```
 
-- **pinooxHot** — writes `dist/hot` for PHP `ViteHelper`
-- **pinooxRefresh** — full reload on Twig/PHP changes
-- **pinooxServer** — port, host, API proxy from env
-
-## MAMP workflow
-
-```bash
-# Terminal 1 — Vite only
-php pinoox dev spark --no-serve
-
-# theme/spark/.env
-VITE_SERVER_URL=http://localhost/pinoox/manager
-```
-
-Open the MAMP URL in the browser.
-
-## New theme
-
-```bash
-php pinoox theme:create my-theme
-php pinoox fe com_my_app scaffold --stack=vue
-php pinoox fe com_my_app install
-php pinoox dev com_my_app
-```
-
-## Laravel comparison
-
-| Laravel | Pinoox |
-|---------|--------|
-| `@vite()` | `vite_tags()` |
-| `public/hot` | `theme/dist/hot` |
-| `laravel-vite-plugin` | `vite.pinoox.mjs` / `@pinoox/vite-plugin` |
-| `composer run dev` | `php pinoox dev` / `composer run dev` |
+Full guide: [en/basic/vite-plugin.md](./en/basic/vite-plugin.md)

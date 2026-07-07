@@ -250,17 +250,19 @@ See [Schedule](../advanced/schedule.md).
 ```bash
 php pinoox fe info com_my_shop
 php pinoox fe install com_my_shop
-php pinoox fe dev com_my_shop              # PHP serve + Vite HMR
+php pinoox fe dev com_my_shop              # PHP serve + Vite HMR (waits for Vite)
+php pinoox dev com_my_shop                 # shortcut for fe dev
 php pinoox fe dev com_my_shop --no-serve   # Vite only (MAMP / external PHP)
-php pinoox fe dev com_my_shop --fix-vite   # Wire vite.pinoox.mjs into vite.config.js
+php pinoox fe dev com_my_shop --fix-vite   # Wire @pinooxhq/vite-plugin into vite.config.js
 php pinoox fe dev:apps                     # Multi-app: one serve + Vite per package
 php pinoox fe dev:apps --apps=com_pinoox_manager,com_pinoox_welcome
 php pinoox fe build com_my_shop
 php pinoox fe watch com_my_shop
 php pinoox fe scaffold com_my_shop vue
+php pinoox serve --app=com_my_shop@/manager # manifest only (PINOOX_VITE_HMR=0)
 ```
 
-`fe dev` resolves `VITE_*` URLs from the app router and injects missing values at runtime. It does **not** change theme `.env` unless `ENV_SERVER_SYNC=true`. For multiple apps in one terminal, use `fe dev:apps` with full `com_*` package names. See [Frontend & Vite](../basic/frontend-vite.md).
+`fe dev` sets `PINOOX_VITE_HMR=1`, resolves `VITE_*` URLs from the app router, and injects missing values at runtime. Open the **PHP URL** in the terminal — not the Vite port. `php pinoox serve` always uses built manifest assets. See [Frontend & Vite](../basic/frontend-vite.md) and [@pinooxhq/vite-plugin](../basic/vite-plugin.md).
 
 ---
 

@@ -110,7 +110,7 @@ php pinoox fe build com_acme_shop
 php pinoox fe dev com_acme_shop
 ```
 
-برای متغیرهای env، `vite.pinoox.mjs` و تنظیم mount path به [فرانت‌اند و Vite](./frontend-vite.md) مراجعه کنید.
+برای متغیرهای env، [@pinooxhq/vite-plugin](./vite-plugin.md) و تنظیم mount path به [فرانت‌اند و Vite](./frontend-vite.md) مراجعه کنید.
 
 ---
 
@@ -150,6 +150,7 @@ php pinoox cache:build com_acme_shop --only=twig
 - [URL — آدرس](url.md)
 - [زبان](language.md)
 - [فرانت‌اند و Vite](./frontend-vite.md)
+- [@pinooxhq/vite-plugin](./vite-plugin.md)
 - [ساختار پروژه](../start/structure.md)
 
 ---

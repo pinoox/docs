@@ -2,7 +2,7 @@
 
 [← Back to index](../README.md)
 
-Pinoox themes can ship a **Vite** frontend (Vue, React, or vanilla JS). PHP renders Twig; Vite builds and serves client assets. The `php pinoox fe` command (alias `theme:frontend`) wires dev URLs, hot reload, and production manifests.
+Pinoox themes can ship a **Vite** frontend (Vue, React, or vanilla JS). PHP renders Twig; Vite builds and serves client assets. The `php pinoox fe` command (alias `theme:frontend`) wires dev URLs, hot reload, and production manifests. Themes use the npm package [**@pinooxhq/vite-plugin**](./vite-plugin.md) in `vite.config.js`.
 
 ---
 
@@ -11,9 +11,8 @@ Pinoox themes can ship a **Vite** frontend (Vue, React, or vanilla JS). PHP rend
 ```
 apps/com_my_shop/theme/default/
 ├── frontend.config.php    # stack, manifest, dev overrides
-├── package.json
-├── vite.config.js
-├── vite.pinoox.mjs        # synced from pincore on fe dev/build
+├── package.json           # @pinooxhq/vite-plugin in devDependencies
+├── vite.config.js         # pinoox() from @pinooxhq/vite-plugin
 ├── .env                   # optional Vite overrides (not modified by default)
 ├── dist/
 │   ├── hot                # written by Vite in dev (HMR signal for PHP)
@@ -30,11 +29,14 @@ apps/com_my_shop/theme/default/
 
 Run from the **platform root**. Omit the package to pick from a list.
 
+**Shortcut:** `php pinoox dev {package}` forwards to `fe {package} dev` with the same options (`--no-serve`, `--network`, `--fix-vite`, …).
+
 | Action | Command | Purpose |
 |--------|---------|---------|
 | `info` | `php pinoox fe info {package}` | Stack, manifest, hot file, Vite wiring |
 | `install` | `php pinoox fe install {package}` | `npm install` / `npm ci` in the theme |
-| `dev` | `php pinoox fe dev {package}` | PHP `serve` + Vite HMR (zero-config URLs) |
+| `dev` | `php pinoox fe dev {package}` | PHP `serve` + Vite HMR (waits until Vite is ready) |
+| `dev` | `php pinoox dev {package}` | Same as `fe dev` (shortcut) |
 | `dev:apps` | `php pinoox fe dev:apps` | One PHP `serve` + Vite for **multiple** apps |
 | `build` | `php pinoox fe build {package}` | Production build (`dist/`) |
 | `watch` | `php pinoox fe watch {package}` | Rebuild on save (no HMR) |
@@ -49,8 +51,12 @@ Run from the **platform root**. Omit the package to pick from a list.
 | `--no-serve` | Vite only; you run PHP yourself (MAMP, Apache, etc.) |
 | `--serve-host` | PHP dev server host (default from `SERVER_HOST`) |
 | `--serve-port` | PHP dev server port (default from `SERVER_PORT`) |
-| `--serve-app` | Locked app for `php pinoox serve` (default: current package) |
-| `--fix-vite` | Auto-wire `pinooxHot` / `pinooxServer` in `vite.config.js` |
+| `--serve-app` | Locked app for `php pinoox serve` (default: `package@/` for single-app dev) |
+| `--network` / `-N` | Bind PHP + Vite on LAN (`0.0.0.0`) |
+| `--vite-host` | Vite bind host (default `127.0.0.1`) |
+| `--vite-network` | Bind Vite to `0.0.0.0` for LAN |
+| `--verbose-vite` | Show full Vite startup URLs |
+| `--fix-vite` | Auto-wire `@pinooxhq/vite-plugin` in `vite.config.js` |
 | `--env-file` | Theme env file name (default `.env`) |
 | `--no-install` | Skip npm install |
 | `--install` | Force npm install |
@@ -98,7 +104,26 @@ Assign a unique Vite port per theme in `frontend.config.php` when defaults colli
 
 **Do not** run two `fe dev` commands without `--no-serve` — both try to bind port `8000` and only one app is routed. Prefer `fe dev:apps` or: one `php pinoox serve` plus `fe dev {package} --no-serve` per app.
 
-**Workflow:** open the **PHP app URL** in the browser (e.g. `http://127.0.0.1:8000/manager`), not the Vite port. The CLI prints one application URL; Vite URL lines are hidden. PHP injects HMR tags when the hot file exists.
+**Workflow:** the CLI waits until Vite is ready, then prints URLs. Open the **PHP app URL** in the browser (e.g. `http://127.0.0.1:8000/manager` for platform router, or `http://127.0.0.1:8000/` for single-app `fe dev com_pinoox_manager`), **not** the Vite port. PHP injects HMR tags when HMR mode is active and the hot file exists.
+
+**Single-app dev** mounts the package at `/` (`package@/`). **Platform dev** uses the full router — prefer `fe dev:apps` when multiple apps need HMR at once.
+
+---
+
+## HMR vs manifest (`serve` vs `fe dev`)
+
+PHP chooses dev HMR or production manifest using `PINOOX_VITE_HMR` and runtime checks:
+
+| Command | `PINOOX_VITE_HMR` | PHP serves | Twig `vite_tags()` |
+|---------|-------------------|------------|-------------------|
+| `php pinoox fe dev` / `php pinoox dev` | `1` | HMR via `dist/hot` + Vite | Vite dev server |
+| `php pinoox serve` | `0` | Built assets only | `dist/.vite/manifest.json` |
+| `pinx dev` (single-app) | `1` when Vite stack is set | Same as `fe dev` | HMR |
+| `pinx dev --no-frontend` | `0` | Manifest only | Built assets |
+
+`php pinoox serve` never enables HMR — even if `dist/hot` exists from a previous dev session. Use `fe dev` when you want live reload.
+
+When `APP_ENV=production`, Pinoox always uses the manifest regardless of `dist/hot`.
 
 ---
 
@@ -171,76 +196,27 @@ return [
 
 ---
 
-## `vite.pinoox.mjs`
+## `@pinooxhq/vite-plugin`
 
-Synced into the theme on `fe dev` / `fe build`. Import from `vite.config.js`:
+Install in the theme and call `pinoox()` from `vite.config.js`:
 
 ```js
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import {
-    pinooxHot,
-    pinooxServer,
-    pinooxRefresh,
-    pinooxDevAssets,
-    pinooxVueTemplateOptions,
-    createPinooxViteConfig,
-} from './vite.pinoox.mjs';
+import pinoox from '@pinooxhq/vite-plugin';
+import { pinooxVueTemplateOptions } from '@pinooxhq/vite-plugin/vue';
 
-export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, process.cwd(), '');
-
-    return {
-        plugins: [
-            vue(pinooxVueTemplateOptions()),
-            pinooxHot({ env }),
-            pinooxDevAssets(env),
-            pinooxRefresh(true, env),
-        ],
-        server: pinooxServer(env),
-    };
+export default defineConfig({
+    plugins: [
+        pinoox(['src/main.js']),
+        vue(pinooxVueTemplateOptions()),
+    ],
 });
 ```
 
-Or use the factory:
+`pinoox()` replaces the older pattern of importing `pinooxHot`, `pinooxServer`, and `pinooxRefresh` from a synced `vite.pinoox.mjs` file. Use `php pinoox fe dev --fix-vite` to migrate an old config.
 
-```js
-import { defineConfig, loadEnv } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import { createPinooxViteConfig } from './vite.pinoox.mjs';
-
-export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, process.cwd(), '');
-
-    return createPinooxViteConfig({
-        env,
-        stack: 'vue',
-        plugins: [vue()],
-    });
-});
-```
-
-| Export | Role |
-|--------|------|
-| `pinooxHot` | Writes hot file so PHP enables HMR |
-| `pinooxServer` | Port, proxy, `origin`, `printUrls: false` |
-| `pinooxRefresh` | Full reload when Twig or app PHP changes |
-| `pinooxDevAssets` | Rewrites `/src/...` to Vite origin in dev |
-| `pinooxVueTemplateOptions` | Vue SFC asset URLs on Vite origin |
-| `createPinooxViteConfig` | Zero-config factory for the above |
-
-`pinooxServer` sets `server.origin` to the Vite URL so assets load correctly when the HTML page is served from PHP under a mount path (e.g. `/manager`).
-
-### Full-page reload in dev
-
-`pinooxRefresh` watches by default:
-
-- Theme `**/*.twig` files
-- App `Flow/` (middleware)
-- App `routes/`
-- App `Controller/`
-
-CLI injects absolute PHP globs via `VITE_DEV_REFRESH`. Pass `env` to `pinooxRefresh(true, env)` so extra paths are picked up.
+Full API, stack examples (React, vanilla, multiple entries), and npm setup: [**@pinooxhq/vite-plugin**](./vite-plugin.md).
 
 ---
 
@@ -286,7 +262,7 @@ Hybrid pages (Twig + widget):
 
 When `APP_ENV=production`, Pinoox **never** enables Vite HMR — even if `dist/hot` exists from a previous `fe dev` session. Built assets from the manifest are always used.
 
-`php pinoox serve` respects the same rule: production mode serves the build, not the dev server.
+`php pinoox serve` sets `PINOOX_VITE_HMR=0` and serves built assets from the manifest — not the Vite dev server. Use `fe dev` for HMR.
 
 ---
 
@@ -302,6 +278,7 @@ Override with `frontend.config.php` or manual `.env` values when router detectio
 
 ## Related docs
 
+- [@pinooxhq/vite-plugin](./vite-plugin.md)
 - [Twig templates](./templates.md)
 - [Views](./views.md)
 - [CLI reference — `theme:frontend`](../start/cli-reference.md)
