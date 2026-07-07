@@ -94,8 +94,30 @@ When you create an app interactively:
 
 ## Database and routes
 
-- Table prefix usually equals the package name: `io_pinoox_ai_users`
-- Route name prefix uses the **app slug** (part after `{scope}_{owner}_`): `com_pinoox_manager` → `manager.`
+- **Route prefix** uses the app slug: `com_pinoox_manager` → `manager.`
+- **Suggested table prefix** uses the same slug: `com_pinoox_manager` → `manager_` → table `manager_users`
+- You may set **any custom prefix** in `app.php` — the installer only suggests the slug; it does not override your explicit choice unless there is a conflict (then it auto-adjusts, e.g. `shop_2_`)
+- For 4-segment packages: `com_acme_shop_panel` → route `shop_panel.` and suggested tables `shop_panel_orders`
+
+Set a custom prefix in source:
+
+```php
+// app.php — optional; any valid prefix is accepted
+'table' => ['prefix' => 'my_legacy_'],
+// or
+'database' => ['prefix' => 'my_legacy_'],
+```
+
+If the slug prefix is already used by another app, the installer tries `{owner}_{app}_` then `_2`, `_3`, … automatically.
+
+Examples:
+
+| Package | Route prefix | Suggested table prefix |
+|---------|--------------|------------------------|
+| `com_pinoox_manager` | `manager.` | `manager_` |
+| `io_yoosefap_ai` | `ai.` | `ai_` |
+| `com_acme_shop_panel` | `shop_panel.` | `shop_panel_` |
+| `com_acme_shop` (when `shop_` taken) | `shop.` | `acme_shop_` or `shop_2_` |
 
 ---
 
@@ -110,5 +132,7 @@ Validation lives in `Pinoox\Component\Package\PackageName`:
 | `equals($a, $b)` | Case-insensitive comparison |
 | `looksLike($value)` | CLI heuristic (package vs username) |
 | `appSlug($package)` | Extract route slug segment |
+| `suggestedTablePrefix($package)` | Same slug as routes — default DB prefix base |
+| `tablePrefixFallbacks($package)` | Longer prefixes when slug collides |
 
 See also [app.php manifest](./app-manifest.md) and [project structure](./structure.md).

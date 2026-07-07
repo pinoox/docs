@@ -92,8 +92,30 @@ App\io_pinoox_ai\Controller\...   ← namespace در PHP
 
 ## دیتابیس و route
 
-- پیشوند جدول معمولاً همان نام پکیج است: `io_pinoox_ai_users`
-- پیشوند route از **app slug** (بخش بعد از `{scope}_{owner}_`) گرفته می‌شود: `com_pinoox_manager` → `manager.`
+- **پیشوند route** از app slug: `com_pinoox_manager` → `manager.`
+- **پیشوند پیشنهادی جدول** همان slug است: `com_pinoox_manager` → `manager_` → جدول `manager_users`
+- در **سورس (`app.php`)** می‌توانید هر prefix دلخواه بگذارید — نصب‌کننده فقط پیشنهاد می‌دهد؛ انتخاب صریح شما حفظ می‌شود مگر تداخل باشد (آنگاه خودکار اصلاح، مثلاً `shop_2_`)
+- پکیج ۴ بخشی: `com_acme_shop_panel` → route `shop_panel.` و جدول پیشنهادی `shop_panel_orders`
+
+prefix سفارشی در سورس:
+
+```php
+// app.php — اختیاری؛ هر prefix معتبری پذیرفته می‌شود
+'table' => ['prefix' => 'my_legacy_'],
+// یا
+'database' => ['prefix' => 'my_legacy_'],
+```
+
+اگر slug قبلاً توسط اپ دیگری استفاده شده، نصب‌کننده `{owner}_{app}_` و سپس `_2`، `_3` را امتحان می‌کند.
+
+مثال:
+
+| پکیج | پیشوند route | پیشوند پیشنهادی جدول |
+|------|--------------|----------------------|
+| `com_pinoox_manager` | `manager.` | `manager_` |
+| `io_yoosefap_ai` | `ai.` | `ai_` |
+| `com_acme_shop_panel` | `shop_panel.` | `shop_panel_` |
+| `com_acme_shop` (وقتی `shop_` اشغال است) | `shop.` | `acme_shop_` یا `shop_2_` |
 
 ---
 
@@ -108,5 +130,7 @@ App\io_pinoox_ai\Controller\...   ← namespace در PHP
 | `equals($a, $b)` | مقایسه بدون حساسیت به حروف |
 | `looksLike($value)` | تشخیص پکیج در CLI |
 | `appSlug($package)` | استخراج slug برای route |
+| `suggestedTablePrefix($package)` | همان slug — پایه پیشوند جدول |
+| `tablePrefixFallbacks($package)` | پیشوندهای بلندتر هنگام تداخل |
 
 بیشتر بخوانید: [مرجع app.php](./app-manifest.md) و [ساختار پروژه](./structure.md).
