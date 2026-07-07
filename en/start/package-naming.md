@@ -27,7 +27,7 @@ com_pinoox_manager
 com_acme_shop
 co_pinoox_app
 ir_mysite_financial
-io_yoosefap_ai
+io_pinoox_ai
 com_acme_shop_panel
 opensource_acme_blog
 ```
@@ -58,9 +58,9 @@ a_b_c                ← scope must be at least 2 characters
 The package name must match everywhere:
 
 ```
-apps/io_yoosefap_ai/          ← folder name
-app.php → 'package' => 'io_yoosefap_ai'
-App\io_yoosefap_ai\Controller\...   ← PHP namespace
+apps/io_pinoox_ai/          ← folder name
+app.php → 'package' => 'io_pinoox_ai'
+App\io_pinoox_ai\Controller\...   ← PHP namespace
 ```
 
 ---
