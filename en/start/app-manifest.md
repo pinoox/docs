@@ -10,7 +10,7 @@
 
 | Key | Purpose |
 |-----|---------|
-| `package` | Folder name = namespace (`com_acme_shop`) |
+| `package` | Folder name = namespace — see [package naming](./start/package-naming.md) |
 | `name` | Display name |
 | `enable` | Enable / disable app |
 | `description`, `developer`, `icon` | Metadata |

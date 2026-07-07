@@ -25,6 +25,7 @@ Read these in order if you are building a new app.
 
 - [Pinx CLI guide and command reference](./en/start/pinx-cli.md)
 - [app.php manifest reference](./en/start/app-manifest.md)
+- [Package naming rules](./en/start/package-naming.md)
 - [Pinoox CLI reference for platform installs](./en/start/cli-reference.md)
 
 ## Core App Development

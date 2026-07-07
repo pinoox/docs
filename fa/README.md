@@ -22,6 +22,7 @@
 #### [مرجع CLI پینوکس](./start/cli-reference.md)
 #### [Pinx CLI (پروژه‌های تک‌اپ)](./start/pinx-cli.md)
 #### [مرجع app.php](./start/app-manifest.md)
+#### [قاعده نام‌گذاری پکیج](./start/package-naming.md)
 
 ### نمونه‌های عملی
 

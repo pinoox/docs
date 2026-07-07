@@ -10,7 +10,7 @@
 
 | کلید | کاربرد |
 |------|--------|
-| `package` | نام پوشه = namespace (`com_acme_shop`) |
+| `package` | نام پوشه = namespace — [قاعده نام‌گذاری پکیج](./package-naming.md) |
 | `name` | نام نمایشی |
 | `enable` | فعال / غیرفعال |
 | `description`, `developer`, `icon` | metadata |
