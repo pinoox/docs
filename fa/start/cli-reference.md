@@ -193,6 +193,36 @@ pinx pinion:info {upload_id} --json
 
 ---
 
+## Pinroll (انتشار و دیپلوی)
+
+ساخت پکیج و دیپلوی به targetهای پیکربندی‌شده. نیاز به `pinoox/pinroll` و config از `pinroll:init`.
+
+| دستور | نام جایگزین | کاربرد |
+|--------|-------------|--------|
+| `pinroll:init` | — | ساخت config؛ `-w` ویزارد |
+| `pinroll:vendor` | `pinroll:vendor:pack`، `pinroll:pack:vendor` | خروجی `vendor/` برای نصب هاست یا آپدیت هسته |
+| `pinroll:gate` | `pinroll:gate:init` | ساخت PinGate؛ آپلود FTP به‌صورت پیش‌فرض (`-z`، `--no-upload`، `--rotate`) |
+| `pinroll:check` | — | بررسی target / PinGate |
+| `pinroll:push` | `pinroll:deploy`، `pinroll:prod` | ساخت و ارسال (`-a` = apply از طریق PinGate) |
+| `pinroll:apply` | — | اعمال release روی target (یا `--local` روی هاست) |
+| `pinroll:rollback` | — | rollback از طریق PinGate |
+| `pinroll:cleanup` | `pinroll:prune` | پاکسازی archiveهای قدیمی |
+| `pinroll:build` | — | فقط build |
+| `pinroll:status` | — | وضعیت rollout |
+| `pinroll:history` | — | تاریخچه دیپلوی |
+| `pinroll:pull` | `pinroll:poll` | دریافت manifest جدیدتر از release server |
+
+```bash
+php pinoox pinroll:init -w
+php pinoox pinroll:vendor
+php pinoox pinroll:gate
+php pinoox pinroll:push production -a --package=com_pinoox_shop
+```
+
+مستندات: [راهنمای Pinroll](../deploy/pinroll.md).
+
+---
+
 ## Cache و Pinker
 
 | دستور | کاربرد |

@@ -55,6 +55,10 @@
 #### [زبان و ترجمه (Lang)](./basic/language.md)
 #### [تاریخ و تقویم](./basic/date-and-calendar.md)
 
+### دیپلوی (Deploy)
+
+#### [Pinroll — انتشار و دیپلوی](./deploy/pinroll.md)
+
 ### مفاهیم پیشرفته
 
 #### [Pinker و Cache](./advanced/pinker.md)

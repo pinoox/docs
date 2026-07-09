@@ -116,6 +116,7 @@ Examples:
 |---------|--------------|------------------------|
 | `com_pinoox_manager` | `manager.` | `manager_` |
 | `io_yoosefap_ai` | `ai.` | `ai_` |
+| `io_esmaeilbahrani_ai` | `ai.` | `ai_` |
 | `com_acme_shop_panel` | `shop_panel.` | `shop_panel_` |
 | `com_acme_shop` (when `shop_` taken) | `shop.` | `acme_shop_` or `shop_2_` |
 

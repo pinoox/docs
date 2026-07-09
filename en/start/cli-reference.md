@@ -194,6 +194,36 @@ See [Pinion protocol](../advanced/pinion.md).
 
 ---
 
+## Pinroll (release & deploy)
+
+Build packages and deploy to configured targets. Requires `pinoox/pinroll` and project config from `pinroll:init`.
+
+| Command | Alias | Purpose |
+|---------|-------|---------|
+| `pinroll:init` | — | Scaffold config; `-w` wizard |
+| `pinroll:vendor` | `pinroll:vendor:pack`, `pinroll:pack:vendor` | Export `vendor/` for host install or core update |
+| `pinroll:gate` | `pinroll:gate:init` | Build PinGate; FTP upload by default (`-z`, `--no-upload`, `--rotate`) |
+| `pinroll:check` | — | Test target / PinGate |
+| `pinroll:push` | `pinroll:deploy`, `pinroll:prod` | Build and push (`-a` apply via PinGate) |
+| `pinroll:apply` | — | Apply staged release on target (or `--local` on host) |
+| `pinroll:rollback` | — | Rollback via PinGate |
+| `pinroll:cleanup` | `pinroll:prune` | Prune old archives |
+| `pinroll:build` | — | Build only |
+| `pinroll:status` | — | Rollout status |
+| `pinroll:history` | — | Deploy history |
+| `pinroll:pull` | `pinroll:poll` | Pull newer manifest from release server |
+
+```bash
+php pinoox pinroll:init -w
+php pinoox pinroll:vendor
+php pinoox pinroll:gate
+php pinoox pinroll:push production -a --package=com_pinoox_shop
+```
+
+See [Pinroll deploy guide](../deploy/pinroll.md).
+
+---
+
 ## Cache & Pinker
 
 | Command | Purpose |

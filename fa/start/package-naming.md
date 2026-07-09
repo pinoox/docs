@@ -114,6 +114,7 @@ prefix سفارشی در سورس:
 |------|--------------|----------------------|
 | `com_pinoox_manager` | `manager.` | `manager_` |
 | `io_yoosefap_ai` | `ai.` | `ai_` |
+| `io_esmaeilbahrani_ai` | `ai.` | `ai_` |
 | `com_acme_shop_panel` | `shop_panel.` | `shop_panel_` |
 | `com_acme_shop` (وقتی `shop_` اشغال است) | `shop.` | `acme_shop_` یا `shop_2_` |
 

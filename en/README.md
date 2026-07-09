@@ -59,6 +59,12 @@ Read these in order if you are building a new app.
 - [API resources](./eloquent-orm/api-resources.md)
 - [Serialization](./eloquent-orm/serialization.md)
 
+## Deploy
+
+Platform release and rollout (full Pinoox installations).
+
+- [Pinroll — release & deploy](./deploy/pinroll.md)
+
 ## Build, Runtime, And Advanced Features
 
 - [Pinker and cache](./advanced/pinker.md)
