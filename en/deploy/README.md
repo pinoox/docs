@@ -4,7 +4,7 @@ Release, rollout, and delivery for Pinoox platform projects.
 
 | Guide | Description |
 |-------|-------------|
-| [Pinroll](./pinroll.md) | Targets, vendor export, PinGate (FTP), push `-a`, rollback |
+| [Pinroll](./pinroll.md) | Targets, vendor export, PinGate (FTP), deploy, rollback |
 
 ---
 

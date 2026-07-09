@@ -67,7 +67,7 @@ php pinoox pinroll:init -w
 php pinoox pinroll:vendor               # export vendor.zip (install / update core)
 php pinoox pinroll:gate                 # FTP upload PinGate (default; no zip)
 php pinoox pinroll:check production
-php pinoox pinroll:push production -a --package=com_pinoox_shop
+php pinoox pinroll:deploy production --package=com_pinoox_shop
 php pinoox pinroll:rollback production
 php pinoox pinroll:cleanup production --dry-run
 ```

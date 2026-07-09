@@ -4,7 +4,7 @@
 
 | راهنما | توضیح |
 |--------|--------|
-| [Pinroll](./pinroll.md) | Target، خروجی vendor، PinGate (FTP)، push `-a`، rollback |
+| [Pinroll](./pinroll.md) | Target، خروجی vendor، PinGate (FTP)، deploy، rollback |
 
 ---
 

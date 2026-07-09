@@ -204,7 +204,8 @@ Build packages and deploy to configured targets. Requires `pinoox/pinroll` and p
 | `pinroll:vendor` | `pinroll:vendor:pack`, `pinroll:pack:vendor` | Export `vendor/` for host install or core update |
 | `pinroll:gate` | `pinroll:gate:init` | Build PinGate; FTP upload by default (`-z`, `--no-upload`, `--rotate`) |
 | `pinroll:check` | — | Test target / PinGate |
-| `pinroll:push` | `pinroll:deploy`, `pinroll:prod` | Build and push (`-a` apply via PinGate) |
+| `pinroll:push` | `pinroll:prod` | Build and upload only |
+| `pinroll:deploy` | — | Push + apply via PinGate (go live) |
 | `pinroll:apply` | — | Apply staged release on target (or `--local` on host) |
 | `pinroll:rollback` | — | Rollback via PinGate |
 | `pinroll:cleanup` | `pinroll:prune` | Prune old archives |
@@ -217,7 +218,7 @@ Build packages and deploy to configured targets. Requires `pinoox/pinroll` and p
 php pinoox pinroll:init -w
 php pinoox pinroll:vendor
 php pinoox pinroll:gate
-php pinoox pinroll:push production -a --package=com_pinoox_shop
+php pinoox pinroll:deploy production --package=com_pinoox_shop
 ```
 
 See [Pinroll deploy guide](../deploy/pinroll.md).

@@ -203,7 +203,8 @@ pinx pinion:info {upload_id} --json
 | `pinroll:vendor` | `pinroll:vendor:pack`، `pinroll:pack:vendor` | خروجی `vendor/` برای نصب هاست یا آپدیت هسته |
 | `pinroll:gate` | `pinroll:gate:init` | ساخت PinGate؛ آپلود FTP به‌صورت پیش‌فرض (`-z`، `--no-upload`، `--rotate`) |
 | `pinroll:check` | — | بررسی target / PinGate |
-| `pinroll:push` | `pinroll:deploy`، `pinroll:prod` | ساخت و ارسال (`-a` = apply از طریق PinGate) |
+| `pinroll:push` | `pinroll:prod` | فقط ساخت و آپلود |
+| `pinroll:deploy` | — | push + apply از طریق PinGate (go live) |
 | `pinroll:apply` | — | اعمال release روی target (یا `--local` روی هاست) |
 | `pinroll:rollback` | — | rollback از طریق PinGate |
 | `pinroll:cleanup` | `pinroll:prune` | پاکسازی archiveهای قدیمی |
@@ -216,7 +217,7 @@ pinx pinion:info {upload_id} --json
 php pinoox pinroll:init -w
 php pinoox pinroll:vendor
 php pinoox pinroll:gate
-php pinoox pinroll:push production -a --package=com_pinoox_shop
+php pinoox pinroll:deploy production --package=com_pinoox_shop
 ```
 
 مستندات: [راهنمای Pinroll](../deploy/pinroll.md).

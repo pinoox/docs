@@ -13,7 +13,7 @@ Pinroll is a **Composer library** — not a Pinoox app. CLI commands register au
 | **PinGate** | HTTP entry on the host (`pingate.php` + `gate/`) for apply / status / rollback |
 | **Bundle** | Optional build recipe (`single-app`, `platform-full`, …) |
 
-> **Typical shared-hosting flow:** configure FTP + gate → `pinroll:vendor` (core/deps) → `pinroll:gate` → `pinroll:push -a`.
+> **Typical flow:** configure transport + gate → `pinroll:vendor` (core/deps) → `pinroll:gate` / `pinroll:connect` → `pinroll:deploy` (recommended for shared hosting).
 
 ---
 
@@ -168,14 +168,15 @@ php pinoox pinroll:gate
 
 Alias: `pinroll:gate:init` still works.
 
-### 4. Check & push
+### 4. Check & go live
 
 ```bash
 php pinoox pinroll:check production
-php pinoox pinroll:push production -a --package=com_pinoox_shop
+php pinoox pinroll:deploy production --package=com_pinoox_shop
 ```
 
-`-a` uploads then **applies remotely** via PinGate.
+`pinroll:deploy` = upload + **apply remotely** via PinGate.  
+`pinroll:push` = upload only; then `pinroll:apply` when ready.
 
 ---
 
@@ -238,7 +239,8 @@ Auth: `Authorization: Bearer {token}`.
 | `pinroll:gate` | `pinroll:gate:init` | Build PinGate; FTP upload by default (`-z`, `--no-upload`, `--rotate`) |
 | `pinroll:gate:token` | — | Print token / gate snippet (`--deploy` runs gate) |
 | `pinroll:check` | — | Verify target / PinGate |
-| `pinroll:push` | `pinroll:deploy`, `pinroll:prod` | Build & push (`-a` apply via PinGate) |
+| `pinroll:push` | `pinroll:prod` | Build & upload only (no apply) |
+| `pinroll:deploy` | — | Push + apply via PinGate (go live) |
 | `pinroll:apply` | — | Apply staged release on target (or `--local` on host) |
 | `pinroll:rollback` | — | Rollback via PinGate |
 | `pinroll:cleanup` | `pinroll:prune` | Prune old archives (`--dry-run`, `-k`) |
@@ -258,22 +260,23 @@ php pinoox pinroll:gate -z
 php pinoox pinroll:gate --rotate
 
 php pinoox pinroll:check production
-php pinoox pinroll:push production -a --package=com_pinoox_shop
+php pinoox pinroll:push production --package=com_pinoox_shop
+php pinoox pinroll:deploy production --package=com_pinoox_shop
 php pinoox pinroll:apply production
 php pinoox pinroll:rollback production
 php pinoox pinroll:cleanup production --dry-run
 ```
 
-### Push options
+### Push / deploy options
 
 ```bash
-php pinoox pinroll:push production -a \
-  --package=com_pinoox_shop
+php pinoox pinroll:push production --package=com_pinoox_shop
+php pinoox pinroll:deploy production --package=com_pinoox_shop
 ```
 
 | Option | Description |
 |--------|-------------|
-| `-a` / `--apply` | Apply on remote via PinGate after upload |
+| `-a` / `--apply` | On `push` only: also apply (prefer `pinroll:deploy`) |
 | `--package=` | App package to build/push |
 | `--bundle=` | Bundle recipe override |
 | `--via=` / `--transport=` | Override transport |
@@ -284,12 +287,12 @@ php pinoox pinroll:push production -a \
 
 | `via` | Use case |
 |-------|----------|
-| `ftp` | Shared hosting / cPanel — upload files; apply via PinGate |
+| `ftp` | Upload files; apply via PinGate (recommended for shared hosting / cPanel) |
 | `ssh` | VPS — upload/apply over SSH |
 | `pinion` | Chunked HTTP upload through PinGate |
 | `local` | Same machine / smoke tests |
 
-With **FTP**, PinGate is required for remote `apply` / `push -a`. `pinroll:gate` uploads the bootstrap over the same FTP connection.
+With **FTP**, PinGate is required for remote `apply` / `deploy`. `pinroll:gate` uploads the bootstrap over the same FTP connection.
 
 ---
 
@@ -307,7 +310,7 @@ sequenceDiagram
     Note over Dev,FTP: upload vendor.zip → extract vendor/
     Dev->>Pinroll: pinroll:gate
     Pinroll->>FTP: upload pingate.php + gate/
-    Dev->>Pinroll: pinroll:push production -a
+    Dev->>Pinroll: pinroll:deploy production
     Pinroll->>Pinroll: pinx:build → .pinx
     Pinroll->>FTP: upload release to incoming/
     Pinroll->>PinGate: POST /apply

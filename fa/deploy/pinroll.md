@@ -13,7 +13,7 @@ Pinroll یک **کتابخانه Composer** است — نه اپ پینوکس. ب
 | **PinGate** | نقطه ورود HTTP روی هاست (`pingate.php` + `gate/`) برای apply / status / rollback |
 | **Bundle** | دستورالعمل اختیاری build (`single-app`، `platform-full` و …) |
 
-> **جریان معمول هاست اشتراکی:** تنظیم FTP + gate → `pinroll:vendor` (هسته/وابستگی‌ها) → `pinroll:gate` → `pinroll:push -a`.
+> **جریان معمول:** تنظیم transport + gate → `pinroll:vendor` (هسته/وابستگی‌ها) → `pinroll:gate` / `pinroll:connect` → `pinroll:deploy` (پیشنهاد برای هاست اشتراکی).
 
 ---
 
@@ -167,14 +167,15 @@ php pinoox pinroll:gate
 
 نام جایگزین: `pinroll:gate:init` هنوز کار می‌کند.
 
-### ۴. بررسی و push
+### ۴. بررسی و go live
 
 ```bash
 php pinoox pinroll:check production
-php pinoox pinroll:push production -a --package=com_pinoox_shop
+php pinoox pinroll:deploy production --package=com_pinoox_shop
 ```
 
-`-a` بعد از آپلود، **apply از راه دور** را از طریق PinGate اجرا می‌کند.
+`pinroll:deploy` = آپلود + **apply از راه دور** از طریق PinGate.  
+`pinroll:push` = فقط آپلود؛ بعداً با `pinroll:apply` اعمال کنید.
 
 ---
 
@@ -237,7 +238,8 @@ RewriteRule ^gate/ - [L]
 | `pinroll:gate` | `pinroll:gate:init` | ساخت PinGate؛ آپلود FTP به‌صورت پیش‌فرض (`-z`، `--no-upload`، `--rotate`) |
 | `pinroll:gate:token` | — | نمایش توکن / snippet (`--deploy` همان gate را اجرا می‌کند) |
 | `pinroll:check` | — | بررسی target / PinGate |
-| `pinroll:push` | `pinroll:deploy`، `pinroll:prod` | ساخت و ارسال (`-a` = apply از طریق PinGate) |
+| `pinroll:push` | `pinroll:prod` | فقط ساخت و آپلود (بدون apply) |
+| `pinroll:deploy` | — | push + apply از طریق PinGate (go live) |
 | `pinroll:apply` | — | اعمال release روی target (یا `--local` روی خود هاست) |
 | `pinroll:rollback` | — | rollback از طریق PinGate |
 | `pinroll:cleanup` | `pinroll:prune` | پاکسازی archiveهای قدیمی (`--dry-run`، `-k`) |
@@ -257,22 +259,23 @@ php pinoox pinroll:gate -z
 php pinoox pinroll:gate --rotate
 
 php pinoox pinroll:check production
-php pinoox pinroll:push production -a --package=com_pinoox_shop
+php pinoox pinroll:push production --package=com_pinoox_shop
+php pinoox pinroll:deploy production --package=com_pinoox_shop
 php pinoox pinroll:apply production
 php pinoox pinroll:rollback production
 php pinoox pinroll:cleanup production --dry-run
 ```
 
-### گزینه‌های push
+### گزینه‌های push / deploy
 
 ```bash
-php pinoox pinroll:push production -a \
-  --package=com_pinoox_shop
+php pinoox pinroll:push production --package=com_pinoox_shop
+php pinoox pinroll:deploy production --package=com_pinoox_shop
 ```
 
 | گزینه | توضیح |
 |--------|--------|
-| `-a` / `--apply` | بعد از آپلود، apply از راه دور با PinGate |
+| `-a` / `--apply` | فقط روی `push`: apply هم بزن (ترجیح: `pinroll:deploy`) |
 | `--package=` | پکیج اپ |
 | `--bundle=` | override دستورالعمل bundle |
 | `--via=` / `--transport=` | override transport |
@@ -283,12 +286,12 @@ php pinoox pinroll:push production -a \
 
 | `via` | کاربرد |
 |-------|--------|
-| `ftp` | هاست اشتراکی / cPanel — آپلود فایل؛ apply با PinGate |
+| `ftp` | آپلود فایل؛ apply با PinGate (پیشنهاد برای هاست اشتراکی / cPanel) |
 | `ssh` | VPS — آپلود/اعمال با SSH |
 | `pinion` | آپلود HTTP تکه‌ای از طریق PinGate |
 | `local` | همان ماشین / تست |
 
-با **FTP** برای `apply` / `push -a` از راه دور به PinGate نیاز است. `pinroll:gate` bootstrap را با همان FTP آپلود می‌کند.
+با **FTP** برای `apply` / `deploy` از راه دور به PinGate نیاز است. `pinroll:gate` bootstrap را با همان FTP آپلود می‌کند.
 
 ---
 
@@ -306,7 +309,7 @@ sequenceDiagram
     Note over Dev,FTP: آپلود vendor.zip → extract vendor/
     Dev->>Pinroll: pinroll:gate
     Pinroll->>FTP: آپلود pingate.php + gate/
-    Dev->>Pinroll: pinroll:push production -a
+    Dev->>Pinroll: pinroll:deploy production
     Pinroll->>Pinroll: pinx:build → .pinx
     Pinroll->>FTP: آپلود release به incoming/
     Pinroll->>PinGate: POST /apply
