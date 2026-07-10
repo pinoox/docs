@@ -55,10 +55,6 @@
 #### [زبان و ترجمه (Lang)](./basic/language.md)
 #### [تاریخ و تقویم](./basic/date-and-calendar.md)
 
-### دیپلوی (Deploy)
-
-#### [Pinroll — انتشار و دیپلوی](./deploy/pinroll.md)
-
 ### مفاهیم پیشرفته
 
 #### [Pinker و Cache](./advanced/pinker.md)
@@ -69,11 +65,16 @@
 #### [مدیریت کاربران](./advanced/user-management.md)
 #### [مدیریت فایل](./advanced/file-management.md)
 #### [پروتکل Pinion](./advanced/pinion.md)
+#### [مروری بر Pinroll](./advanced/pinroll.md)
 #### [مدیریت توکن](./advanced/token-management.md)
 #### [دسترسی و مجوز (Access)](./advanced/access-permissions.md)
 #### [ترنسپورت (Transport) — منابع مشترک](./advanced/transport.md)
 #### [boot.php و رویدادها](./advanced/boot-and-events.md)
 #### [زمان‌بندی (Schedule / Cron)](./advanced/schedule.md)
+
+### دیپلوی (Deploy)
+
+#### [Pinroll — انتشار و دیپلوی](./deploy/pinroll.md)
 
 ### کار با دیتابیس
 

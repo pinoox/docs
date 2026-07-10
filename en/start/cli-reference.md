@@ -196,29 +196,31 @@ See [Pinion protocol](../advanced/pinion.md).
 
 ## Pinroll (release & deploy)
 
-Build packages and deploy to configured targets. Requires `pinoox/pinroll` and project config from `pinroll:init`.
+Build packages and deploy to configured hosts. Requires `pinoox/pinroll` and project config from `pinroll:init`.
 
-| Command | Alias | Purpose |
-|---------|-------|---------|
-| `pinroll:init` | — | Scaffold config; `-w` wizard |
-| `pinroll:vendor` | `pinroll:vendor:pack`, `pinroll:pack:vendor` | Export `vendor/` for host install or core update |
-| `pinroll:gate` | `pinroll:gate:init` | Build PinGate; FTP upload by default (`-z`, `--no-upload`, `--rotate`) |
-| `pinroll:check` | — | Test target / PinGate |
-| `pinroll:push` | `pinroll:prod` | Build and upload only |
-| `pinroll:deploy` | — | Push + apply via PinGate (go live) |
-| `pinroll:apply` | — | Apply staged release on target (or `--local` on host) |
-| `pinroll:rollback` | — | Rollback via PinGate |
-| `pinroll:cleanup` | `pinroll:prune` | Prune old archives |
-| `pinroll:build` | — | Build only |
-| `pinroll:status` | — | Rollout status |
-| `pinroll:history` | — | Deploy history |
-| `pinroll:pull` | `pinroll:poll` | Pull newer manifest from release server |
+| Command | Purpose |
+|---------|---------|
+| `pinroll:init` | Scaffold `pinroll/pinroll.config.php` |
+| `pinroll:connect` | Setup / verify host (`--reset` to redo) |
+| `pinroll:apps` | Set `hosts.*.apps` |
+| `pinroll:vendor` | Export `vendor/` for host install or core update |
+| `pinroll:gate` | Build / upload PinGate |
+| `pinroll:check` | Test host / PinGate |
+| `pinroll:push` | Build and upload only |
+| `pinroll:install` | Install staged release on host |
+| `pinroll:deploy` | Push + install (go live) |
+| `pinroll:rollback` | Rollback via PinGate or local re-push |
+| `pinroll:cleanup` | Prune old archives (`--local`, `--dry-run`) |
+| `pinroll:build` | Build only |
+| `pinroll:status` | Rollout status |
+| `pinroll:history` | Deploy history |
+| `pinroll:pull` | Pull newer manifest from release server |
 
 ```bash
-php pinoox pinroll:init -w
-php pinoox pinroll:vendor
-php pinoox pinroll:gate
-php pinoox pinroll:deploy production --package=com_pinoox_shop
+php pinoox pinroll:init
+php pinoox pinroll:connect
+php pinoox pinroll:apps --apps=com_pinoox_shop
+php pinoox pinroll:deploy
 ```
 
 See [Pinroll deploy guide](../deploy/pinroll.md).

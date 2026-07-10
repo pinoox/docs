@@ -195,29 +195,31 @@ pinx pinion:info {upload_id} --json
 
 ## Pinroll (انتشار و دیپلوی)
 
-ساخت پکیج و دیپلوی به targetهای پیکربندی‌شده. نیاز به `pinoox/pinroll` و config از `pinroll:init`.
+ساخت پکیج و دیپلوی به هاست‌های پیکربندی‌شده. نیاز به `pinoox/pinroll` و config از `pinroll:init`.
 
-| دستور | نام جایگزین | کاربرد |
-|--------|-------------|--------|
-| `pinroll:init` | — | ساخت config؛ `-w` ویزارد |
-| `pinroll:vendor` | `pinroll:vendor:pack`، `pinroll:pack:vendor` | خروجی `vendor/` برای نصب هاست یا آپدیت هسته |
-| `pinroll:gate` | `pinroll:gate:init` | ساخت PinGate؛ آپلود FTP به‌صورت پیش‌فرض (`-z`، `--no-upload`، `--rotate`) |
-| `pinroll:check` | — | بررسی target / PinGate |
-| `pinroll:push` | `pinroll:prod` | فقط ساخت و آپلود |
-| `pinroll:deploy` | — | push + apply از طریق PinGate (go live) |
-| `pinroll:apply` | — | اعمال release روی target (یا `--local` روی هاست) |
-| `pinroll:rollback` | — | rollback از طریق PinGate |
-| `pinroll:cleanup` | `pinroll:prune` | پاکسازی archiveهای قدیمی |
-| `pinroll:build` | — | فقط build |
-| `pinroll:status` | — | وضعیت rollout |
-| `pinroll:history` | — | تاریخچه دیپلوی |
-| `pinroll:pull` | `pinroll:poll` | دریافت manifest جدیدتر از release server |
+| دستور | کاربرد |
+|--------|--------|
+| `pinroll:init` | ساخت `pinroll/pinroll.config.php` |
+| `pinroll:connect` | راه‌اندازی / بررسی هاست (`--reset` برای تکرار) |
+| `pinroll:apps` | تنظیم `hosts.*.apps` |
+| `pinroll:vendor` | خروجی `vendor/` برای نصب هاست یا آپدیت هسته |
+| `pinroll:gate` | ساخت / آپلود PinGate |
+| `pinroll:check` | بررسی هاست / PinGate |
+| `pinroll:push` | فقط ساخت و آپلود |
+| `pinroll:install` | نصب release آماده‌شده روی هاست |
+| `pinroll:deploy` | push + install (go live) |
+| `pinroll:rollback` | rollback از PinGate یا آرشیو لوکال |
+| `pinroll:cleanup` | هرس آرشیوهای قدیمی (`--local`، `--dry-run`) |
+| `pinroll:build` | فقط build |
+| `pinroll:status` | وضعیت rollout |
+| `pinroll:history` | تاریخچه دیپلوی |
+| `pinroll:pull` | دریافت manifest جدیدتر از release server |
 
 ```bash
-php pinoox pinroll:init -w
-php pinoox pinroll:vendor
-php pinoox pinroll:gate
-php pinoox pinroll:deploy production --package=com_pinoox_shop
+php pinoox pinroll:init
+php pinoox pinroll:connect
+php pinoox pinroll:apps --apps=com_pinoox_shop
+php pinoox pinroll:deploy
 ```
 
 مستندات: [راهنمای Pinroll](../deploy/pinroll.md).

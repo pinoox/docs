@@ -2,38 +2,57 @@
 
 [← Back to index](../README.md)
 
-**Pinroll** (`pinoox/pinroll`) is the official Pinoox release rollout engine. It builds app packages, ships them to remote servers, applies them atomically via **PinGate**, and supports rollback and cleanup.
+**Pinroll** (`pinoox/pinroll`) is the official Pinoox release rollout engine. It builds app packages, ships them to remote **hosts**, installs them via **PinGate**, and supports rollback, hooks, and retention.
 
 Pinroll is a **Composer library** — not a Pinoox app. CLI commands register automatically when the package is installed.
 
+
 | Concept | Meaning |
 |---------|---------|
-| **Target** | Where to deploy (`production`, …) |
+| **Host** | Where to deploy (`production`, `staging`, …) — the config key is the name |
 | **Transport (`via`)** | How to send files (`ftp`, `ssh`, `pinion`, `local`) |
-| **PinGate** | HTTP entry on the host (`pingate.php` + `gate/`) for apply / status / rollback |
-| **Bundle** | Optional build recipe (`single-app`, `platform-full`, …) |
-
-> **Typical flow:** configure transport + gate → `pinroll:vendor` (core/deps) → `pinroll:gate` / `pinroll:connect` → `pinroll:deploy` (recommended for shared hosting).
+| **PinGate** | HTTP entry on the host (`pingate.php` + `gate/`) for install / status / rollback |
+| **Bundle** | Optional build recipe (`--bundle=…`); normal deploys auto-detect apps |
 
 ---
 
 ## Install
 
-On a full Pinoox **platform** project:
+On a full Pinoox **platform** project (development dependency):
 
 ```bash
-composer require pinoox/pinion pinoox/pinroll
+composer require --dev pinoox/pinroll
 ```
 
-For local development with a sibling checkout:
+---
 
-```json
-"repositories": [
-  { "type": "path", "url": "../pinroll", "options": { "symlink": true } }
-],
-"require": {
-  "pinoox/pinroll": "@dev"
-}
+## Setup process
+
+```mermaid
+flowchart LR
+    A[pinroll:init] --> B[Fill .env]
+    B --> C[pinroll:connect]
+    C --> D[pinroll:apps]
+    D --> E[pinroll:check]
+    E --> F[Ready to deploy]
+```
+
+| Step | Command | What it does |
+|------|---------|--------------|
+| 1 | `php pinoox pinroll:init` | Creates `pinroll/pinroll.config.php` |
+| 2 | Edit `.env` | Set `PINROLL_*` FTP/SSH credentials |
+| 3 | `php pinoox pinroll:connect` | Deploy path, site URL, upload PinGate |
+| 4 | `php pinoox pinroll:apps` | Choose default app packages for the host |
+| 5 | `php pinoox pinroll:check` | Verify transport + PinGate |
+| 6 | `php pinoox pinroll:deploy` | Build, upload, and install (go live) |
+
+```bash
+php pinoox pinroll:init
+# fill PINROLL_* in .env
+php pinoox pinroll:connect
+php pinoox pinroll:apps
+php pinoox pinroll:check
+php pinoox pinroll:deploy
 ```
 
 ---
@@ -42,40 +61,46 @@ For local development with a sibling checkout:
 
 ```bash
 php pinoox pinroll:init
-php pinoox pinroll:init -w   # interactive wizard (FTP, dir, PinGate)
 ```
 
-This scaffolds at the project root:
+Scaffolds:
 
 ```
 pinroll/
   pinroll.config.php
-  bundles/
-    single-app.php
-    platform-core.php
-    platform-full.php
-    test-empty.php
 ```
 
-Keep secrets in `.env`. Add `pinroll/` to `.gitignore` if it holds local deploy artifacts.
+Build recipes are auto-detected from `apps/` (no `pinroll/bundles/*.php` required for normal app deploy). Optional custom recipes: `pinroll/bundles/{name}.php` with `--bundle={name}`.
 
 ---
 
+
+
 ## Configuration
 
-### Targets (`pinroll/pinroll.config.php`)
 
-Modern targets use **`via`**, a top-level **`gate`** block, and transport credentials under `ftp` / `ssh` / `pinion`:
+
+### Hosts (`pinroll/pinroll.config.php`)
 
 ```php
 <?php
 
 return [
-    'targets' => [
+    // Used when CLI omits the host argument
+    'default_host' => 'production',
+
+    // Global defaults — inherited by every host unless overridden
+    'keep' => 2,
+    'store' => 'both',      // local | remote | both
+    'auto_clean' => true,   // prune beyond keep after successful install
+
+    'hosts' => [
         'production' => [
-            // Path relative to FTP/SSH login (site at domain root → public_html)
-            'dir' => 'public_html',
+            'deploy_path' => 'public_html',
             'via' => 'ftp',
+
+            // Default packages for push/install (or use pinroll:apps)
+            'apps' => ['com_pinoox_shop'],
 
             'gate' => [
                 'url' => env('PINROLL_PRODUCTION_URL', ''),
@@ -88,253 +113,321 @@ return [
                 'password' => env('PINROLL_PRODUCTION_PASSWORD', ''),
             ],
 
-            // Optional: limit which apps push by default
-            'apps' => [
-                'com_pinoox_shop',
+            'hooks' => [
+                'before_install' => ['php pinoox migrate --force'],
+                'after_install' => ['php pinoox cache:build'],
             ],
         ],
     ],
 ];
 ```
 
-| Key | Description |
-|-----|-------------|
-| `dir` | Deploy root relative to FTP/SSH login. Site at domain root: `public_html`. Subfolder site: e.g. `public_html/shop`. Empty = login root. |
-| `via` | Default transport: `ftp`, `ssh`, `pinion`, or `local` |
-| `gate.url` / `gate.token` | PinGate credentials (shared for apply / pinion) |
-| `ftp` / `ssh` / `pinion` | Connection credentials only (no nested `gate`) |
-| `apps` | Optional list of packages for push |
-| `bundle` / `package` | Optional defaults for recipe-based builds |
+
+| Key                             | Description                                                     |
+| ------------------------------- | --------------------------------------------------------------- |
+| `default_host`                  | Host used when CLI omits the host name                          |
+| `deploy_path`                   | Deploy root relative to FTP/SSH login                           |
+| `hostname`                      | Optional connection address when it differs from transport host |
+| `via`                           | Default transport: `ftp`, `ssh`, `pinion`, or `local`           |
+| `gate.url` / `gate.token`       | PinGate credentials                                             |
+| `ftp` / `ssh`                   | Connection credentials                                          |
+| `apps`                          | Default app packages for push/install                           |
+| `hooks`                         | Shell commands around push, install, rollback                   |
+| `keep` / `store` / `auto_clean` | Retention (global or per-host)                                  |
+
+
+
 
 ### `.env` keys
 
 ```env
-PINROLL_PRODUCTION_URL=https://pinoox.com/pingate.php?route=
+PINROLL_PRODUCTION_URL=https://example.com/pingate.php?route=
 PINROLL_PRODUCTION_TOKEN=…
-PINROLL_PRODUCTION_HOST=ftp.pinoox.com
+PINROLL_PRODUCTION_HOST=ftp.example.com
 PINROLL_PRODUCTION_USER=…
 PINROLL_PRODUCTION_PASSWORD=…
 ```
 
-`pinroll:gate` writes URL + token into `.env` automatically.
-
-### Bundles (`pinroll/bundles/*.php`)
-
-Optional recipes for `pinroll:build` / legacy bundle deploys. Day-to-day app deploys usually use `pinroll:push` with `--package=` or target `apps[]`.
+`pinroll:connect` / `pinroll:gate` write URL + token into `.env` when needed.
 
 ---
+
+
+
+## Apps selection
+
+If `hosts.*.apps` is empty and you do not pass `--app` / `--apps`, interactive push/deploy prompts for packages.
+
+Set defaults once:
+
+```bash
+php pinoox pinroll:apps                         # interactive picker
+php pinoox pinroll:apps --apps=com_pinoox_shop
+php pinoox pinroll:apps --all
+php pinoox pinroll:apps --list
+php pinoox pinroll:apps --clear                 # remove apps[] (prompt again on push)
+```
+
+---
+
+
+
+## Connect
+
+```bash
+php pinoox pinroll:connect          # ask deploy path + site URL upload PinGate and verify connection
+php pinoox pinroll:connect --reset  # re-run full setup
+```
+
+When the host is already configured (`deploy_path` + gate URL + transport credentials), connect **skips setup prompts**, shows current settings, and runs connectivity checks.
+
+---
+
+
+
+## CLI vocabulary
+
+```bash
+# Uses default_host
+php pinoox pinroll:push
+php pinoox pinroll:install
+php pinoox pinroll:deploy
+
+# Explicit app / host
+php pinoox pinroll:deploy --app=com_pinoox_shop
+php pinoox pinroll:install staging --app=com_pinoox_shop
+```
+
+
+| Command           | Purpose                        |
+| ----------------- | ------------------------------ |
+| `pinroll:push`    | Build + upload (no install)    |
+| `pinroll:install` | Install staged release on host |
+| `pinroll:deploy`  | Push + install (go live)       |
+
+
+---
+
+
+
+## Local modes
+
+
+
+### A. `via: local` — transport
+
+Archives go to `storage/pinroll/incoming/` on this machine (no FTP/SSH).
+
+```bash
+php pinoox pinroll:push --via=local --app=com_pinoox_shop
+```
+
+
+
+### B. `pinroll:install --local` — install on this host
+
+Run after SSH into production (site root):
+
+```bash
+php pinoox pinroll:install --local
+php pinoox pinroll:install --local --list
+```
+
+
+
+### C. `store: local` / `both` — retention
+
+
+| `store`            | Archives kept on                   | After install     |
+| ------------------ | ---------------------------------- | ----------------- |
+| `remote` (default) | Host `storage/pinroll/incoming/`   | Trimmed to `keep` |
+| `local`            | Dev machine incoming + pinx export | Local trim only   |
+| `both`             | Dev machine **and** host           | Both trimmed      |
+
+
+With `store: local|both`, push also copies the `.pinx` into local `storage/pinroll/incoming/` for rollback re-push.
+
+---
+
+
+
+## Retention
+
+
+| Key          | Values                      | Behavior                                      |
+| ------------ | --------------------------- | --------------------------------------------- |
+| `keep`       | `0`…`N`                     | Newest N kept; `0` disables trimming          |
+| `store`      | `local` | `remote` | `both` | Which side(s) retain archives                 |
+| `auto_clean` | bool                        | After successful install, prune beyond `keep` |
+
+
+**What local cleanup prunes**
+
+- `storage/pinroll/incoming/*.pinx`
+- `apps/{package}/pinx/export/*.pinx` (newest N per app)
+- local release/session temp dirs under `storage/`
+
+**What remote cleanup prunes**
+
+- Host `storage/pinroll/incoming/` (via PinGate `/cleanup`)
+
+```bash
+php pinoox pinroll:cleanup              # remote (uses keep from config)
+php pinoox pinroll:cleanup --local      # this machine
+php pinoox pinroll:cleanup --dry-run
+php pinoox pinroll:cleanup -k=2
+```
+
+---
+
+
+
+## Hooks
+
+```php
+'hooks' => [
+    'before_push' => ['npm run build'],
+    'after_push' => [],
+    'before_install' => ['php pinoox migrate --force'],
+    'after_install' => ['php pinoox cache:build'],
+    'before_rollback' => [],
+    'after_rollback' => [],
+],
+```
+
+
+| Hook                                 | Runs on                    | When                  |
+| ------------------------------------ | -------------------------- | --------------------- |
+| `before_push` / `after_push`         | Developer machine          | Around archive upload |
+| `before_install` / `after_install`   | Remote host (or `--local`) | Around Pinx install   |
+| `before_rollback` / `after_rollback` | Host / local pipeline      | Around rollback       |
+
+
+---
+
+
+
+## Rollback & migrations
+
+`pinroll:rollback` re-installs a **previous package** (code) with force. It does **not** automatically reverse every DB migration or data patch.
+
+
+| Layer                        | On rollback                                             |
+| ---------------------------- | ------------------------------------------------------- |
+| App files / Pinx package     | Restored from previous archive                          |
+| Migrations with `down()`     | Only if you run migrate rollback explicitly (e.g. hook) |
+| One-way patches / data fixes | Not undone                                              |
+
+
+Practical guidance:
+
+1. Prefer **forward-fix** releases for schema issues.
+2. Write reversible migrations when rollback matters.
+3. Keep `keep >= 2` (and `store: both`) so a previous archive exists.
+4. Take a DB backup before risky production deploys.
+
+```bash
+php pinoox pinroll:rollback
+php pinoox pinroll:rollback --deploy-id=20260710_091021_3f980930
+php pinoox pinroll:migrate:dry-run
+```
+
+---
+
+
 
 ## Quick start (FTP + PinGate)
 
-### 1. Init & configure
-
 ```bash
-php pinoox pinroll:init -w
+php pinoox pinroll:init
+# fill PINROLL_* in .env
+php pinoox pinroll:connect
+php pinoox pinroll:apps --apps=com_pinoox_shop
+php pinoox pinroll:vendor          # optional: host core/deps
+php pinoox pinroll:check
+php pinoox pinroll:deploy
 ```
-
-Or edit `pinroll/pinroll.config.php` and `.env` manually.
-
-### 2. Export platform vendor (core + dependencies)
-
-`pinroll:vendor` zips the full local Composer `vendor/` tree for the host. Use it to:
-
-- **First install** — put a complete `vendor/` next to `pingate.php`
-- **Update Pinoox core / Packagist deps** — after `composer update` locally, re-export and replace host `vendor/`
-- **Ship path-repos** — local checkouts (`../pincore3`, `../pinroll`, …) are followed into real files inside the zip
-
-```bash
-php pinoox pinroll:vendor
-# aliases: pinroll:vendor:pack, pinroll:pack:vendor
-```
-
-Output: `pinroll/vendor.zip`. Upload and extract into the deploy root so `vendor/` sits next to `pingate.php`. When updating core, **replace** the previous `vendor/` on the host.
-
-Do not upload a local `.pincore` that points at `../pincore3` — on the host, core must come from `vendor/pinoox/pincore`.
-
-### 3. Install PinGate on the host
-
-With FTP configured, this builds PinGate and **uploads it over FTP**, then removes local gate files (no zip by default):
-
-```bash
-php pinoox pinroll:gate
-```
-
-| Option | Meaning |
-|--------|---------|
-| (default) | Build → FTP upload `pingate.php` + `gate/` → delete local artifacts |
-| `-z` / `--zip` | Also build `pinroll/deploy-{target}.zip` for manual upload |
-| `--no-upload` | Keep files under `pinroll/` (no FTP) |
-| `--rotate` | Mint a new token (default: reuse `PINROLL_*_TOKEN` from `.env`) |
-
-Alias: `pinroll:gate:init` still works.
-
-### 4. Check & go live
-
-```bash
-php pinoox pinroll:check production
-php pinoox pinroll:deploy production --package=com_pinoox_shop
-```
-
-`pinroll:deploy` = upload + **apply remotely** via PinGate.  
-`pinroll:push` = upload only; then `pinroll:apply` when ready.
 
 ---
 
-## PinGate layout on the host
 
-Files live **next to the platform** (same folder as `vendor/`):
 
-```
-{deploy-root}/          # e.g. public_html/
-  pingate.php
-  gate/
-    index.php
-    bootstrap.php
-    pingate.php
-    vendor/
-  vendor/               # from pinroll:vendor
-  apps/
-  …
-```
+## PinGate routes
 
-Public URL when the site is at the domain root:
 
-```
-https://pinoox.com/pingate.php?route=
-```
+| Method | Path        | Purpose                              |
+| ------ | ----------- | ------------------------------------ |
+| `GET`  | `/status`   | Health / version                     |
+| `GET`  | `/incoming` | List staged releases                 |
+| `POST` | `/install`  | Install staged release (`/apply` BC) |
+| `POST` | `/rollback` | Re-install previous release          |
+| `POST` | `/cleanup`  | Prune old archives                   |
+| `GET`  | `/history`  | Rollout history                      |
 
-### `.htaccess` (only if `pinroll:check` returns HTML)
-
-Paste **before** the front-controller rule:
-
-```apache
-RewriteRule ^pingate\.php$ - [L]
-RewriteRule ^gate/ - [L]
-```
-
-### PinGate routes
-
-| Method | Path | Purpose |
-|--------|------|---------|
-| `GET` | `/status` | Health / version |
-| `GET` | `/incoming` | List staged releases |
-| `POST` | `/apply` | Apply staged release |
-| `POST` | `/rollback` | Re-apply previous release |
-| `POST` | `/cleanup` | Prune old archives |
-| `POST` | `/push/init` | Start chunked upload (Pinion) |
-| `POST` | `/push/upload` | Upload chunk |
-| `POST` | `/push/complete` | Finish upload |
-| `GET` | `/history` | Rollout history |
 
 Auth: `Authorization: Bearer {token}`.
 
 ---
 
+
+
 ## CLI reference
 
-| Command | Alias | Purpose |
-|---------|-------|---------|
-| `pinroll:init` | — | Scaffold config; `-w` wizard |
-| `pinroll:vendor` | `pinroll:vendor:pack`, `pinroll:pack:vendor` | Export `vendor/` for host install or core update → `pinroll/vendor.zip` |
-| `pinroll:gate` | `pinroll:gate:init` | Build PinGate; FTP upload by default (`-z`, `--no-upload`, `--rotate`) |
-| `pinroll:gate:token` | — | Print token / gate snippet (`--deploy` runs gate) |
-| `pinroll:check` | — | Verify target / PinGate |
-| `pinroll:push` | `pinroll:prod` | Build & upload only (no apply) |
-| `pinroll:deploy` | — | Push + apply via PinGate (go live) |
-| `pinroll:apply` | — | Apply staged release on target (or `--local` on host) |
-| `pinroll:rollback` | — | Rollback via PinGate |
-| `pinroll:cleanup` | `pinroll:prune` | Prune old archives (`--dry-run`, `-k`) |
-| `pinroll:build` | — | Build only |
-| `pinroll:status` | — | Rollout status |
-| `pinroll:history` | — | History |
-| `pinroll:pull` | `pinroll:poll` | Pull manifest from release server |
-| `pinroll:publish` | — | Publish manifest |
-| `pinroll:migrate:dry-run` | — | Pending migrations preview |
 
-### Common examples
+| Command            | Purpose                                       |
+| ------------------ | --------------------------------------------- |
+| `pinroll:init`     | Scaffold `pinroll/pinroll.config.php`         |
+| `pinroll:connect`  | Setup / verify host (`--reset` to redo)       |
+| `pinroll:apps`     | Set `hosts.*.apps` in config                  |
+| `pinroll:vendor`   | Export `vendor/` → `pinroll/vendor.zip`       |
+| `pinroll:gate`     | Build / upload PinGate                        |
+| `pinroll:check`    | Verify host / PinGate                         |
+| `pinroll:push`     | Build & upload only                           |
+| `pinroll:install`  | Install staged release                        |
+| `pinroll:deploy`   | Push + install                                |
+| `pinroll:rollback` | Rollback via PinGate or local re-push         |
+| `pinroll:cleanup`  | Prune archives (`--local`, `--dry-run`, `-k`) |
 
-```bash
-php pinoox pinroll:vendor
-php pinoox pinroll:gate
-php pinoox pinroll:gate -z
-php pinoox pinroll:gate --rotate
 
-php pinoox pinroll:check production
-php pinoox pinroll:push production --package=com_pinoox_shop
-php pinoox pinroll:deploy production --package=com_pinoox_shop
-php pinoox pinroll:apply production
-php pinoox pinroll:rollback production
-php pinoox pinroll:cleanup production --dry-run
-```
+
 
 ### Push / deploy options
 
-```bash
-php pinoox pinroll:push production --package=com_pinoox_shop
-php pinoox pinroll:deploy production --package=com_pinoox_shop
-```
 
-| Option | Description |
-|--------|-------------|
-| `-a` / `--apply` | On `push` only: also apply (prefer `pinroll:deploy`) |
-| `--package=` | App package to build/push |
-| `--bundle=` | Bundle recipe override |
-| `--via=` / `--transport=` | Override transport |
+| Flag                 | Effect               |
+| -------------------- | -------------------- |
+| (default)            | app `.pinx` only     |
+| `--all`              | app + vendor + theme |
+| `--vendor`           | vendor sync          |
+| `--theme`            | theme dist sync      |
+| `--app=` / `--apps=` | Package selection    |
+| `--via=`             | Transport override   |
+| `--host=`            | Host override        |
+
 
 ---
+
+
 
 ## Transports
 
-| `via` | Use case |
-|-------|----------|
-| `ftp` | Upload files; apply via PinGate (recommended for shared hosting / cPanel) |
-| `ssh` | VPS — upload/apply over SSH |
-| `pinion` | Chunked HTTP upload through PinGate |
-| `local` | Same machine / smoke tests |
 
-With **FTP**, PinGate is required for remote `apply` / `deploy`. `pinroll:gate` uploads the bootstrap over the same FTP connection.
+| `via`    | Use case                                  |
+| -------- | ----------------------------------------- |
+| `ftp`    | Shared hosting — upload + PinGate install |
+| `ssh`    | VPS — SFTP upload, SSH install            |
+| `pinion` | Chunked HTTP upload through PinGate       |
+| `local`  | Same machine / smoke tests                |
 
----
-
-## Rollout flow
-
-```mermaid
-sequenceDiagram
-    participant Dev as Developer machine
-    participant Pinroll
-    participant FTP as FTP / SSH
-    participant PinGate as PinGate
-    participant Pinx as Pinx installer
-
-    Dev->>Pinroll: pinroll:vendor
-    Note over Dev,FTP: upload vendor.zip → extract vendor/
-    Dev->>Pinroll: pinroll:gate
-    Pinroll->>FTP: upload pingate.php + gate/
-    Dev->>Pinroll: pinroll:deploy production
-    Pinroll->>Pinroll: pinx:build → .pinx
-    Pinroll->>FTP: upload release to incoming/
-    Pinroll->>PinGate: POST /apply
-    PinGate->>Pinx: install package
-    PinGate-->>Dev: ok / rollback
-```
 
 ---
 
-## Storage layout
 
-| Path | Purpose |
-|------|---------|
-| `storage/pinroll/releases/` | Built archives (local) |
-| `storage/pinroll/incoming/` | Staged releases (host / local) |
-| `storage/pinroll/sessions/` | Rollout sessions |
-| `storage/pinroll/history.jsonl` | History log |
-
----
 
 ## Related docs
 
-- [Pinion protocol](../advanced/pinion.md) — chunked upload
-- [Pinx CLI](../start/pinx-cli.md) — `pinx:build`
+- [Pinion protocol](../advanced/pinion.md)
+- [Pinx CLI](../start/pinx-cli.md)
 - [CLI reference](../start/cli-reference.md)
 
 ---

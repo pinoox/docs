@@ -4,7 +4,7 @@
 
 | راهنما | توضیح |
 |--------|--------|
-| [Pinroll](./pinroll.md) | Target، خروجی vendor، PinGate (FTP)، deploy، rollback |
+| [Pinroll](./pinroll.md) | هاست، connect، apps، PinGate، deploy، retention، rollback |
 
 ---
 

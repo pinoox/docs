@@ -59,12 +59,6 @@ Read these in order if you are building a new app.
 - [API resources](./eloquent-orm/api-resources.md)
 - [Serialization](./eloquent-orm/serialization.md)
 
-## Deploy
-
-Platform release and rollout (full Pinoox installations).
-
-- [Pinroll — release & deploy](./deploy/pinroll.md)
-
 ## Build, Runtime, And Advanced Features
 
 - [Pinker and cache](./advanced/pinker.md)
@@ -76,10 +70,17 @@ Platform release and rollout (full Pinoox installations).
 - [User management](./advanced/user-management.md)
 - [File management](./advanced/file-management.md)
 - [Pinion uploads](./advanced/pinion.md)
+- [Pinroll overview](./advanced/pinroll.md)
 - [Token management](./advanced/token-management.md)
 - [Access and permissions](./advanced/access-permissions.md)
 - [Transport and shared resources](./advanced/transport.md)
 - [boot.php and events](./advanced/boot-and-events.md)
+
+## Deploy
+
+Platform release and rollout (full Pinoox installations).
+
+- [Pinroll — release & deploy](./deploy/pinroll.md)
 
 ## Walkthroughs
 
