@@ -343,7 +343,7 @@ get('/panel', [PanelController::class, 'index'], flows: ['auth', 'theme.panel'])
 
 Inside `theme/{name}/`: `theme.php` (manifest + `extends`), Twig templates, optional `functions.php` (Twig helpers), `frontend.config.php`, `src/` / `dist/` for Vite. Child themes override parent templates; cross-app parent: `@com_base/default`.
 
-See [Views](../basic/views.md), [Twig templates](../basic/templates.md), [app.php manifest](../start/app-manifest.md).
+**Full guides:** [Theme contexts](../basic/theme-contexts.md) · [Theme manifest (`theme.php`)](../basic/theme-manifest.md) · [Views](../basic/views.md) · [Twig templates](../basic/templates.md) · [app.php manifest](../start/app-manifest.md).
 
 ### From `boot.php`
 

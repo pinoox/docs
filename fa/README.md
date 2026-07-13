@@ -22,6 +22,8 @@
 #### [مرجع CLI پینوکس](./start/cli-reference.md)
 #### [Pinx CLI (پروژه‌های تک‌اپ)](./start/pinx-cli.md)
 #### [مرجع app.php](./start/app-manifest.md)
+#### [وابستگی اپ‌ها](./start/app-depends.md)
+#### [CLI وابستگی‌ها (`deps`)](./start/deps-cli.md)
 #### [قاعده نام‌گذاری پکیج](./start/package-naming.md)
 
 ### نمونه‌های عملی
@@ -48,6 +50,8 @@
 #### [اعتبارسنجی (Validation)](./basic/validation.md)
 #### [ویو (View)](./basic/views.md)
 #### [قالب Twig](./basic/templates.md)
+#### [کانتکست تم](./basic/theme-contexts.md)
+#### [مانیفست تم (`theme.php`)](./basic/theme-manifest.md)
 #### [فرانت‌اند و Vite](./basic/frontend-vite.md)
 #### [@pinooxhq/vite-plugin](./basic/vite-plugin.md)
 #### [Portal (فاساد)](./basic/portal.md)

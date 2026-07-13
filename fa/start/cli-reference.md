@@ -277,7 +277,7 @@ php pinoox pinroll:deploy
 | `serve` | سرور dev داخلی |
 | `theme:frontend` / `fe` | dev، build و watch با Vite — [فرانت‌اند و Vite](../basic/frontend-vite.md) |
 | `log:view` / `log:clear` | لاگ |
-| `deps` | composer/npm در اپ‌ها |
+| `deps` | composer/npm در اپ‌ها — [CLI وابستگی‌ها](./deps-cli.md) |
 | `version` / `mode:show` | نسخه / runtime mode |
 
 ### `theme:frontend` (`fe`)
@@ -298,6 +298,17 @@ php pinoox serve --app=com_my_shop@/manager # فقط manifest (PINOOX_VITE_HMR=0
 ```
 
 `fe dev` مقدار `PINOOX_VITE_HMR=1` را تنظیم می‌کند، URLهای `VITE_*` را از روتر اپ resolve می‌کند و مقادیر خالی را در runtime inject می‌کند. **URL PHP** چاپ‌شده در ترمینال را باز کنید — نه port Vite. `php pinoox serve` همیشه از دارایی‌های build‌شده manifest استفاده می‌کند. [فرانت‌اند و Vite](../basic/frontend-vite.md) و [@pinooxhq/vite-plugin](../basic/vite-plugin.md) را ببینید.
+
+### `deps`
+
+```bash
+php pinoox deps status all
+php pinoox deps install all
+php pinoox deps install com_my_shop --npm-only
+php pinoox deps install platform --plain --no-interaction
+```
+
+Composer (پلتفرم + هر اپ) و npm (تم) را نصب/به‌روز می‌کند. Scopeها: `all`، `platform`، یا نام پکیج. گزینه‌ها و عیب‌یابی: [CLI وابستگی‌ها (`deps`)](./deps-cli.md).
 
 ---
 

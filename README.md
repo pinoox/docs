@@ -25,6 +25,8 @@ Read these in order if you are building a new app.
 
 - [Pinx CLI guide and command reference](./en/start/pinx-cli.md)
 - [app.php manifest reference](./en/start/app-manifest.md)
+- [App dependencies](./en/start/app-depends.md)
+- [Dependencies CLI (`deps`)](./en/start/deps-cli.md)
 - [Package naming rules](./en/start/package-naming.md)
 - [Pinoox CLI reference for platform installs](./en/start/cli-reference.md)
 
@@ -39,6 +41,8 @@ Read these in order if you are building a new app.
 - [Validation](./en/basic/validation.md)
 - [Views](./en/basic/views.md)
 - [Twig templates](./en/basic/templates.md)
+- [Theme contexts](./en/basic/theme-contexts.md)
+- [Theme manifest (`theme.php`)](./en/basic/theme-manifest.md)
 - [Frontend & Vite](./en/basic/frontend-vite.md)
 - [@pinooxhq/vite-plugin](./en/basic/vite-plugin.md)
 - [Config](./en/basic/config.md)

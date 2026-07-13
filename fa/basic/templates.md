@@ -136,17 +136,42 @@ php pinoox cache:build com_acme_shop --only=twig
 
 ---
 
+## ارث‌بری تم (`theme.php`)
+
+متادیتا و تم‌های والد را در پوشه تم بگذارید، نه در `app.php`:
+
+```php
+// theme/toranj/theme.php
+return [
+    'name' => 'toranj',
+    'package' => 'com_my_shop',
+    'extends' => ['base'],
+];
+```
+
+منبع اصلی ارث‌بری: `theme.php` → `extends`. `app.php` → `theme-extends` fallback منسوخ است. مرجع کامل فیلدها: [مانیفست تم](./theme-manifest.md).
+
+---
+
+## چند کانتکست تم
+
+یک اپ می‌تواند بین درخت‌های تم مستقل (site / panel / …) با `theme-contexts` و aliasهای Flow مثل `theme.site`، `theme.panel` جابه‌جا شود. راهنما: [کانتکست تم](./theme-contexts.md).
+
+---
+
 ## نکات
 
 - فقط سینتکس استاندارد Twig؛ پینوکس helperهای بالا را اضافه می‌کند
 - برای SEO صفحات عمومی، HTML کامل در Twig رندر کنید
-- تغییر theme در runtime: `View::changeTheme('panel')`
+- تغییر theme در runtime: `View::changeTheme('panel')` یا `within_theme('panel', …)`
 
 ---
 
 ## مستندات مرتبط
 
 - [View — ویو](views.md)
+- [کانتکست تم](./theme-contexts.md)
+- [مانیفست تم (`theme.php`)](./theme-manifest.md)
 - [URL — آدرس](url.md)
 - [زبان](language.md)
 - [فرانت‌اند و Vite](./frontend-vite.md)

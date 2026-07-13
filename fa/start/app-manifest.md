@@ -29,7 +29,7 @@
 | `boot-global` | boot در هر درخواست |
 | `extends` | boot وقتی اپ میزبان boot شد |
 | `loader` | فایل‌های اضافه (`func.php`) |
-| `depends` | اپ‌های پیش‌نیاز |
+| `depends` | اپ‌های پیش‌نیاز / اختیاری — [وابستگی اپ‌ها](./app-depends.md) |
 
 جزئیات boot: [boot.php و رویدادها](../advanced/boot-and-events.md).
 
@@ -54,8 +54,9 @@
 | کلید | کاربرد |
 |------|--------|
 | `theme` | پوشه theme فعال |
-| `theme-context`, `theme-contexts`, `theme-extends` | چند context / ارث theme |
-| `frontend` | `stack` (vue/react/twig), `profile` (spa/hybrid), `entry`, `manifest` |
+| `theme-context`, `theme-contexts` | چند درخت تم — [کانتکست تم](../basic/theme-contexts.md) |
+| `theme-extends` | fallback منسوخ؛ ترجیح دهید `extends` در [theme.php](../basic/theme-manifest.md) |
+| `frontend` | `stack`، `profile`، `entry`، `manifest` — [فرانت‌اند و Vite](../basic/frontend-vite.md) |
 | `lang` | locale پیش‌فرض |
 | `open` | رفتار باز شدن در manager (`app-details`, `app-view`) |
 
@@ -135,6 +136,9 @@ return [
 ## مستندات مرتبط
 
 - [ساختار پوشه‌بندی](../start/structure.md)
+- [وابستگی اپ‌ها](./app-depends.md)
+- [کانتکست تم](../basic/theme-contexts.md)
+- [مانیفست تم (`theme.php`)](../basic/theme-manifest.md)
 - [پیکربندی — Config](../basic/config.md)
 
 ---

@@ -21,7 +21,42 @@ apps/com_my_shop/theme/default/
 └── partials/scripts.twig
 ```
 
-`frontend.config.php` منبع حقیقت سمت PHP برای stack، entryها، مسیر manifest و تنظیمات dev است. برای بلوک `frontend` در سطح اپ به [app manifest](../start/app-manifest.md) مراجعه کنید.
+`frontend.config.php` منبع حقیقت سمت PHP برای stack، entryها، مسیر manifest و تنظیمات dev است. برای بلوک `frontend` در سطح اپ به [app manifest](../start/app-manifest.md) مراجعه کنید. متادیتا و ارث‌بری تم در [theme.php](./theme-manifest.md) است.
+
+---
+
+## پروفایل‌های فرانت‌اند
+
+برای هر تم **یک پروفایل** انتخاب کنید. پروفایل می‌گوید تم *چطور* رندر می‌شود — نه کدام کتابخانه JS.
+
+| پروفایل | کاربرد | رندر | SEO | Node در production |
+|---------|--------|------|-----|-------------------|
+| **`twig`** | لندینگ، محتوا، صفحات ساده | HTML کامل Twig | عالی | خیر |
+| **`hybrid`** | فروشگاه عمومی، بلاگ، کاتالوگ | Twig + جزیره‌های Vite | عالی (meta در PHP) | خیر |
+| **`spa`** | پنل ادمین، داشبورد | شِل Twig + روتر کلاینت | لازم نیست (پشت auth) | خیر |
+| **`ssg`** | صفحات بازاریابی استاتیک | پیش‌رندر در build | عالی | خیر (فقط زمان build) |
+
+درخت تصمیم:
+
+```text
+پنل ادمین است؟
+  بله → spa
+  خیر → SEO مهم است؟
+          خیر → twig
+          بله → UI کلاینت سنگین در صفحات عمومی؟
+                  خیر → twig
+                  بله → SPA کامل روی URLهای عمومی؟
+                          بله → ssg (یا hybrid اگر مسیرها کم‌اند)
+                          خیر → hybrid
+```
+
+`'profile' => 'spa'` (و غیره) را در `frontend.config.php` بگذارید یا از `app.php` → `frontend` override کنید.
+
+---
+
+## تم‌های چندکانتکست
+
+site + panel (یا بیشتر) هر کدام می‌توانند پوشه تم و بلوک `frontend` جدا داشته باشند. Flowهای `theme.site` / `theme.panel` را روی مسیرهای HTML بگذارید — [کانتکست تم](./theme-contexts.md).
 
 ---
 
@@ -280,7 +315,10 @@ API کامل، مثال‌های stack (React، vanilla، چند entry) و را�
 
 - [@pinooxhq/vite-plugin](./vite-plugin.md)
 - [قالب Twig](./templates.md)
+- [کانتکست تم](./theme-contexts.md)
+- [مانیفست تم (`theme.php`)](./theme-manifest.md)
 - [View — ویو](./views.md)
+- [CLI وابستگی‌ها (`deps`)](../start/deps-cli.md)
 - [مرجع CLI — `theme:frontend`](../start/cli-reference.md)
 - [راهنمای Vite hybrid](../examples/vite-hybrid-app.md)
 - [راهنمای Vue SPA](../examples/vue-spa-app.md)

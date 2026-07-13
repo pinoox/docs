@@ -125,17 +125,35 @@ return View::render('errors/404');
 
 ---
 
+## Switching theme context
+
+For apps with more than one theme tree (site + panel, …):
+
+```php
+ThemeContext::activate('panel');
+return View::render('pages/dashboard');
+
+// or temporary:
+return within_theme('panel', fn () => View::render('pages/dashboard'));
+```
+
+Prefer attaching `theme.panel` (via `theme_flow_aliases`) on route collections so every HTML route in that area uses the right stack. Full guide: [Theme contexts](./theme-contexts.md).
+
+---
+
 ## Tips
 
 - Keep business logic in Controller/Component; Twig is for presentation only
-- The active theme comes from `app.php` → `'theme'`
-- For pure JSON use `response()->json()` or `ApiController`
+- The active theme comes from `app.php` → `'theme'` (or the active theme context)
+- For pure JSON use `response()->json()` or `ApiController` — do not attach `theme.*` flows
 
 ---
 
 ## Related docs
 
 - [Twig Templates](./templates.md)
+- [Theme contexts](./theme-contexts.md)
+- [Theme manifest (`theme.php`)](./theme-manifest.md)
 - [URL and Assets](./url.md)
 - [HTTP Response](./responses.md)
 - [Portal](./portal.md)

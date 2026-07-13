@@ -25,6 +25,8 @@ Read these in order if you are building a new app.
 
 - [Pinx CLI guide and command reference](./start/pinx-cli.md)
 - [app.php manifest reference](./start/app-manifest.md)
+- [App dependencies](./start/app-depends.md)
+- [Dependencies CLI (`deps`)](./start/deps-cli.md)
 - [Package naming rules](./start/package-naming.md)
 - [Pinoox CLI reference for platform installs](./start/cli-reference.md)
 
@@ -41,6 +43,8 @@ Read these in order if you are building a new app.
 - [Frontend & Vite](./basic/frontend-vite.md)
 - [@pinooxhq/vite-plugin](./basic/vite-plugin.md)
 - [Twig templates](./basic/templates.md)
+- [Theme contexts](./basic/theme-contexts.md)
+- [Theme manifest (`theme.php`)](./basic/theme-manifest.md)
 - [Config](./basic/config.md)
 - [Language and translation](./basic/language.md)
 - [Date and calendar](./basic/date-and-calendar.md)

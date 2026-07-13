@@ -134,6 +134,9 @@ pinx deps:i                 # install all
 pinx deps:up                # update all
 ```
 
+Scopes, options (`--composer-only`, `--all-themes`, `--plain`, …), and troubleshooting: [Dependencies CLI (`deps`)](./deps-cli.md).
+
+App-to-app requirements (`depends` / `use_app()`) are separate — see [App dependencies](./app-depends.md). Pinx install validates required `depends` before extract.
 **Pinker** (build cache):
 
 ```bash

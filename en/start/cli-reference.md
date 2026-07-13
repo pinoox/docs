@@ -278,7 +278,7 @@ See [Schedule](../advanced/schedule.md).
 | `serve` | Built-in dev server |
 | `theme:frontend` / `fe` | Vite dev, build, watch — [Frontend & Vite](../basic/frontend-vite.md) |
 | `log:view` / `log:clear` | Logs |
-| `deps` | Composer/npm across apps |
+| `deps` | Composer/npm across apps — [Dependencies CLI](./deps-cli.md) |
 | `version` / `mode:show` | Version / runtime mode |
 
 ### `theme:frontend` (`fe`)
@@ -299,6 +299,17 @@ php pinoox serve --app=com_my_shop@/manager # manifest only (PINOOX_VITE_HMR=0)
 ```
 
 `fe dev` sets `PINOOX_VITE_HMR=1`, resolves `VITE_*` URLs from the app router, and injects missing values at runtime. Open the **PHP URL** in the terminal — not the Vite port. `php pinoox serve` always uses built manifest assets. See [Frontend & Vite](../basic/frontend-vite.md) and [@pinooxhq/vite-plugin](../basic/vite-plugin.md).
+
+### `deps`
+
+```bash
+php pinoox deps status all
+php pinoox deps install all
+php pinoox deps install com_my_shop --npm-only
+php pinoox deps install platform --plain --no-interaction
+```
+
+Installs and updates Composer (platform + per-app) and npm (theme) targets. Scopes: `all`, `platform`, or a package name. Full options and troubleshooting: [Dependencies CLI (`deps`)](./deps-cli.md).
 
 ---
 

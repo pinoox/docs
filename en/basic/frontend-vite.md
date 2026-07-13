@@ -21,7 +21,42 @@ apps/com_my_shop/theme/default/
 └── partials/scripts.twig
 ```
 
-`frontend.config.php` is the PHP-side source of truth for stack, entries, manifest path, and dev settings. See [app manifest](../start/app-manifest.md) for the app-level `frontend` block.
+`frontend.config.php` is the PHP-side source of truth for stack, entries, manifest path, and dev settings. See [app manifest](../start/app-manifest.md) for the app-level `frontend` block. Theme metadata and inheritance live in [theme.php](./theme-manifest.md).
+
+---
+
+## Frontend profiles
+
+Choose **one profile** per theme. Profiles describe *how* the theme renders — not which JS library you use.
+
+| Profile | Use case | Rendering | SEO | Node in production |
+|---------|----------|-----------|-----|-------------------|
+| **`twig`** | Landing, content, simple pages | Full Twig HTML | Excellent | No |
+| **`hybrid`** | Public shop, blog, catalog | Twig + Vite islands | Excellent (meta in PHP) | No |
+| **`spa`** | Admin panel, dashboard | Twig shell + client router | Not required (behind auth) | No |
+| **`ssg`** | Static marketing pages | Pre-render at build time | Excellent | No (build-time only) |
+
+Decision tree:
+
+```text
+Is it an admin panel?
+  yes → spa
+  no  → Is SEO important?
+          no  → twig
+          yes → Heavy client UI on public pages?
+                  no  → twig
+                  yes → Full SPA on public URLs?
+                          yes → ssg (or hybrid if routes are few)
+                          no  → hybrid
+```
+
+Set `'profile' => 'spa'` (etc.) in `frontend.config.php` or override from `app.php` → `frontend`.
+
+---
+
+## Multi-context themes
+
+Site + panel (or more) can each have their own theme folder and per-context `frontend` block. Attach `theme.site` / `theme.panel` flows on HTML routes — see [Theme contexts](./theme-contexts.md).
 
 ---
 
@@ -280,7 +315,10 @@ Override with `frontend.config.php` or manual `.env` values when router detectio
 
 - [@pinooxhq/vite-plugin](./vite-plugin.md)
 - [Twig templates](./templates.md)
+- [Theme contexts](./theme-contexts.md)
+- [Theme manifest (`theme.php`)](./theme-manifest.md)
 - [Views](./views.md)
+- [Dependencies CLI (`deps`)](../start/deps-cli.md)
 - [CLI reference — `theme:frontend`](../start/cli-reference.md)
 - [Vite hybrid walkthrough](../examples/vite-hybrid-app.md)
 - [Vue SPA walkthrough](../examples/vue-spa-app.md)
