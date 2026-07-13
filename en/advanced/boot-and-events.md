@@ -406,6 +406,8 @@ return [
 
 New apps from `php pinoox app:create` receive both `boot.php` and `bindings.php` stubs.
 
+For the full boot pipeline stages, dual-container model, and controller constructor injection, see [Kernel and boot pipeline](./kernel.md).
+
 ---
 
 ## Event portal
@@ -464,6 +466,7 @@ Build: `php pinoox cache:build {package}` (or via `.pinx install`). See [Pinker]
 
 ## Related docs
 
+- [Kernel and boot pipeline](./kernel.md)
 - [Schedule](./schedule.md)
 - [Flows](../basic/flows.md)
 - [Views](../basic/views.md)

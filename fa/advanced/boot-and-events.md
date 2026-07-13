@@ -402,6 +402,8 @@ return [
 
 اپ‌های جدید از `php pinoox app:create` stubهای `boot.php` و `bindings.php` می‌گیرند.
 
+برای مراحل کامل pipeline بوت، مدل دو کانتینر، و تزریق سازنده کنترلر به [Kernel و pipeline بوت](./kernel.md) مراجعه کنید.
+
 ---
 
 ## Portal Event
@@ -458,6 +460,7 @@ app_boot(?string $package = null): AppRegister
 
 ## مستندات مرتبط
 
+- [Kernel و pipeline بوت](./kernel.md)
 - [زمان‌بندی — Schedule](./schedule.md)
 - [فلو — Flow](../basic/flows.md)
 - [View](../basic/views.md)

@@ -80,7 +80,7 @@ See [Flows](../basic/flows.md), [User management](../advanced/user-management.md
 | `runtime.mode`, `runtime.debug` | Mode overrides |
 | `cache` | Bake routes/api/boot/twig |
 | `log`, `redis`, `date` | Per-app overrides |
-| `container` | DI bindings |
+| `container` | DI bindings — [Kernel and boot pipeline](../advanced/kernel.md) |
 
 ### Date and timezone
 

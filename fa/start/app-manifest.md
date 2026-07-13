@@ -80,7 +80,7 @@
 | `runtime.mode`, `runtime.debug` | override mode |
 | `cache` | bake routes/api/boot/twig |
 | `log`, `redis`, `date` | per-app override |
-| `container` | DI bindings |
+| `container` | DI bindings — [Kernel و pipeline بوت](../advanced/kernel.md) |
 
 ### تاریخ و timezone
 

@@ -78,6 +78,7 @@ Read these in order if you are building a new app.
 - [Token management](./advanced/token-management.md)
 - [Access and permissions](./advanced/access-permissions.md)
 - [Transport and shared resources](./advanced/transport.md)
+- [Kernel and boot pipeline](./advanced/kernel.md)
 - [boot.php and events](./advanced/boot-and-events.md)
 
 ## Deploy

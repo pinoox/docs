@@ -142,6 +142,7 @@ php pinoox pinker:rebuild com_acme_shop
 
 - [پیکربندی](../basic/config.md)
 - [قالب Twig](../basic/templates.md)
+- [Kernel و pipeline بوت](./kernel.md)
 - [CLI — خط فرمان](../start/cli-reference.md)
 - [روتر](../basic/routers.md)
 
