@@ -115,18 +115,21 @@ php pinoox db:prefix com_my_shop shop_
 |--------|--------|
 | `user:list` / `user:show` / `user:create` / `user:update` / `user:delete` | CRUD کاربر |
 | `user:password` / `user:status` / `user:role` | رمز، وضعیت، نقش |
+| `user:login` / `user:logout` | صدور یا پایان توکن؛ با `--force` نوشتن/پاک‌کردن `PINOOX_LOGIN_TOKEN` |
 | `role:list` / `role:create` / … | CRUD نقش |
 | `role:permission` | اتصال/جداسازی permission روی نقش |
 | `permission:list` / `permission:create` / … | CRUD permission |
 
 ```bash
 php pinoox user:list com_my_shop --status=active --json
+php pinoox user:login com_my_shop --id=1 --force
+php pinoox user:logout --force
 php pinoox role:create com_my_shop --key=editor --name=Editor
 php pinoox permission:create com_my_shop blog.posts.edit
 php pinoox role:permission editor --attach=blog.posts.edit
 ```
 
-مستندات: [مدیریت کاربر](../advanced/user-management.md)، [دسترسی و permission](../advanced/access-permissions.md).
+مستندات: [مدیریت کاربر](../advanced/user-management.md) (شامل `PINOOX_LOGIN` / `PINOOX_LOGIN_TOKEN`)، [دسترسی و permission](../advanced/access-permissions.md).
 
 ---
 

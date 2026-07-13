@@ -254,6 +254,8 @@ Manage users from the project root. Commands use the app's `transport.user` scop
 | `user:password {user}` | Set password |
 | `user:status {user}` | Change status (`active`, `inactive`, `suspend`, `pending`) |
 | `user:role {user}` | Attach or detach roles |
+| `user:login` | Issue a session/JWT token (see below) |
+| `user:logout` | End the current auth session |
 
 Alias: `users` → `user:list`.
 
@@ -262,9 +264,60 @@ php pinoox user:list com_my_shop --json
 php pinoox user:create com_my_shop --username=demo --email=demo@example.test
 php pinoox user:password 1 --password=secret
 php pinoox user:role 1 --attach=editor
+php pinoox user:login com_my_shop --id=1
+php pinoox user:login --id=1 --force
+php pinoox user:logout --force
 ```
 
 Full list: [CLI reference](../start/cli-reference.md).
+
+---
+
+## Local / dev auto-login (`.env`)
+
+Two optional env keys help during local development. They are **independent** of normal cookie / JWT / session client auth.
+
+| Key | Who sets it | Purpose |
+|-----|-------------|---------|
+| `PINOOX_LOGIN` | **You** (manual) | Declarative auto-login: resolve a user by field and force them for that app |
+| `PINOOX_LOGIN_TOKEN` | CLI with `--force` | Store the token from `user:login` for server-side request auth |
+
+### `PINOOX_LOGIN` (manual)
+
+Format: `package:field:value`
+
+Supported fields: `id`, `user_id`, `personal_id`, `username`, `email`, `login`, `mobile`.
+
+```env
+PINOOX_LOGIN=com_pinoox_manager:id:1
+PINOOX_LOGIN=com_pinoox_account:username:yoosef
+PINOOX_LOGIN=com_pinoox_shop:mobile:09122220000
+```
+
+Rules:
+
+- Multiple lines are allowed (one per app). The active app package selects the matching line.
+- Empty / `null` values are ignored (e.g. `…:mobile:` never logs anyone in).
+- Duplicate field values pick the first row by `user_id`.
+- CLI **does not** write this key. Edit `.env` yourself when you want it.
+
+### `PINOOX_LOGIN_TOKEN` (CLI token)
+
+`user:login` always prints a token for browser apply / Inspector. With `--force`, it also writes that token to `.env`:
+
+```bash
+php pinoox user:login com_pinoox_manager --id=1 --force
+# → PINOOX_LOGIN_TOKEN=<token>
+
+php pinoox user:logout --force
+# → removes PINOOX_LOGIN_TOKEN
+```
+
+Without `--force`, `.env` is left unchanged. `PINOOX_LOGIN` is never modified by these commands.
+
+Pinx / Inspector “Login as user” uses the same token flow and typically passes `--force` so local auto-login stays in sync.
+
+See also `.env.example` in the project root.
 
 ---
 

@@ -116,18 +116,21 @@ Commands respect `transport.user` / access scope (usually `platform`). Omit `{pa
 |---------|---------|
 | `user:list` / `user:show` / `user:create` / `user:update` / `user:delete` | User CRUD |
 | `user:password` / `user:status` / `user:role` | Password, status, role assignment |
+| `user:login` / `user:logout` | Issue or clear session/JWT token; `--force` writes/clears `PINOOX_LOGIN_TOKEN` |
 | `role:list` / `role:create` / `role:show` / `role:update` / `role:delete` | Role CRUD |
 | `role:permission` | Attach or detach permissions on a role |
 | `permission:list` / `permission:create` / `permission:show` / `permission:delete` | Permission CRUD |
 
 ```bash
 php pinoox user:list com_my_shop --status=active --json
+php pinoox user:login com_my_shop --id=1 --force
+php pinoox user:logout --force
 php pinoox role:create com_my_shop --key=editor --name=Editor
 php pinoox permission:create com_my_shop blog.posts.edit
 php pinoox role:permission editor --attach=blog.posts.edit
 ```
 
-See [User management](../advanced/user-management.md) and [Access & permissions](../advanced/access-permissions.md).
+See [User management](../advanced/user-management.md) (including local `PINOOX_LOGIN` / `PINOOX_LOGIN_TOKEN`) and [Access & permissions](../advanced/access-permissions.md).
 
 ---
 
