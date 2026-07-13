@@ -99,6 +99,22 @@ if ($request->isJson()) {
 
 ---
 
+## بدنه QUERY
+
+برای مسیرهایی که با `query()` (متد HTTP `QUERY`) ثبت شده‌اند، بدنه را مثل POST/JSON بخوانید:
+
+```php
+public function search(Request $request)
+{
+    $filters = $request->getPayload()->all();
+    // یا: $request->jsonOne('filters')
+}
+```
+
+بیشتر: [روتر — متد QUERY](./routers.md#متد-query-rfc-10008).
+
+---
+
 ## Route و Collection فعلی
 
 ```php

@@ -26,7 +26,7 @@ Pinoox 3.x routing has two layers: **Named Actions** (logical handlers) and **Ro
 
 ```php
 use function Pinoox\Router\{
-    get, post, put, patch, delete,
+    get, post, put, patch, delete, query,
     action, group, routes, collect, route
 };
 ```
@@ -73,11 +73,42 @@ post('product', [ProductController::class, 'store'])->name('product.store');
 ## HTTP methods
 
 ```php
-use function Pinoox\Router\{get, post, put, patch, delete};
+use function Pinoox\Router\{get, post, put, patch, delete, query};
 
 post('login', [AuthController::class, 'login'])->name('login');
 put('product/{id}', [ProductController::class, 'update'])->name('product.update');
 delete('product/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
+query('search', [SearchController::class, 'run'])->name('search');
+```
+
+### QUERY method (RFC 10008)
+
+`QUERY` is a safe, idempotent method with a request body — useful for complex filters or search payloads that do not fit in a URL (like `GET`) and must not change server state (unlike `POST`).
+
+```php
+use function Pinoox\Router\query;
+use Pinoox\Component\Http\Request;
+
+query('/products/search', [ProductApiController::class, 'search'])
+    ->name('products.search');
+
+// Controller — read the body like POST/JSON
+public function search(Request $request)
+{
+    $filters = $request->getPayload()->all();
+    // ...
+}
+```
+
+Manifest form:
+
+```php
+[
+    'method' => 'QUERY',
+    'path' => '/products/search',
+    'action' => [ProductApiController::class, 'search'],
+    'name' => 'products.search',
+]
 ```
 
 ---
@@ -119,7 +150,7 @@ The corresponding alias must be registered in `app.php` under `'alias'`.
 // routes/api.php
 
 use App\com_acme_shop\Controller\ProductApiController;
-use function Pinoox\Router\{collect, get, post, routes};
+use function Pinoox\Router\{collect, get, post, query, routes};
 
 return routes([
     'version' => 'v1',
@@ -128,6 +159,7 @@ return routes([
         get('/products', [ProductApiController::class, 'index'])->name('products.index');
         post('/products', [ProductApiController::class, 'store'])->name('products.store');
         get('/products/{id}', [ProductApiController::class, 'show'])->name('products.show');
+        query('/products/search', [ProductApiController::class, 'search'])->name('products.search');
     }),
 ]);
 ```
