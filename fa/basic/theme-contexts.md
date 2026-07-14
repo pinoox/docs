@@ -165,6 +165,22 @@ Flowهای `theme.*` را فقط روی مسیرهایی بگذارید که HTM
 
 ---
 
+## dev فرانت‌اند با contextها
+
+وقتی site و panel هر کدام تم Vite جدا دارند (`package.json` + `frontend.config.php`)، `php pinoox fe` می‌تواند یک context یا همه را هدف بگیرد:
+
+```bash
+php pinoox fe com_my_shop dev --theme=site
+php pinoox fe com_my_shop dev --theme=panel
+php pinoox fe com_my_shop dev --theme=all    # یک پروسه Vite برای هر context Vite
+php pinoox fe com_my_shop install --theme=all
+php pinoox fe com_my_shop build --theme=panel
+```
+
+بلوک‌های `frontend` هر context در `app.php` با `frontend.config.php` همان تم merge می‌شوند (stack، profile، overrideهای dev). [فرانت‌اند و Vite](./frontend-vite.md) را ببینید.
+
+---
+
 ## مستندات مرتبط
 
 - [مانیفست تم (`theme.php`)](./theme-manifest.md)

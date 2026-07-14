@@ -283,22 +283,29 @@ See [Schedule](../advanced/schedule.md).
 
 ### `theme:frontend` (`fe`)
 
+Target is a **package** (`com_my_shop`) or **theme folder** (`spark`). Recommended order: `{target} {action}`.
+
 ```bash
-php pinoox fe info com_my_shop
-php pinoox fe install com_my_shop
-php pinoox fe dev com_my_shop              # PHP serve + Vite HMR (waits for Vite)
-php pinoox dev com_my_shop                 # shortcut for fe dev
-php pinoox fe dev com_my_shop --no-serve   # Vite only (MAMP / external PHP)
-php pinoox fe dev com_my_shop --fix-vite   # Wire @pinooxhq/vite-plugin into vite.config.js
+php pinoox fe spark info
+php pinoox fe spark install
+php pinoox fe spark dev                    # PHP serve + Vite HMR (waits for Vite)
+php pinoox dev spark                       # shortcut for fe spark dev
+php pinoox dev spark --domain=pinoox.test  # local hostname (auto hosts file)
+php pinoox fe spark dev --no-serve         # Vite only (MAMP / external PHP)
+php pinoox fe spark dev --theme=panel      # one theme context
+php pinoox fe spark dev --theme=all        # all Vite contexts in the app
+php pinoox fe spark dev --fix-vite         # Wire @pinooxhq/vite-plugin into vite.config.js
+php pinoox dev platform                    # full platform router
 php pinoox fe dev:apps                     # Multi-app: one serve + Vite per package
 php pinoox fe dev:apps --apps=com_pinoox_manager,com_pinoox_welcome
-php pinoox fe build com_my_shop
-php pinoox fe watch com_my_shop
-php pinoox fe scaffold com_my_shop vue
+php pinoox fe spark build
+php pinoox fe:build                        # theme wizard (same as fe build)
+php pinoox fe spark watch
+php pinoox fe spark scaffold vue
 php pinoox serve --app=com_my_shop@/manager # manifest only (PINOOX_VITE_HMR=0)
 ```
 
-`fe dev` sets `PINOOX_VITE_HMR=1`, resolves `VITE_*` URLs from the app router, and injects missing values at runtime. Open the **PHP URL** in the terminal — not the Vite port. `php pinoox serve` always uses built manifest assets. See [Frontend & Vite](../basic/frontend-vite.md) and [@pinooxhq/vite-plugin](../basic/vite-plugin.md).
+`fe dev` sets `PINOOX_VITE_HMR=1`, resolves `VITE_*` URLs from the app router, and injects missing values at runtime. HMR is signaled by **`.pinoox/dev.json`** (written by Vite). Open the **PHP URL** in the terminal — not the Vite port. `php pinoox serve` always uses built manifest assets. See [Frontend & Vite](../basic/frontend-vite.md) and [@pinooxhq/vite-plugin](../basic/vite-plugin.md).
 
 ### `deps`
 

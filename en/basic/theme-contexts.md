@@ -165,6 +165,22 @@ Attach `theme.*` flows only on routes that render HTML views.
 
 ---
 
+## Frontend dev with contexts
+
+When site and panel each have their own Vite theme (`package.json` + `frontend.config.php`), `php pinoox fe` can target one context or all:
+
+```bash
+php pinoox fe com_my_shop dev --theme=site
+php pinoox fe com_my_shop dev --theme=panel
+php pinoox fe com_my_shop dev --theme=all    # one Vite process per Vite context
+php pinoox fe com_my_shop install --theme=all
+php pinoox fe com_my_shop build --theme=panel
+```
+
+Per-context `frontend` blocks in `app.php` merge into that theme's `frontend.config.php` (stack, profile, dev overrides). See [Frontend & Vite](./frontend-vite.md).
+
+---
+
 ## Related docs
 
 - [Theme manifest (`theme.php`)](./theme-manifest.md) — inheritance and metadata inside the theme

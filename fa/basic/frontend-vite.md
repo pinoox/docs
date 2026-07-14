@@ -10,18 +10,33 @@
 
 ```
 apps/com_my_shop/theme/default/
-├── frontend.config.php    # stack، manifest، overrideهای dev
+├── frontend.config.php    # profile، stack، mount؛ entry/manifest خودکار
 ├── package.json           # @pinooxhq/vite-plugin در devDependencies
 ├── vite.config.js         # pinoox() از @pinooxhq/vite-plugin
-├── .env                   # overrideهای اختیاری Vite (به‌صورت پیش‌فرض تغییر نمی‌کند)
+├── .env                   # overrideهای اختیاری Vite (تزریق runtime به‌صورت پیش‌فرض)
+├── .pinoox/
+│   └── dev.json           # در dev توسط Vite نوشته می‌شود (سیگنال HMR برای PHP)
 ├── dist/
-│   ├── hot                # در dev توسط Vite نوشته می‌شود (سیگنال HMR برای PHP)
 │   └── .vite/manifest.json
 ├── src/
 └── partials/scripts.twig
 ```
 
-`frontend.config.php` منبع حقیقت سمت PHP برای stack، entryها، مسیر manifest و تنظیمات dev است. برای بلوک `frontend` در سطح اپ به [app manifest](../start/app-manifest.md) مراجعه کنید. متادیتا و ارث‌بری تم در [theme.php](./theme-manifest.md) است.
+مسیر اپ از **AppEngine** resolve می‌شود (`apps/`، `apps.config.php`، تک‌اپ `~`، registry خارجی، …) — CLI مسیر `{app}/theme/{theme}/` را از آنجا می‌گیرد، نه از نام ثابت پوشه.
+
+`frontend.config.php` منبع حقیقت سمت PHP برای profile، stack، mount point و تنظیمات dev است. **entry** و **manifest** وقتی حذف شوند از stack و خروجی build استنتاج می‌شوند. برای بلوک `frontend` در سطح اپ به [app manifest](../start/app-manifest.md) مراجعه کنید. متادیتا و ارث‌بری تم در [theme.php](./theme-manifest.md) است.
+
+مثال minimal (تشخیص stack بقیه را پر می‌کند):
+
+```php
+<?php
+
+return [
+    'profile' => 'hybrid',
+    'stack' => 'vue',
+    'mount' => '#app',
+];
+```
 
 ---
 
@@ -62,22 +77,44 @@ site + panel (یا بیشتر) هر کدام می‌توانند پوشه تم �
 
 ## CLI — `php pinoox fe`
 
-از **ریشه پلتفرم** اجرا کنید. package را حذف کنید تا از لیست انتخاب کنید.
+از **ریشه پروژه** اجرا کنید. آرگومان اول **package اپ** (`com_my_shop`) یا **نام پوشه تم** (`spark`، `default`) است. وقتی نام تم فقط در یک اپ وجود دارد، package خودکار resolve می‌شود.
 
-**میانبر:** `php pinoox dev {package}` به `fe {package} dev` فوروارد می‌شود با همان گزینه‌ها (`--no-serve`، `--network`، `--fix-vite`، …).
+**ترتیب پیشنهادی:** `{target} {action}` — ترتیب قدیمی `{action} {target}` هنوز کار می‌کند.
+
+```bash
+php pinoox fe spark dev              # پوشه تم → package خودکار
+php pinoox dev spark                 # میانبر fe spark dev
+php pinoox fe com_my_shop dev        # package صریح
+php pinoox fe dev spark              # ترتیب legacy
+php pinoox dev platform              # روتر کامل پلتفرم (نه mount تک‌اپ)
+```
+
+**میانبرها:** `php pinoox dev {target}` → `fe {target} dev`؛ `php pinoox fe:install` / `php pinoox fe:build` wizard تم را باز می‌کنند (همان `fe install` / `fe build` وقتی `--theme` حذف شده).
 
 | Action | Command | Purpose |
 |--------|---------|---------|
-| `info` | `php pinoox fe info {package}` | stack، manifest، فایل hot، wiring Vite |
-| `install` | `php pinoox fe install {package}` | `npm install` / `npm ci` در تم |
-| `dev` | `php pinoox fe dev {package}` | PHP `serve` + Vite HMR (تا آماده شدن Vite صبر می‌کند) |
-| `dev` | `php pinoox dev {package}` | همان `fe dev` (میانبر) |
+| `info` | `php pinoox fe spark info` | stack، manifest، dev state، wiring Vite |
+| `install` | `php pinoox fe spark install` | `npm install` / `npm ci` در تم |
+| `dev` | `php pinoox fe spark dev` | PHP `serve` + Vite HMR (تا آماده شدن Vite صبر می‌کند) |
+| `dev` | `php pinoox dev spark` | همان `fe spark dev` (میانبر) |
 | `dev:apps` | `php pinoox fe dev:apps` | یک `serve` PHP + Vite برای **چند** اپ |
-| `build` | `php pinoox fe build {package}` | build تولید (`dist/`) |
-| `watch` | `php pinoox fe watch {package}` | rebuild با ذخیره (بدون HMR) |
-| `scaffold` | `php pinoox fe scaffold {package} vue` | کپی stubهای vue/react/vite در تم |
+| `build` | `php pinoox fe spark build` | build تولید (`dist/`) |
+| `watch` | `php pinoox fe spark watch` | rebuild با ذخیره (بدون HMR) |
+| `scaffold` | `php pinoox fe spark scaffold vue` | کپی stubهای vue/react/vite در تم |
 
 **نام‌های مستعار:** `theme:frontend`، `frontend`.
+
+### `--theme` (پوشه، context یا all)
+
+وقتی اپ **چند پوشه تم** یا **theme context** (site / panel / …) دارد:
+
+```bash
+php pinoox fe com_my_shop dev --theme=panel    # یک context
+php pinoox fe com_my_shop dev --theme=all      # همه contextهای Vite (Vite جدا برای هر تم)
+php pinoox fe com_my_shop install --theme=all  # npm install در هر تم context
+```
+
+`--theme` را حذف کنید تا از لیست تعاملی انتخاب کنید. اپ‌های با چند context Vite در `fe dev` به‌صورت پیش‌فرض **همه** contextها را start می‌کنند مگر یکی را انتخاب کنید.
 
 ### گزینه‌های `fe dev`
 
@@ -86,7 +123,9 @@ site + panel (یا بیشتر) هر کدام می‌توانند پوشه تم �
 | `--no-serve` | فقط Vite؛ PHP را خودتان اجرا کنید (MAMP، Apache و غیره) |
 | `--serve-host` | host سرور dev PHP (پیش‌فرض از `SERVER_HOST`) |
 | `--serve-port` | port سرور dev PHP (پیش‌فرض از `SERVER_PORT`) |
-| `--serve-app` | اپ قفل‌شده برای `php pinoox serve` (پیش‌فرض: `package@/` برای dev تک‌اپ) |
+| `--serve-app` | اپ قفل‌شده برای `php pinoox serve` (پیش‌فرض: `package@/` برای dev تک‌اپ؛ `platform` برای روتر کامل) |
+| `--serve-domain` / `--domain` | hostname محلی برای URL مرورگر (PHP همچنان روی `127.0.0.1` bind می‌شود؛ مثلاً `--domain=pinoox.test`) |
+| `--no-fix-hosts` | به‌روزرسانی خودکار فایل hosts سیستم برای `--domain` را رد کن |
 | `--network` / `-N` | bind PHP + Vite روی LAN (`0.0.0.0`) |
 | `--vite-host` | host bind Vite (پیش‌فرض `127.0.0.1`) |
 | `--vite-network` | bind Vite روی `0.0.0.0` برای LAN |
@@ -139,7 +178,7 @@ CLI برای هر اپ یک URL چاپ می‌کند و لاگ Vite را با پ
 
 **دو بار** `fe dev` بدون `--no-serve` اجرا نکنید — هر دو port `8000` را می‌گیرند و فقط یک اپ route می‌شود. از `fe dev:apps` استفاده کنید، یا: یک `php pinoox serve` به‌علاوه `fe dev {package} --no-serve` برای هر اپ.
 
-**گردش کار:** CLI تا آماده شدن Vite صبر می‌کند، سپس URLها را چاپ می‌کند. **URL اپ PHP** را در مرورگر باز کنید (مثلاً `http://127.0.0.1:8000/manager` برای روتر پلتفرم، یا `http://127.0.0.1:8000/` برای `fe dev com_pinoox_manager` تک‌اپ)، **نه** port Vite. وقتی حالت HMR فعال است و فایل hot وجود دارد، PHP تگ‌های HMR را inject می‌کند.
+**گردش کار:** CLI تا آماده شدن Vite صبر می‌کند، سپس URLها را چاپ می‌کند. **URL اپ PHP** را در مرورگر باز کنید (مثلاً `http://127.0.0.1:8000/manager` برای روتر پلتفرم، یا `http://127.0.0.1:8000/` برای `dev spark` تک‌اپ)، **نه** port Vite. وقتی حالت HMR فعال است و `.pinoox/dev.json` مقدار `viteUrl` دارد، PHP تگ‌های HMR را inject می‌کند.
 
 **dev تک‌اپ** package را روی `/` mount می‌کند (`package@/`). **dev پلتفرم** از روتر کامل استفاده می‌کند — برای HMR چند اپ همزمان از `fe dev:apps` استفاده کنید.
 
@@ -151,14 +190,14 @@ PHP با `PINOOX_VITE_HMR` و بررسی runtime بین HMR و manifest تولی
 
 | دستور | `PINOOX_VITE_HMR` | PHP سرو می‌کند | Twig `vite_tags()` |
 |---------|-------------------|----------------|-------------------|
-| `php pinoox fe dev` / `php pinoox dev` | `1` | HMR از `dist/hot` + Vite | سرور dev Vite |
+| `php pinoox fe dev` / `php pinoox dev` | `1` | HMR از `.pinoox/dev.json` + Vite | سرور dev Vite |
 | `php pinoox serve` | `0` | فقط دارایی build‌شده | `dist/.vite/manifest.json` |
 | `pinx dev` (تک‌اپ) | `1` وقتی استک Vite تنظیم باشد | همان `fe dev` | HMR |
 | `pinx dev --no-frontend` | `0` | فقط manifest | دارایی build‌شده |
 
-`php pinoox serve` هرگز HMR را فعال نمی‌کند — حتی اگر `dist/hot` از جلسه dev قبلی باقی مانده باشد. برای live reload از `fe dev` استفاده کنید.
+`php pinoox serve` هرگز HMR را فعال نمی‌کند — حتی اگر `.pinoox/dev.json` از جلسه dev قبلی باقی مانده باشد. برای live reload از `fe dev` استفاده کنید.
 
-وقتی `APP_ENV=production` باشد، پینوکس همیشه از manifest استفاده می‌کند بدون توجه به `dist/hot`.
+وقتی `APP_ENV=production` باشد، پینوکس همیشه از manifest استفاده می‌کند بدون توجه به `.pinoox/dev.json`.
 
 ---
 
@@ -166,13 +205,12 @@ PHP با `PINOOX_VITE_HMR` و بررسی runtime بین HMR و manifest تولی
 
 ### زمان اجرا (پیش‌فرض)
 
-در `fe dev`، پینوکس URLهای dev را از **روتر اپ** (mount path، پیشوندهای proxy) resolve می‌کند و مقادیر خالی `VITE_*` را به پروسه npm می‌دهد. **فایل `.env` تم تغییر نمی‌کند** مگر اینکه opt-in کنید (پایین).
+در `fe dev`، پینوکس URLهای dev را از **روتر اپ** (mount path، پیشوندهای proxy) resolve می‌کند و مقادیر خالی `VITE_*` را به پروسه npm inject می‌کند. **فایل `.env` تم روی دیسک تغییر نمی‌کند** مگر با `ENV_SERVER_SYNC=true` opt-in کنید (پایین). اگر `.env` نباشد ولی `.env.example` باشد، CLI یک‌بار example را کپی می‌کند.
 
 مقادیر موجود در `.env` تم همیشه برنده‌اند. مقادیر resolve‌شده خودکار فقط کلیدهای خالی را در runtime پر می‌کنند.
 
 | Variable | Purpose |
 |----------|---------|
-| `VITE_HOT_FILE` | مسیر نسبی به فایل hot (پیش‌فرض `dist/hot`) |
 | `VITE_SERVER_URL` | base URL اپ PHP (برای proxy Vite) |
 | `VITE_DEV_PORT` | port سرور dev Vite |
 | `VITE_DEV_SERVER` | URL کامل origin Vite |
@@ -193,7 +231,8 @@ ENV_SERVER_SYNC=true
 
 ```env
 # @pinoox-fe-dev autogenerated
-VITE_HOT_FILE=dist/hot
+VITE_DEV=true
+VITE_BUILD_OUT_DIR=dist
 VITE_SERVER_URL=http://127.0.0.1:8000/manager
 VITE_DEV_PORT=5173
 VITE_DEV_SERVER=http://127.0.0.1:5173
@@ -215,11 +254,13 @@ VITE_DEV_PROXY=/manager
 <?php
 
 return [
+    'profile' => 'hybrid',
     'stack' => 'vue',
-    'manifest' => 'dist/.vite/manifest.json',
+    'mount' => '#app',
     'dev' => [
         'port' => 5174,
-        'hot' => 'dist/hot',
+        'prefer_manifest' => false,   // true: manifest build حتی وقتی .pinoox/dev.json هست
+        'force' => false,             // true: همیشه HMR (نادیده گرفتن prefer_manifest)
         'server_url' => 'http://127.0.0.1:8000/my-shop',
         'proxy' => ['/my-shop', '/api'],       // جایگزین لیست خودکار
         'proxy_extra' => ['/uploads'],          // با لیست خودکار ادغام می‌شود
@@ -227,7 +268,15 @@ return [
 ];
 ```
 
-`dev.server_url` و `dev.proxy` بر تشخیص روتر برای targetهای proxy Vite اولویت دارند.
+| کلید | کاربرد |
+|------|--------|
+| `mount` | selector DOM برای mount SPA/hybrid (پیش‌فرض `#app`) |
+| `entry` / `entries` | مسیر entryهای Vite (پیش‌فرض از stack، مثلاً `src/main.js`) |
+| `manifest` | مسیر manifest build (پیش‌فرض `dist/.vite/manifest.json`) |
+| `dev.prefer_manifest` | وقتی `true` و build وجود دارد، Twig از manifest استفاده می‌کند نه سرور dev Vite (مگر `dev.force` یا `VITE_DEV_FORCE`) |
+| `dev.port` | port ثابت Vite؛ CLI port آزاد بعدی را اختصاص می‌دهد اگر اشغال باشد |
+
+`dev.server_url` و `dev.proxy` بر تشخیص روتر برای targetهای proxy Vite اولویت دارند. معادل env: `VITE_PREFER_MANIFEST`، `VITE_DEV_FORCE`.
 
 ---
 
@@ -284,7 +333,7 @@ API کامل، مثال‌های stack (React، vanilla، چند entry) و را�
 
 **Production:** `php pinoox fe build {package}` را اجرا کنید تا `dist/.vite/manifest.json` وجود داشته باشد. Twig نام فایل‌های hash‌شده را از manifest می‌خواند.
 
-**Development:** وقتی `dist/hot` وجود دارد و runtime در production نیست، helperها تگ script را به سرور dev Vite اشاره می‌دهند.
+**Development:** وقتی `.pinoox/dev.json` مقدار `viteUrl` دارد (توسط Vite در start نوشته می‌شود) و حالت HMR فعال است، helperها تگ script را به سرور dev Vite اشاره می‌دهند.
 
 ---
 
@@ -292,10 +341,10 @@ API کامل، مثال‌های stack (React، vanilla، چند entry) و را�
 
 | Mode | `APP_ENV` | Hot file | Manifest | Browser URL |
 |------|-----------|----------|----------|-------------|
-| Dev | `development` (و غیره) | `dist/hot` موجود | وقتی hot هست نادیده گرفته می‌شود | URL اپ PHP |
+| Dev | `development` (و غیره) | `.pinoox/dev.json` فعال | وقتی HMR resolve شود نادیده گرفته می‌شود | URL اپ PHP |
 | Prod | `production` | نادیده گرفته می‌شود | `dist/.vite/manifest.json` | URL اپ PHP |
 
-وقتی `APP_ENV=production` باشد، پینوکس **هرگز** Vite HMR را فعال نمی‌کند — حتی اگر `dist/hot` از جلسه قبلی `fe dev` باقی مانده باشد. دارایی‌های build از manifest همیشه استفاده می‌شوند.
+وقتی `APP_ENV=production` باشد، پینوکس **هرگز** Vite HMR را فعال نمی‌کند — حتی اگر `.pinoox/dev.json` از جلسه قبلی `fe dev` باقی مانده باشد. دارایی‌های build از manifest همیشه استفاده می‌شوند.
 
 `php pinoox serve` مقدار `PINOOX_VITE_HMR=0` را تنظیم می‌کند و دارایی‌های build‌شده را از manifest سرو می‌کند — نه سرور dev Vite. برای HMR از `fe dev` استفاده کنید.
 
@@ -305,7 +354,7 @@ API کامل، مثال‌های stack (React، vanilla، چند entry) و را�
 
 در نصب پلتفرم، `fe dev` mount روتر هر اپ را می‌خواند (مثلاً `com_pinoox_manager` → `/manager`). `VITE_SERVER_URL` می‌شود `http://host:port/manager` و پیشوندهای proxy آن مسیر را شامل می‌شوند.
 
-برای **دو اپ یا بیشتر همزمان**، از `php pinoox fe dev:apps` استفاده کنید (بالا). هر package یک `FrontendDevSession`، port Vite و فایل `dist/hot` جدا دارد؛ PHP یک‌بار از طریق روتر کامل سرو می‌شود.
+برای **دو اپ یا بیشتر همزمان**، از `php pinoox fe dev:apps` استفاده کنید (بالا). هر package یک `FrontendDevSession`، port Vite و `.pinoox/dev.json` جدا دارد؛ PHP یک‌بار از طریق روتر کامل سرو می‌شود.
 
 وقتی تشخیص روتر اشتباه است با `frontend.config.php` یا مقادیر دستی `.env` override کنید.
 

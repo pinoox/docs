@@ -282,22 +282,29 @@ php pinoox pinroll:deploy
 
 ### `theme:frontend` (`fe`)
 
+target یک **package** (`com_my_shop`) یا **پوشه تم** (`spark`) است. ترتیب پیشنهادی: `{target} {action}`.
+
 ```bash
-php pinoox fe info com_my_shop
-php pinoox fe install com_my_shop
-php pinoox fe dev com_my_shop              # PHP serve + Vite HMR (تا آماده شدن Vite)
-php pinoox dev com_my_shop                 # میانبر fe dev
-php pinoox fe dev com_my_shop --no-serve   # فقط Vite (MAMP / PHP خارجی)
-php pinoox fe dev com_my_shop --fix-vite   # اتصال @pinooxhq/vite-plugin به vite.config.js
+php pinoox fe spark info
+php pinoox fe spark install
+php pinoox fe spark dev                    # PHP serve + Vite HMR (تا آماده شدن Vite)
+php pinoox dev spark                       # میانبر fe spark dev
+php pinoox dev spark --domain=pinoox.test  # hostname محلی (hosts خودکار)
+php pinoox fe spark dev --no-serve         # فقط Vite (MAMP / PHP خارجی)
+php pinoox fe spark dev --theme=panel      # یک theme context
+php pinoox fe spark dev --theme=all        # همه contextهای Vite در اپ
+php pinoox fe spark dev --fix-vite         # اتصال @pinooxhq/vite-plugin به vite.config.js
+php pinoox dev platform                    # روتر کامل پلتفرم
 php pinoox fe dev:apps                     # چند اپ: یک serve + Vite برای هر package
 php pinoox fe dev:apps --apps=com_pinoox_manager,com_pinoox_welcome
-php pinoox fe build com_my_shop
-php pinoox fe watch com_my_shop
-php pinoox fe scaffold com_my_shop vue
+php pinoox fe spark build
+php pinoox fe:build                        # wizard تم (همان fe build)
+php pinoox fe spark watch
+php pinoox fe spark scaffold vue
 php pinoox serve --app=com_my_shop@/manager # فقط manifest (PINOOX_VITE_HMR=0)
 ```
 
-`fe dev` مقدار `PINOOX_VITE_HMR=1` را تنظیم می‌کند، URLهای `VITE_*` را از روتر اپ resolve می‌کند و مقادیر خالی را در runtime inject می‌کند. **URL PHP** چاپ‌شده در ترمینال را باز کنید — نه port Vite. `php pinoox serve` همیشه از دارایی‌های build‌شده manifest استفاده می‌کند. [فرانت‌اند و Vite](../basic/frontend-vite.md) و [@pinooxhq/vite-plugin](../basic/vite-plugin.md) را ببینید.
+`fe dev` مقدار `PINOOX_VITE_HMR=1` را تنظیم می‌کند، URLهای `VITE_*` را از روتر اپ resolve می‌کند و مقادیر خالی را در runtime inject می‌کند. HMR با **`.pinoox/dev.json`** (نوشته‌شده توسط Vite) سیگنال می‌شود. **URL PHP** چاپ‌شده در ترمینال را باز کنید — نه port Vite. `php pinoox serve` همیشه از دارایی‌های build‌شده manifest استفاده می‌کند. [فرانت‌اند و Vite](../basic/frontend-vite.md) و [@pinooxhq/vite-plugin](../basic/vite-plugin.md) را ببینید.
 
 ### `deps`
 

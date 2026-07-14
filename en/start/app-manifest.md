@@ -56,7 +56,7 @@ See [Flows](../basic/flows.md), [User management](../advanced/user-management.md
 | `theme` | Active theme folder |
 | `theme-context`, `theme-contexts` | Multiple theme trees — [Theme contexts](../basic/theme-contexts.md) |
 | `theme-extends` | Deprecated fallback; prefer `extends` in [theme.php](../basic/theme-manifest.md) |
-| `frontend` | `stack`, `profile`, `entry`, `manifest` — [Frontend & Vite](../basic/frontend-vite.md) |
+| `frontend` | `stack`, `profile`, `mount`, `entry`, `manifest`, `dev` — [Frontend & Vite](../basic/frontend-vite.md) |
 | `lang` | Default locale |
 | `open` | Manager open behavior |
 

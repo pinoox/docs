@@ -2,7 +2,7 @@
 
 [← Back to index](../README.md)
 
-**[@pinooxhq/vite-plugin](https://www.npmjs.com/package/@pinooxhq/vite-plugin)** connects a Pinoox theme folder to PHP: hot file, dev proxy, Twig/PHP refresh, and production manifest for `vite_tags()`.
+**[@pinooxhq/vite-plugin](https://www.npmjs.com/package/@pinooxhq/vite-plugin)** connects a Pinoox theme folder to PHP: dev state file, dev proxy, Twig/PHP refresh, and production manifest for `vite_tags()`.
 
 Install it in every Vite theme (`apps/{package}/theme/{theme}/`). The Pinoox CLI (`php pinoox fe dev`, `pinx fe:dev`) expects this package — not the legacy synced `vite.pinoox.mjs` stub.
 
@@ -18,14 +18,14 @@ Install it in every Vite theme (`apps/{package}/theme/{theme}/`). The Pinoox CLI
 ```
 Browser → PHP (Twig + vite_tags)
               ↓
-         dist/hot exists + HMR mode?
+         .pinoox/dev.json active + HMR mode?
          yes → Vite client + entries from Vite origin
          no  → hashed assets from dist/.vite/manifest.json
 ```
 
 `pinoox()` in `vite.config.js`:
 
-1. Writes **`dist/hot`** so PHP enables HMR.
+1. Writes **`.pinoox/dev.json`** so PHP enables HMR (replaces legacy `dist/hot`).
 2. Proxies app routes to PHP (`VITE_DEV_PROXY`).
 3. Full-reloads when **Twig** or **app PHP** changes.
 4. Sets **build entries** and **manifest** for production.
@@ -48,6 +48,7 @@ Or from the Pinoox project root:
 
 ```bash
 php pinoox fe install com_my_shop --theme=default
+php pinoox fe spark install                 # theme folder shorthand
 ```
 
 `fe install` / `fe dev` can sync the plugin version expected by your Pinoox release. Use `--fix-vite` to patch an old `vite.config.js` that still imports `vite.pinoox.mjs`.
@@ -159,7 +160,7 @@ pinoox(['src/main.js', 'src/assets/styles/app.css'])
 pinoox({
     entries: ['src/main.js'],
     refresh: true,              // true | false | string[] (Twig globs)
-    hotFile: 'dist/hot',
+    hotFile: '.pinoox/dev.json',
     env: { VITE_DEV_PORT: '5174' },
     build: { rollupOptions: { /* merged */ } },
     server: { /* merged */ },
@@ -170,7 +171,7 @@ pinoox({
 |---------|-------------|
 | Build entries | `build.rollupOptions.input` from your paths |
 | Manifest | `build.manifest: true` → `dist/.vite/manifest.json` |
-| Hot file | Writes `dist/hot` (or `VITE_HOT_FILE`) for PHP HMR |
+| Dev state | Writes `.pinoox/dev.json` for PHP HMR (legacy: `dist/hot`) |
 | Dev proxy | Forwards app routes to PHP (`VITE_SERVER_URL`, `VITE_DEV_PROXY`) |
 | Twig refresh | Full reload when theme `*.twig` changes |
 | PHP refresh | Full reload when `VITE_DEV_REFRESH` paths change (from `fe dev`) |
@@ -211,9 +212,9 @@ Example `partials/scripts.twig`:
 
 ```bash
 # One command — PHP + Vite + env (recommended)
-php pinoox fe dev com_my_shop
+php pinoox fe spark dev
 # or shortcut:
-php pinoox dev com_my_shop
+php pinoox dev spark
 
 # Platform — multiple apps
 php pinoox fe dev:apps
@@ -235,7 +236,7 @@ php pinoox fe build com_my_shop
 cd apps/com_my_shop/theme/default && npm run build
 ```
 
-Output: `dist/.vite/manifest.json` and hashed assets under `dist/assets/`. No `dist/hot` — PHP uses the manifest only.
+Output: `dist/.vite/manifest.json` and hashed assets under `dist/assets/`. No active `.pinoox/dev.json` — PHP uses the manifest only.
 
 ---
 
@@ -245,7 +246,7 @@ Older themes imported `pinooxHot`, `pinooxServer`, and `pinooxRefresh` from a sy
 
 ```bash
 npm install -D @pinooxhq/vite-plugin
-php pinoox fe dev com_my_shop --fix-vite
+php pinoox fe spark dev --fix-vite
 ```
 
 The low-level exports (`pinooxHot`, `pinooxServer`, …) remain available from `@pinooxhq/vite-plugin` for advanced setups.

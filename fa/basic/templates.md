@@ -107,7 +107,7 @@ Build و dev:
 
 ```bash
 php pinoox fe build com_acme_shop
-php pinoox fe dev com_acme_shop
+php pinoox fe spark dev
 ```
 
 برای متغیرهای env، [@pinooxhq/vite-plugin](./vite-plugin.md) و تنظیم mount path به [فرانت‌اند و Vite](./frontend-vite.md) مراجعه کنید.

@@ -2,7 +2,7 @@
 
 [← بازگشت به فهرست](../README.md)
 
-**[@pinooxhq/vite-plugin](https://www.npmjs.com/package/@pinooxhq/vite-plugin)** تم پینوکس را به PHP وصل می‌کند: فایل hot، proxy در dev، refresh برای Twig/PHP و manifest تولید برای `vite_tags()`.
+**[@pinooxhq/vite-plugin](https://www.npmjs.com/package/@pinooxhq/vite-plugin)** تم پینوکس را به PHP وصل می‌کند: فایل dev state، proxy در dev، refresh برای Twig/PHP و manifest تولید برای `vite_tags()`.
 
 در هر تم Vite (`apps/{package}/theme/{theme}/`) نصب کنید. CLI پینوکس (`php pinoox fe dev`، `pinx fe:dev`) این پکیج npm را انتظار دارد — نه stub قدیمی `vite.pinoox.mjs`.
 
@@ -18,14 +18,14 @@
 ```
 مرورگر → PHP (Twig + vite_tags)
               ↓
-         dist/hot هست + حالت HMR؟
+         .pinoox/dev.json فعال + حالت HMR؟
          بله → کلاینت Vite + entry از origin Vite
          خیر → دارایی hash‌شده از dist/.vite/manifest.json
 ```
 
 `pinoox()` در `vite.config.js`:
 
-1. **`dist/hot`** می‌نویسد تا PHP، HMR را فعال کند.
+1. **`.pinoox/dev.json`** می‌نویسد تا PHP، HMR را فعال کند (جایگزین `dist/hot` قدیمی).
 2. routeهای اپ را به PHP proxy می‌کند (`VITE_DEV_PROXY`).
 3. با تغییر **Twig** یا **PHP اپ**، reload کامل می‌دهد.
 4. **entryهای build** و **manifest** را برای production تنظیم می‌کند.
@@ -48,6 +48,7 @@ npm install -D @pinooxhq/vite-plugin vite
 
 ```bash
 php pinoox fe install com_my_shop --theme=default
+php pinoox fe spark install                 # میانبر نام پوشه تم
 ```
 
 `fe install` / `fe dev` می‌تواند نسخه پلاگین متناسب با release پینوکس را همگام کند. برای `vite.config.js` قدیمی که هنوز `vite.pinoox.mjs` import می‌کند از `--fix-vite` استفاده کنید.
@@ -159,7 +160,7 @@ pinoox(['src/main.js', 'src/assets/styles/app.css'])
 pinoox({
     entries: ['src/main.js'],
     refresh: true,              // true | false | string[] (globهای Twig)
-    hotFile: 'dist/hot',
+    hotFile: '.pinoox/dev.json',
     env: { VITE_DEV_PORT: '5174' },
     build: { rollupOptions: { /* ادغام */ } },
     server: { /* ادغام */ },
@@ -170,7 +171,7 @@ pinoox({
 |---------|-------------|
 | Build entries | `build.rollupOptions.input` از مسیرهای شما |
 | Manifest | `build.manifest: true` → `dist/.vite/manifest.json` |
-| Hot file | نوشتن `dist/hot` (یا `VITE_HOT_FILE`) برای HMR در PHP |
+| Dev state | نوشتن `.pinoox/dev.json` برای HMR در PHP (legacy: `dist/hot`) |
 | Dev proxy | فوروارد routeها به PHP (`VITE_SERVER_URL`، `VITE_DEV_PROXY`) |
 | Twig refresh | reload کامل با تغییر `*.twig` تم |
 | PHP refresh | reload کامل با تغییر مسیرهای `VITE_DEV_REFRESH` (از `fe dev`) |
@@ -211,9 +212,9 @@ pinoox({
 
 ```bash
 # یک دستور — PHP + Vite + env (پیشنهادی)
-php pinoox fe dev com_my_shop
-# یا shortcut:
-php pinoox dev com_my_shop
+php pinoox fe spark dev
+# یا میانبر:
+php pinoox dev spark
 
 # پلتفرم — چند اپ
 php pinoox fe dev:apps
@@ -235,7 +236,7 @@ php pinoox fe build com_my_shop
 cd apps/com_my_shop/theme/default && npm run build
 ```
 
-خروجی: `dist/.vite/manifest.json` و دارایی‌های hash‌شده زیر `dist/assets/`. بدون `dist/hot` — PHP فقط از manifest استفاده می‌کند.
+خروجی: `dist/.vite/manifest.json` و دارایی‌های hash‌شده زیر `dist/assets/`. بدون `.pinoox/dev.json` فعال — PHP فقط از manifest استفاده می‌کند.
 
 ---
 
@@ -245,7 +246,7 @@ cd apps/com_my_shop/theme/default && npm run build
 
 ```bash
 npm install -D @pinooxhq/vite-plugin
-php pinoox fe dev com_my_shop --fix-vite
+php pinoox fe spark dev --fix-vite
 ```
 
 exportهای سطح پایین (`pinooxHot`، `pinooxServer`، …) همچنان از `@pinooxhq/vite-plugin` برای setupهای پیشرفته در دسترس‌اند.

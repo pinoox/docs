@@ -56,7 +56,7 @@
 | `theme` | پوشه theme فعال |
 | `theme-context`, `theme-contexts` | چند درخت تم — [کانتکست تم](../basic/theme-contexts.md) |
 | `theme-extends` | fallback منسوخ؛ ترجیح دهید `extends` در [theme.php](../basic/theme-manifest.md) |
-| `frontend` | `stack`، `profile`، `entry`، `manifest` — [فرانت‌اند و Vite](../basic/frontend-vite.md) |
+| `frontend` | `stack`، `profile`، `mount`، `entry`، `manifest`، `dev` — [فرانت‌اند و Vite](../basic/frontend-vite.md) |
 | `lang` | locale پیش‌فرض |
 | `open` | رفتار باز شدن در manager (`app-details`, `app-view`) |
 
