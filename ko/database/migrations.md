@@ -121,7 +121,7 @@ Pinoox는 여전히 구 `apps/{package}/migrations/` 폴더를 읽지만 **새**
 | Seeder | Initial data | `php pinoox seeder:run {package}` |
 | Patch | One-time data change | `php pinoox patch:run {package}` |
 
-Patch 전체 가이드: [Patches (data updates)](./patches.md).
+Patch 전체 가이드: [Patches (data updates)](../advanced/patches.md).
 
 ---
 

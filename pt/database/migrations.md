@@ -121,7 +121,7 @@ O Pinoox ainda lê a pasta antiga `apps/{package}/migrations/`, mas arquivos **n
 | Seeder | Dados iniciais | `php pinoox seeder:run {package}` |
 | Patch | Alteração de dados única | `php pinoox patch:run {package}` |
 
-Guia completo de patches: [Patches (atualizações de dados)](./patches.md).
+Guia completo de patches: [Patches (atualizações de dados)](../advanced/patches.md).
 
 ---
 

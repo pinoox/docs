@@ -54,6 +54,8 @@ Her rehber, pratik örneklerle **tek bir önerilen yaklaşımı** açıklar. Aş
 ### İleri düzey konular
 
 #### [Pinker ve önbellek](./advanced/pinker.md)
+#### [Patch'ler (veri güncellemeleri)](./advanced/patches.md)
+
 #### [Uygulama servisleri (Component + Portal)](./advanced/services.md)
 #### [Global helper'lar](./advanced/helpers.md)
 #### [E-posta gönderme](./advanced/mail.md)
@@ -73,7 +75,6 @@ Her rehber, pratik örneklerle **tek bir önerilen yaklaşımı** açıklar. Aş
 #### [Query Builder](./database/query-builder.md)
 #### [Sayfalama](./database/pagination.md)
 #### [Migration'lar](./database/migrations.md)
-#### [Patch'ler (veri güncellemeleri)](./database/patches.md)
 
 ### Eloquent ORM
 

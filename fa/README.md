@@ -62,6 +62,8 @@
 ### مفاهیم پیشرفته
 
 #### [Pinker و Cache](./advanced/pinker.md)
+#### [Patch (به‌روزرسانی داده)](./advanced/patches.md)
+
 #### [سرویس‌های اپ (Component + Portal)](./advanced/services.md)
 #### [توابع کمکی سراسری (Helpers)](./advanced/helpers.md)
 #### [ارسال ایمیل](./advanced/mail.md)
@@ -87,7 +89,6 @@
 #### [Query Builder](./database/query-builder.md)
 #### [صفحه‌بندی (Pagination)](./database/pagination.md)
 #### [Migrations](./database/migrations.md)
-#### [Patch (به‌روزرسانی داده)](./database/patches.md)
 
 ### کار با Eloquent ORM
 

@@ -48,7 +48,7 @@ foreach ($locales as $loc) {
     }
 
     if (!str_contains($content, 'user-management')) {
-        $patchesPos = strpos($content, '../database/patches.md)');
+        $patchesPos = strpos($content, '../advanced/patches.md)');
         if ($patchesPos !== false) {
             $lineEnd = strpos($content, $eol, $patchesPos);
             if ($lineEnd !== false) {

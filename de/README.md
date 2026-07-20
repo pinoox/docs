@@ -54,6 +54,8 @@ Jeder Leitfaden beschreibt **einen empfohlenen Ansatz** mit praktischen Beispiel
 ### Fortgeschrittene Themen
 
 #### [Pinker und Cache](./advanced/pinker.md)
+#### [Patches (Datenaktualisierungen)](./advanced/patches.md)
+
 #### [App-Services (Component + Portal)](./advanced/services.md)
 #### [Globale Helpers](./advanced/helpers.md)
 #### [E-Mails versenden](./advanced/mail.md)
@@ -73,7 +75,6 @@ Jeder Leitfaden beschreibt **einen empfohlenen Ansatz** mit praktischen Beispiel
 #### [Query Builder](./database/query-builder.md)
 #### [Paginierung](./database/pagination.md)
 #### [Migrationen](./database/migrations.md)
-#### [Patches (Datenaktualisierungen)](./database/patches.md)
 
 ### Eloquent ORM
 

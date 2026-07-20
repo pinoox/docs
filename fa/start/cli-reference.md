@@ -77,7 +77,7 @@ php pinoox help migrate
 | `migrate:create` | فایل migration |
 | `migrate:status` / `migrate:rollback` | وضعیت / برگشت |
 | `seeder:run` | اجرای seeder |
-| `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patch](../database/patches.md) |
+| `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patch](../advanced/patches.md) |
 | `query` | SQL خام (debug؛ `--dry-run` فقط چاپ بدون اجرا) |
 
 ### مدیریت اتصال (`db:*`)
@@ -335,7 +335,7 @@ Composer (پلتفرم + هر اپ) و npm (تم) را نصب/به‌روز می
 - [فرانت‌اند و Vite](../basic/frontend-vite.md)
 - [ساخت اولین اپ](./your-first-app.md)
 - [Migration — مهاجرت](../database/migrations.md)
-- [Patch — پچ](../database/patches.md)
+- [Patch — پچ](../advanced/patches.md)
 - [مدیریت کاربر](../advanced/user-management.md)
 - [دسترسی و permission](../advanced/access-permissions.md)
 - [مدیریت توکن](../advanced/token-management.md)

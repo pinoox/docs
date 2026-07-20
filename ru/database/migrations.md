@@ -121,7 +121,7 @@ Pinoox по-прежнему читает старую папку `apps/{package
 | Seeder | Начальные данные | `php pinoox seeder:run {package}` |
 | Patch | Одноразовое изменение данных | `php pinoox patch:run {package}` |
 
-Полное руководство по патчам: [Патчи (обновление данных)](./patches.md).
+Полное руководство по патчам: [Патчи (обновление данных)](../advanced/patches.md).
 
 ---
 

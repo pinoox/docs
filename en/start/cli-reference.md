@@ -78,7 +78,7 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | `migrate:create` | New migration file |
 | `migrate:status` / `migrate:rollback` | Status / rollback |
 | `seeder:run` | Run seeders |
-| `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patches](../database/patches.md) |
+| `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patches](../advanced/patches.md) |
 | `query` | Raw SQL (debug; `--dry-run` to print without executing) |
 
 ### Connection management (`db:*`)
@@ -336,7 +336,7 @@ Installs and updates Composer (platform + per-app) and npm (theme) targets. Scop
 - [Frontend & Vite](../basic/frontend-vite.md)
 - [Your first app](./your-first-app.md)
 - [Migrations](../database/migrations.md)
-- [Patches](../database/patches.md)
+- [Patches](../advanced/patches.md)
 - [User management](../advanced/user-management.md)
 - [Access & permissions](../advanced/access-permissions.md)
 - [Token management](../advanced/token-management.md)

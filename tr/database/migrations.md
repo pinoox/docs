@@ -121,7 +121,7 @@ Pinoox hâlâ eski `apps/{package}/migrations/` klasörünü okur, ancak **yeni*
 | Seeder | Başlangıç verisi | `php pinoox seeder:run {package}` |
 | Patch | Tek seferlik veri değişikliği | `php pinoox patch:run {package}` |
 
-Tam patch rehberi: [Patch'ler (veri güncellemeleri)](./patches.md).
+Tam patch rehberi: [Patch'ler (veri güncellemeleri)](../advanced/patches.md).
 
 ---
 

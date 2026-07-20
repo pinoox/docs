@@ -54,6 +54,8 @@
 ### Продвинутые темы
 
 #### [Pinker и кэш](./advanced/pinker.md)
+#### [Патчи (обновление данных)](./advanced/patches.md)
+
 #### [Сервисы приложения (Component + Portal)](./advanced/services.md)
 #### [Глобальные хелперы (Global Helpers)](./advanced/helpers.md)
 #### [Отправка электронной почты (Email)](./advanced/mail.md)
@@ -73,7 +75,6 @@
 #### [Query Builder](./database/query-builder.md)
 #### [Пагинация](./database/pagination.md)
 #### [Миграции](./database/migrations.md)
-#### [Патчи (обновление данных)](./database/patches.md)
 
 ### Eloquent ORM
 

@@ -55,7 +55,7 @@ Read these in order if you are building a new app.
 - [Migrations](./database/migrations.md)
 - [Query Builder](./database/query-builder.md)
 - [Pagination](./database/pagination.md)
-- [Patches for data updates](./database/patches.md)
+
 - [Eloquent ORM getting started](./eloquent-orm/getting-started.md)
 - [Eloquent relationships](./eloquent-orm/relationships.md)
 - [Factories and seeders](./eloquent-orm/factories.md)
@@ -66,6 +66,7 @@ Read these in order if you are building a new app.
 ## Build, Runtime, And Advanced Features
 
 - [Pinker and cache](./advanced/pinker.md)
+- [Patches for data updates](./advanced/patches.md)
 - [Scheduling](./advanced/schedule.md)
 - [App services](./advanced/services.md)
 - [Global helpers](./advanced/helpers.md)

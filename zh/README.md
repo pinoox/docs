@@ -54,6 +54,8 @@
 ### 进阶主题
 
 #### [Pinker 与缓存（Cache）](./advanced/pinker.md)
+#### [补丁（数据更新）](./advanced/patches.md)
+
 #### [应用服务（Component + Portal）](./advanced/services.md)
 #### [全局辅助函数（Global Helpers）](./advanced/helpers.md)
 #### [发送邮件（Email）](./advanced/mail.md)
@@ -73,7 +75,6 @@
 #### [查询构建器（Query Builder）](./database/query-builder.md)
 #### [分页（Pagination）](./database/pagination.md)
 #### [迁移（Migrations）](./database/migrations.md)
-#### [补丁（数据更新）](./database/patches.md)
 
 ### Eloquent ORM
 
