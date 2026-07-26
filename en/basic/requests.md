@@ -99,6 +99,22 @@ if ($request->isJson()) {
 
 ---
 
+## QUERY body
+
+For routes registered with `query()` (HTTP `QUERY`), read the body the same way as POST/JSON:
+
+```php
+public function search(Request $request)
+{
+    $filters = $request->getPayload()->all();
+    // or: $request->jsonOne('filters')
+}
+```
+
+See [Router — QUERY method](./routers.md#query-method-rfc-10008).
+
+---
+
 ## Current route and collection
 
 ```php

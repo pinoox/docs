@@ -142,6 +142,7 @@ php pinoox pinker:rebuild com_acme_shop
 
 - [Config](../basic/config.md)
 - [Twig Templates](../basic/templates.md)
+- [Kernel and boot pipeline](./kernel.md)
 - [CLI Reference](../start/cli-reference.md)
 - [Router](../basic/routers.md)
 

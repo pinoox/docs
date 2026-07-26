@@ -343,7 +343,7 @@ get('/panel', [PanelController::class, 'index'], flows: ['auth', 'theme.panel'])
 
 داخل `theme/{name}/`: `theme.php` (manifest + `extends`)، قالب Twig، `functions.php` (اختیاری)، `frontend.config.php`، `src/` / `dist/` برای Vite. child روی parent override می‌کند؛ parent بین‌اپ: `@com_base/default`.
 
-بیشتر: [Views](../basic/views.md)، [Twig](../basic/templates.md)، [app.php](../start/app-manifest.md).
+**راهنماهای کامل:** [کانتکست تم](../basic/theme-contexts.md) · [مانیفست تم (`theme.php`)](../basic/theme-manifest.md) · [Views](../basic/views.md) · [Twig](../basic/templates.md) · [app.php](../start/app-manifest.md).
 
 ### از `boot.php`
 
@@ -402,6 +402,8 @@ return [
 
 اپ‌های جدید از `php pinoox app:create` stubهای `boot.php` و `bindings.php` می‌گیرند.
 
+برای مراحل کامل pipeline بوت، مدل دو کانتینر، و تزریق سازنده کنترلر به [Kernel و pipeline بوت](./kernel.md) مراجعه کنید.
+
 ---
 
 ## Portal Event
@@ -458,6 +460,7 @@ app_boot(?string $package = null): AppRegister
 
 ## مستندات مرتبط
 
+- [Kernel و pipeline بوت](./kernel.md)
 - [زمان‌بندی — Schedule](./schedule.md)
 - [فلو — Flow](../basic/flows.md)
 - [View](../basic/views.md)

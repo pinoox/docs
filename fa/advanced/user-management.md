@@ -254,6 +254,8 @@ UserModel (pincore_user) + TokenModel (pincore_token)
 | `user:password {user}` | تنظیم رمز |
 | `user:status {user}` | تغییر وضعیت |
 | `user:role {user}` | اتصال/جداسازی نقش |
+| `user:login` | صدور توکن session/JWT (پایین را ببینید) |
+| `user:logout` | پایان session فعلی |
 
 Alias: `users` → `user:list`.
 
@@ -262,9 +264,60 @@ php pinoox user:list com_my_shop --json
 php pinoox user:create com_my_shop --username=demo --email=demo@example.test
 php pinoox user:password 1 --password=secret
 php pinoox user:role 1 --attach=editor
+php pinoox user:login com_my_shop --id=1
+php pinoox user:login --id=1 --force
+php pinoox user:logout --force
 ```
 
 فهرست کامل: [مرجع CLI](../start/cli-reference.md).
+
+---
+
+## Auto-login محلی / توسعه (`.env`)
+
+دو کلید اختیاری برای توسعهٔ محلی. از auth معمولی cookie / JWT / session **جدا** هستند.
+
+| کلید | چه کسی می‌نویسد | کاربرد |
+|------|------------------|--------|
+| `PINOOX_LOGIN` | **خودت** (دستی) | لاگین اعلانی: کاربر را با فیلد مشخص برای همان اپ force می‌کند |
+| `PINOOX_LOGIN_TOKEN` | CLI با `--force` | ذخیرهٔ توکنِ `user:login` برای auth سمت سرور |
+
+### `PINOOX_LOGIN` (دستی)
+
+فرمت: `package:field:value`
+
+فیلدهای مجاز: `id`، `user_id`، `personal_id`، `username`، `email`، `login`، `mobile`.
+
+```env
+PINOOX_LOGIN=com_pinoox_manager:id:1
+PINOOX_LOGIN=com_pinoox_account:username:yoosef
+PINOOX_LOGIN=com_pinoox_shop:mobile:09122220000
+```
+
+قواعد:
+
+- چند خط مجاز است (هر اپ یک خط). اپ فعال خط هم‌نام خودش را می‌گیرد.
+- مقدار خالی / `null` رد می‌شود (مثلاً `…:mobile:` هیچ‌کس را لاگین نمی‌کند).
+- اگر چند ردیف یکسان باشند، اولین ردیف بر اساس `user_id` انتخاب می‌شود.
+- CLI این کلید را **نمی‌نویسد**؛ فقط دستی در `.env`.
+
+### `PINOOX_LOGIN_TOKEN` (توکن CLI)
+
+`user:login` همیشه توکن را چاپ می‌کند (برای Apply در مرورگر / Inspector). با `--force` همان توکن را در `.env` می‌نویسد:
+
+```bash
+php pinoox user:login com_pinoox_manager --id=1 --force
+# → PINOOX_LOGIN_TOKEN=<token>
+
+php pinoox user:logout --force
+# → PINOOX_LOGIN_TOKEN حذف می‌شود
+```
+
+بدون `--force` فایل `.env` عوض نمی‌شود. دستورات بالا هرگز `PINOOX_LOGIN` را تغییر نمی‌دهند.
+
+در Pinx / Inspector، «Login as user» معمولاً با `--force` همان توکن را برای auto-login محلی هم ذخیره می‌کند.
+
+نمونهٔ کامنت‌ها در `.env.example` ریشهٔ پروژه.
 
 ---
 

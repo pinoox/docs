@@ -121,7 +121,7 @@ Pinoox still reads the old `apps/{package}/migrations/` folder, but **new** file
 | Seeder | Initial data | `php pinoox seeder:run {package}` |
 | Patch | One-time data change | `php pinoox patch:run {package}` |
 
-Full patch guide: [Patches (data updates)](./patches.md).
+Full patch guide: [Patches (data updates)](../advanced/patches.md).
 
 ---
 

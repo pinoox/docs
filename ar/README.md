@@ -54,6 +54,8 @@
 ### مواضيع متقدمة
 
 #### [Pinker والتخزين المؤقت (Cache)](./advanced/pinker.md)
+#### [Patches (تحديثات البيانات)](./advanced/patches.md)
+
 #### [خدمات التطبيق (Component + Portal)](./advanced/services.md)
 #### [الدوال المساعدة العامة (Global Helpers)](./advanced/helpers.md)
 #### [إرسال البريد الإلكتروني](./advanced/mail.md)
@@ -73,7 +75,6 @@
 #### [Query Builder](./database/query-builder.md)
 #### [التصفح (Pagination)](./database/pagination.md)
 #### [الترحيلات (Migrations)](./database/migrations.md)
-#### [Patches (تحديثات البيانات)](./database/patches.md)
 
 ### Eloquent ORM
 

@@ -121,7 +121,7 @@ $this->schema->create($this->table(Table::USER, 'platform'), function (Blueprint
 | Seeder | داده اولیه | `php pinoox seeder:run {package}` |
 | Patch | تغییر یک‌باره داده | `php pinoox patch:run {package}` |
 
-راهنمای کامل Patch: [Patch (به‌روزرسانی داده)](./patches.md).
+راهنمای کامل Patch: [Patch (به‌روزرسانی داده)](../advanced/patches.md).
 
 ---
 

@@ -121,7 +121,7 @@ Pinoox lit toujours l'ancien dossier `apps/{package}/migrations/`, mais les **no
 | Seeder | Données initiales | `php pinoox seeder:run {package}` |
 | Patch | Modification de données ponctuelle | `php pinoox patch:run {package}` |
 
-Guide complet des patchs : [Patches (mises à jour de données)](./patches.md).
+Guide complet des patchs : [Patches (mises à jour de données)](../advanced/patches.md).
 
 ---
 

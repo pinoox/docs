@@ -7,35 +7,37 @@
 Unified local development: **one command** starts PHP + Vite HMR.
 
 ```bash
-php pinoox dev com_pinoox_manager    # shortcut for fe dev
-php pinoox fe dev com_pinoox_manager   # PHP serve + Vite HMR
-php pinoox fe dev:apps                 # platform — multiple apps
-composer run dev                       # same as php pinoox dev (when configured)
+php pinoox dev spark                       # theme folder (package auto-resolved)
+php pinoox fe spark dev                    # same; legacy: fe dev spark
+php pinoox dev platform                    # full platform router
+php pinoox fe dev:apps                     # multiple apps
+composer run dev                           # when configured in composer.json
 ```
 
-Browse the **PHP app URL** printed in the terminal. Twig injects HMR via `vite_tags()`; `dist/hot` is written by `@pinooxhq/vite-plugin`.
+Browse the **PHP app URL** printed in the terminal. Twig injects HMR via `vite_tags()`; `.pinoox/dev.json` is written by `@pinooxhq/vite-plugin`.
 
 ## Commands
 
 | Command | Action |
 |---------|--------|
-| `php pinoox dev {package}` | PHP serve + Vite HMR (shortcut) |
-| `php pinoox fe {package} dev` | Same (`fe`, `frontend` aliases) |
-| `php pinoox fe {package} build` | Production build |
-| `php pinoox fe {package} watch` | Rebuild on save (no HMR) |
+| `php pinoox dev {target}` | PHP serve + Vite HMR (shortcut; target = package or theme folder) |
+| `php pinoox fe {target} dev` | Same (`fe`, `frontend` aliases) |
+| `php pinoox fe {target} build` | Production build |
+| `php pinoox fe {target} watch` | Rebuild on save (no HMR) |
 | `php pinoox fe dev:apps` | One PHP serve + Vite per app (platform) |
 | `php pinoox serve --app=...` | Manifest only — no HMR |
-| `php pinoox fe dev --no-serve` | Vite only (MAMP, Docker PHP) |
+| `php pinoox fe {target} dev --no-serve` | Vite only (MAMP, Docker PHP) |
 
 ## Theme layout
 
 ```text
 apps/{package}/theme/{name}/
-├── frontend.config.php   # profile + stack (entry/manifest auto)
+├── frontend.config.php   # profile + stack + mount (entry/manifest auto)
 ├── vite.config.js        # pinoox() from @pinooxhq/vite-plugin
 ├── package.json          # @pinooxhq/vite-plugin in devDependencies
-├── partials/scripts.twig # pinoox_bootstrap() + vite_tags('src/main.js')
-└── dist/hot              # written by Vite when dev runs (gitignore)
+├── partials/scripts.twig   # pinoox_bootstrap() + vite_tags('src/main.js')
+├── .pinoox/dev.json      # written by Vite when dev runs (gitignore)
+└── dist/.vite/manifest.json
 ```
 
 ## Twig

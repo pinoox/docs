@@ -121,7 +121,7 @@ Pinoox は旧 `apps/{package}/migrations/` フォルダも読みますが、**�
 | Seeder | 初期データ | `php pinoox seeder:run {package}` |
 | Patch | 一度限りのデータ変更 | `php pinoox patch:run {package}` |
 
-Patch の完全ガイド: [Patches（データ更新）](./patches.md)。
+Patch の完全ガイド: [Patches（データ更新）](../advanced/patches.md)。
 
 ---
 

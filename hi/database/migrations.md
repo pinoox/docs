@@ -121,7 +121,7 @@ Pinoox पुराना `apps/{package}/migrations/` folder अभी भी r
 | Seeder | Initial data | `php pinoox seeder:run {package}` |
 | Patch | One-time data change | `php pinoox patch:run {package}` |
 
-पूरा patch guide: [Patches (data updates)](./patches.md).
+पूरा patch guide: [Patches (data updates)](../advanced/patches.md).
 
 ---
 

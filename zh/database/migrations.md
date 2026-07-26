@@ -121,7 +121,7 @@ Pinoox 仍会读取旧的 `apps/{package}/migrations/` 文件夹，但 **新** �
 | Seeder | 初始数据 | `php pinoox seeder:run {package}` |
 | Patch | 一次性数据变更 | `php pinoox patch:run {package}` |
 
-完整补丁指南：[补丁（数据更新）](./patches.md)。
+完整补丁指南：[补丁（数据更新）](../advanced/patches.md)。
 
 ---
 

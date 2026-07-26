@@ -121,7 +121,7 @@ Pinoox liest weiterhin den alten Ordner `apps/{package}/migrations/`, **neue** D
 | Seeder | Initiale Daten | `php pinoox seeder:run {package}` |
 | Patch | Einmalige Datenänderung | `php pinoox patch:run {package}` |
 
-Vollständige Patch-Anleitung: [Patches (Datenaktualisierungen)](./patches.md).
+Vollständige Patch-Anleitung: [Patches (Datenaktualisierungen)](../advanced/patches.md).
 
 ---
 

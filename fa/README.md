@@ -22,6 +22,8 @@
 #### [مرجع CLI پینوکس](./start/cli-reference.md)
 #### [Pinx CLI (پروژه‌های تک‌اپ)](./start/pinx-cli.md)
 #### [مرجع app.php](./start/app-manifest.md)
+#### [وابستگی اپ‌ها](./start/app-depends.md)
+#### [CLI وابستگی‌ها (`deps`)](./start/deps-cli.md)
 #### [قاعده نام‌گذاری پکیج](./start/package-naming.md)
 
 ### نمونه‌های عملی
@@ -48,6 +50,8 @@
 #### [اعتبارسنجی (Validation)](./basic/validation.md)
 #### [ویو (View)](./basic/views.md)
 #### [قالب Twig](./basic/templates.md)
+#### [کانتکست تم](./basic/theme-contexts.md)
+#### [مانیفست تم (`theme.php`)](./basic/theme-manifest.md)
 #### [فرانت‌اند و Vite](./basic/frontend-vite.md)
 #### [@pinooxhq/vite-plugin](./basic/vite-plugin.md)
 #### [Portal (فاساد)](./basic/portal.md)
@@ -58,6 +62,8 @@
 ### مفاهیم پیشرفته
 
 #### [Pinker و Cache](./advanced/pinker.md)
+#### [Patch (به‌روزرسانی داده)](./advanced/patches.md)
+
 #### [سرویس‌های اپ (Component + Portal)](./advanced/services.md)
 #### [توابع کمکی سراسری (Helpers)](./advanced/helpers.md)
 #### [ارسال ایمیل](./advanced/mail.md)
@@ -69,6 +75,7 @@
 #### [مدیریت توکن](./advanced/token-management.md)
 #### [دسترسی و مجوز (Access)](./advanced/access-permissions.md)
 #### [ترنسپورت (Transport) — منابع مشترک](./advanced/transport.md)
+#### [Kernel و pipeline بوت](./advanced/kernel.md)
 #### [boot.php و رویدادها](./advanced/boot-and-events.md)
 #### [زمان‌بندی (Schedule / Cron)](./advanced/schedule.md)
 
@@ -82,7 +89,6 @@
 #### [Query Builder](./database/query-builder.md)
 #### [صفحه‌بندی (Pagination)](./database/pagination.md)
 #### [Migrations](./database/migrations.md)
-#### [Patch (به‌روزرسانی داده)](./database/patches.md)
 
 ### کار با Eloquent ORM
 

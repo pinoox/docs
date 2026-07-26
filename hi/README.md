@@ -54,6 +54,8 @@ Pinoox प्लेटफ़ॉर्म (PHP 8.2+, HMVC आर्किटे�
 ### उन्नत विषय
 
 #### [Pinker और कैश](./advanced/pinker.md)
+#### [Patches (data updates)](./advanced/patches.md)
+
 #### [ऐप Services (Component + Portal)](./advanced/services.md)
 #### [ग्लोबल Helpers](./advanced/helpers.md)
 #### [ईमेल भेजना (Sending Email)](./advanced/mail.md)
@@ -73,7 +75,6 @@ Pinoox प्लेटफ़ॉर्म (PHP 8.2+, HMVC आर्किटे�
 #### [Query Builder](./database/query-builder.md)
 #### [Pagination](./database/pagination.md)
 #### [Migrations](./database/migrations.md)
-#### [Patches (data updates)](./database/patches.md)
 
 ### Eloquent ORM
 

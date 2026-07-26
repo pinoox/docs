@@ -78,7 +78,7 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | `migrate:create` | New migration file |
 | `migrate:status` / `migrate:rollback` | Status / rollback |
 | `seeder:run` | Run seeders |
-| `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patches](../database/patches.md) |
+| `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patches](../advanced/patches.md) |
 | `query` | Raw SQL (debug; `--dry-run` to print without executing) |
 
 ### Connection management (`db:*`)
@@ -116,18 +116,21 @@ Commands respect `transport.user` / access scope (usually `platform`). Omit `{pa
 |---------|---------|
 | `user:list` / `user:show` / `user:create` / `user:update` / `user:delete` | User CRUD |
 | `user:password` / `user:status` / `user:role` | Password, status, role assignment |
+| `user:login` / `user:logout` | Issue or clear session/JWT token; `--force` writes/clears `PINOOX_LOGIN_TOKEN` |
 | `role:list` / `role:create` / `role:show` / `role:update` / `role:delete` | Role CRUD |
 | `role:permission` | Attach or detach permissions on a role |
 | `permission:list` / `permission:create` / `permission:show` / `permission:delete` | Permission CRUD |
 
 ```bash
 php pinoox user:list com_my_shop --status=active --json
+php pinoox user:login com_my_shop --id=1 --force
+php pinoox user:logout --force
 php pinoox role:create com_my_shop --key=editor --name=Editor
 php pinoox permission:create com_my_shop blog.posts.edit
 php pinoox role:permission editor --attach=blog.posts.edit
 ```
 
-See [User management](../advanced/user-management.md) and [Access & permissions](../advanced/access-permissions.md).
+See [User management](../advanced/user-management.md) (including local `PINOOX_LOGIN` / `PINOOX_LOGIN_TOKEN`) and [Access & permissions](../advanced/access-permissions.md).
 
 ---
 
@@ -275,27 +278,45 @@ See [Schedule](../advanced/schedule.md).
 | `serve` | Built-in dev server |
 | `theme:frontend` / `fe` | Vite dev, build, watch — [Frontend & Vite](../basic/frontend-vite.md) |
 | `log:view` / `log:clear` | Logs |
-| `deps` | Composer/npm across apps |
+| `deps` | Composer/npm across apps — [Dependencies CLI](./deps-cli.md) |
 | `version` / `mode:show` | Version / runtime mode |
 
 ### `theme:frontend` (`fe`)
 
+Target is a **package** (`com_my_shop`) or **theme folder** (`spark`). Recommended order: `{target} {action}`.
+
 ```bash
-php pinoox fe info com_my_shop
-php pinoox fe install com_my_shop
-php pinoox fe dev com_my_shop              # PHP serve + Vite HMR (waits for Vite)
-php pinoox dev com_my_shop                 # shortcut for fe dev
-php pinoox fe dev com_my_shop --no-serve   # Vite only (MAMP / external PHP)
-php pinoox fe dev com_my_shop --fix-vite   # Wire @pinooxhq/vite-plugin into vite.config.js
+php pinoox fe spark info
+php pinoox fe spark install
+php pinoox fe spark dev                    # PHP serve + Vite HMR (waits for Vite)
+php pinoox dev spark                       # shortcut for fe spark dev
+php pinoox dev spark --domain=pinoox.test  # local hostname (auto hosts file)
+php pinoox fe spark dev --no-serve         # Vite only (MAMP / external PHP)
+php pinoox fe spark dev --theme=panel      # one theme context
+php pinoox fe spark dev --theme=all        # all Vite contexts in the app
+php pinoox fe spark dev --fix-vite         # Wire @pinooxhq/vite-plugin into vite.config.js
+php pinoox dev platform                    # full platform router
 php pinoox fe dev:apps                     # Multi-app: one serve + Vite per package
 php pinoox fe dev:apps --apps=com_pinoox_manager,com_pinoox_welcome
-php pinoox fe build com_my_shop
-php pinoox fe watch com_my_shop
-php pinoox fe scaffold com_my_shop vue
+php pinoox fe spark build
+php pinoox fe:build                        # theme wizard (same as fe build)
+php pinoox fe spark watch
+php pinoox fe spark scaffold vue
 php pinoox serve --app=com_my_shop@/manager # manifest only (PINOOX_VITE_HMR=0)
 ```
 
-`fe dev` sets `PINOOX_VITE_HMR=1`, resolves `VITE_*` URLs from the app router, and injects missing values at runtime. Open the **PHP URL** in the terminal — not the Vite port. `php pinoox serve` always uses built manifest assets. See [Frontend & Vite](../basic/frontend-vite.md) and [@pinooxhq/vite-plugin](../basic/vite-plugin.md).
+`fe dev` sets `PINOOX_VITE_HMR=1`, resolves `VITE_*` URLs from the app router, and injects missing values at runtime. HMR is signaled by **`.pinoox/dev.json`** (written by Vite). Open the **PHP URL** in the terminal — not the Vite port. `php pinoox serve` always uses built manifest assets. See [Frontend & Vite](../basic/frontend-vite.md) and [@pinooxhq/vite-plugin](../basic/vite-plugin.md).
+
+### `deps`
+
+```bash
+php pinoox deps status all
+php pinoox deps install all
+php pinoox deps install com_my_shop --npm-only
+php pinoox deps install platform --plain --no-interaction
+```
+
+Installs and updates Composer (platform + per-app) and npm (theme) targets. Scopes: `all`, `platform`, or a package name. Full options and troubleshooting: [Dependencies CLI (`deps`)](./deps-cli.md).
 
 ---
 
@@ -315,7 +336,7 @@ php pinoox serve --app=com_my_shop@/manager # manifest only (PINOOX_VITE_HMR=0)
 - [Frontend & Vite](../basic/frontend-vite.md)
 - [Your first app](./your-first-app.md)
 - [Migrations](../database/migrations.md)
-- [Patches](../database/patches.md)
+- [Patches](../advanced/patches.md)
 - [User management](../advanced/user-management.md)
 - [Access & permissions](../advanced/access-permissions.md)
 - [Token management](../advanced/token-management.md)

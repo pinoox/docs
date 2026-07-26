@@ -26,7 +26,7 @@
 
 ```php
 use function Pinoox\Router\{
-    get, post, put, patch, delete,
+    get, post, put, patch, delete, query,
     action, group, routes, collect, route
 };
 ```
@@ -73,11 +73,42 @@ post('product', [ProductController::class, 'store'])->name('product.store');
 ## متدهای HTTP
 
 ```php
-use function Pinoox\Router\{get, post, put, patch, delete};
+use function Pinoox\Router\{get, post, put, patch, delete, query};
 
 post('login', [AuthController::class, 'login'])->name('login');
 put('product/{id}', [ProductController::class, 'update'])->name('product.update');
 delete('product/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
+query('search', [SearchController::class, 'run'])->name('search');
+```
+
+### متد QUERY (RFC 10008)
+
+`QUERY` یک متد امن و idempotent با body است — مناسب فیلتر/جستجوی پیچیده که در URL جا نمی‌شود (مثل `GET`) و نباید state سرور را عوض کند (برخلاف `POST`).
+
+```php
+use function Pinoox\Router\query;
+use Pinoox\Component\Http\Request;
+
+query('/products/search', [ProductApiController::class, 'search'])
+    ->name('products.search');
+
+// کنترلر — بدنه را مثل POST/JSON بخوانید
+public function search(Request $request)
+{
+    $filters = $request->getPayload()->all();
+    // ...
+}
+```
+
+فرم manifest:
+
+```php
+[
+    'method' => 'QUERY',
+    'path' => '/products/search',
+    'action' => [ProductApiController::class, 'search'],
+    'name' => 'products.search',
+]
 ```
 
 ---
@@ -117,7 +148,7 @@ alias مربوطه باید در `app.php` → `'alias'` ثبت شده باشد.
 // routes/api.php
 
 use App\com_acme_shop\Controller\ProductApiController;
-use function Pinoox\Router\{collect, get, post, routes};
+use function Pinoox\Router\{collect, get, post, query, routes};
 
 return routes([
     'version' => 'v1',
@@ -126,6 +157,7 @@ return routes([
         get('/products', [ProductApiController::class, 'index'])->name('products.index');
         post('/products', [ProductApiController::class, 'store'])->name('products.store');
         get('/products/{id}', [ProductApiController::class, 'show'])->name('products.show');
+        query('/products/search', [ProductApiController::class, 'search'])->name('products.search');
     }),
 ]);
 ```

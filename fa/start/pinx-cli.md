@@ -134,6 +134,9 @@ pinx deps:i                 # نصب همه
 pinx deps:up                # به‌روزرسانی همه
 ```
 
+Scopeها، گزینه‌ها (`--composer-only`، `--all-themes`، `--plain`، …) و عیب‌یابی: [CLI وابستگی‌ها (`deps`)](./deps-cli.md).
+
+الزامات بین‌اپی (`depends` / `use_app()`) جداست — [وابستگی اپ‌ها](./app-depends.md). نصب Pinx قبل از extract، `depends` الزامی را اعتبارسنجی می‌کند.
 **Pinker** (کش بیلد):
 
 ```bash

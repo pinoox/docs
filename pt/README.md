@@ -54,6 +54,8 @@ Cada guia descreve **uma abordagem recomendada** com exemplos práticos. Escolha
 ### Tópicos avançados
 
 #### [Pinker e Cache](./advanced/pinker.md)
+#### [Patches (atualizações de dados)](./advanced/patches.md)
+
 #### [Serviços do App (Component + Portal)](./advanced/services.md)
 #### [Helpers Globais](./advanced/helpers.md)
 #### [Envio de E-mail](./advanced/mail.md)
@@ -73,7 +75,6 @@ Cada guia descreve **uma abordagem recomendada** com exemplos práticos. Escolha
 #### [Query Builder](./database/query-builder.md)
 #### [Paginação](./database/pagination.md)
 #### [Migrations](./database/migrations.md)
-#### [Patches (atualizações de dados)](./database/patches.md)
 
 ### Eloquent ORM
 

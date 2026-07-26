@@ -2,14 +2,16 @@
 
 [← Back to index](../README.md)
 
-Pinoox 3.x sends outbound HTTP requests through **`Pinoox\Component\Http\Http`** (Symfony HttpClient inside). That is a helper library — Pinoox itself is an app-centric HMVC platform with its own routing and APIs. System apps such as `com_pinoox_manager` use this pattern when talking to pinoox.com.
+Pinoox 3.x sends outbound HTTP requests through **`Pinoox\Portal\Http`** (backed by `Pinoox\Component\Http\Http` and Symfony HttpClient). That is a helper library — Pinoox itself is an app-centric HMVC platform with its own routing and APIs. System apps such as `com_pinoox_manager` use this pattern when talking to pinoox.com.
+
+> Prefer **`Pinoox\Portal\Http`**. Static calls on `Pinoox\Component\Http\Http` still work for backward compatibility.
 
 ---
 
 ## Import
 
 ```php
-use Pinoox\Component\Http\Http;
+use Pinoox\Portal\Http;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 ```
 
@@ -25,9 +27,26 @@ $response = Http::post('https://api.example.com/v1/users', [
 $response = Http::put($url, $options);
 $response = Http::patch($url, $options);
 $response = Http::delete($url, $options);
+$response = Http::query($url, [
+    'json' => ['filters' => ['status' => 'active']],
+]);
 ```
 
-Supported methods: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`.
+Supported methods: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `QUERY`, `HEAD`, `OPTIONS`.
+
+### QUERY (outbound)
+
+Use `Http::query()` when calling an upstream API that accepts the HTTP `QUERY` method (safe/idempotent with a body):
+
+```php
+$response = Http::query('https://api.example.com/v1/search', [
+    'json' => [
+        'q' => 'pinoox',
+        'filters' => ['type' => 'app'],
+    ],
+    'timeout' => 15,
+]);
+```
 
 ---
 
@@ -56,6 +75,16 @@ $response = Http::post('https://api.example.com/oauth/token', [
 | `query` | Query string |
 | `timeout` | Timeout in seconds |
 | `auth_basic` | `[user, pass]` |
+
+Scoped defaults:
+
+```php
+$api = Http::withOptions(['timeout' => 15, 'headers' => [
+    'Authorization' => 'Bearer ' . $token,
+]]);
+
+$response = $api->get('https://api.example.com/v1/me');
+```
 
 ---
 
@@ -88,7 +117,7 @@ return $this->fail('UPSTREAM_ERROR', 'api.unavailable', status: 502);
 ## Real-world example (manager)
 
 ```php
-use Pinoox\Component\Http\Http;
+use Pinoox\Portal\Http;
 use Pinoox\Portal\Url;
 
 $response = Http::post('https://www.pinoox.com/api/manager/v1/account/getData', [
@@ -120,11 +149,13 @@ if ($response === null) {
 - For internal APIs in the same app, use the router and controllers; Http Client is for **external** requests only.
 - Keep URLs and API keys in app `config/` or `.env`, not hard-coded in controllers.
 - Guzzle is not used directly in pincore; Symfony HttpClient is the recommended replacement.
+- Incoming `QUERY` routes: see [Router](../basic/routers.md).
 
 ---
 
 ## Related docs
 
+- [Router](../basic/routers.md)
 - [Controllers](../basic/controllers.md)
 - [Responses](../basic/responses.md)
 - [Config](../basic/config.md)

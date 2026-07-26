@@ -121,7 +121,7 @@ Pinoox ما زال يقرأ مجلد `apps/{package}/migrations/` القديم،
 | Seeder | بيانات أولية | `php pinoox seeder:run {package}` |
 | Patch | تغيير بيانات لمرة واحدة | `php pinoox patch:run {package}` |
 
-دليل Patch الكامل: [Patches (تحديثات البيانات)](./patches.md).
+دليل Patch الكامل: [Patches (تحديثات البيانات)](../advanced/patches.md).
 
 ---
 

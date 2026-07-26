@@ -25,6 +25,8 @@ Read these in order if you are building a new app.
 
 - [Pinx CLI guide and command reference](./en/start/pinx-cli.md)
 - [app.php manifest reference](./en/start/app-manifest.md)
+- [App dependencies](./en/start/app-depends.md)
+- [Dependencies CLI (`deps`)](./en/start/deps-cli.md)
 - [Package naming rules](./en/start/package-naming.md)
 - [Pinoox CLI reference for platform installs](./en/start/cli-reference.md)
 
@@ -39,6 +41,8 @@ Read these in order if you are building a new app.
 - [Validation](./en/basic/validation.md)
 - [Views](./en/basic/views.md)
 - [Twig templates](./en/basic/templates.md)
+- [Theme contexts](./en/basic/theme-contexts.md)
+- [Theme manifest (`theme.php`)](./en/basic/theme-manifest.md)
 - [Frontend & Vite](./en/basic/frontend-vite.md)
 - [@pinooxhq/vite-plugin](./en/basic/vite-plugin.md)
 - [Config](./en/basic/config.md)
@@ -51,7 +55,7 @@ Read these in order if you are building a new app.
 - [Migrations](./en/database/migrations.md)
 - [Query Builder](./en/database/query-builder.md)
 - [Pagination](./en/database/pagination.md)
-- [Patches for data updates](./en/database/patches.md)
+
 - [Eloquent ORM getting started](./en/eloquent-orm/getting-started.md)
 - [Eloquent relationships](./en/eloquent-orm/relationships.md)
 - [Factories and seeders](./en/eloquent-orm/factories.md)
@@ -62,6 +66,7 @@ Read these in order if you are building a new app.
 ## Build, Runtime, And Advanced Features
 
 - [Pinker and cache](./en/advanced/pinker.md)
+- [Patches for data updates](./en/advanced/patches.md)
 - [Scheduling](./en/advanced/schedule.md)
 - [App services](./en/advanced/services.md)
 - [Global helpers](./en/advanced/helpers.md)
@@ -73,6 +78,7 @@ Read these in order if you are building a new app.
 - [Token management](./en/advanced/token-management.md)
 - [Access and permissions](./en/advanced/access-permissions.md)
 - [Transport and shared resources](./en/advanced/transport.md)
+- [Kernel and boot pipeline](./en/advanced/kernel.md)
 - [boot.php and events](./en/advanced/boot-and-events.md)
 
 ## Walkthroughs

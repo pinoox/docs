@@ -125,17 +125,35 @@ return View::render('errors/404');
 
 ---
 
+## سوییچ کانتکست تم
+
+برای اپ‌هایی با بیش از یک درخت تم (site + panel، …):
+
+```php
+ThemeContext::activate('panel');
+return View::render('pages/dashboard');
+
+// یا موقت:
+return within_theme('panel', fn () => View::render('pages/dashboard'));
+```
+
+ترجیح دهید `theme.panel` (از طریق `theme_flow_aliases`) را روی collection مسیرها بگذارید تا همه مسیرهای HTML آن بخش استک درست را بگیرند. راهنما: [کانتکست تم](./theme-contexts.md).
+
+---
+
 ## نکات
 
 - منطق business در Controller/Component بماند؛ Twig فقط نمایش
-- theme فعال از `app.php` → `'theme'` خوانده می‌شود
-- برای JSON خالص از `response()->json()` یا `ApiController` استفاده کنید
+- theme فعال از `app.php` → `'theme'` (یا کانتکست تم فعال) خوانده می‌شود
+- برای JSON خالص از `response()->json()` یا `ApiController` استفاده کنید — Flowهای `theme.*` وصل نکنید
 
 ---
 
 ## مستندات مرتبط
 
 - [قالب Twig](templates.md)
+- [کانتکست تم](./theme-contexts.md)
+- [مانیفست تم (`theme.php`)](./theme-manifest.md)
 - [URL و assets](url.md)
 - [پاسخ HTTP](responses.md)
 - [Portal — پورتال](portal.md)

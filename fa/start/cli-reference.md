@@ -77,7 +77,7 @@ php pinoox help migrate
 | `migrate:create` | فایل migration |
 | `migrate:status` / `migrate:rollback` | وضعیت / برگشت |
 | `seeder:run` | اجرای seeder |
-| `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patch](../database/patches.md) |
+| `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patch](../advanced/patches.md) |
 | `query` | SQL خام (debug؛ `--dry-run` فقط چاپ بدون اجرا) |
 
 ### مدیریت اتصال (`db:*`)
@@ -115,18 +115,21 @@ php pinoox db:prefix com_my_shop shop_
 |--------|--------|
 | `user:list` / `user:show` / `user:create` / `user:update` / `user:delete` | CRUD کاربر |
 | `user:password` / `user:status` / `user:role` | رمز، وضعیت، نقش |
+| `user:login` / `user:logout` | صدور یا پایان توکن؛ با `--force` نوشتن/پاک‌کردن `PINOOX_LOGIN_TOKEN` |
 | `role:list` / `role:create` / … | CRUD نقش |
 | `role:permission` | اتصال/جداسازی permission روی نقش |
 | `permission:list` / `permission:create` / … | CRUD permission |
 
 ```bash
 php pinoox user:list com_my_shop --status=active --json
+php pinoox user:login com_my_shop --id=1 --force
+php pinoox user:logout --force
 php pinoox role:create com_my_shop --key=editor --name=Editor
 php pinoox permission:create com_my_shop blog.posts.edit
 php pinoox role:permission editor --attach=blog.posts.edit
 ```
 
-مستندات: [مدیریت کاربر](../advanced/user-management.md)، [دسترسی و permission](../advanced/access-permissions.md).
+مستندات: [مدیریت کاربر](../advanced/user-management.md) (شامل `PINOOX_LOGIN` / `PINOOX_LOGIN_TOKEN`)، [دسترسی و permission](../advanced/access-permissions.md).
 
 ---
 
@@ -274,27 +277,45 @@ php pinoox pinroll:deploy
 | `serve` | سرور dev داخلی |
 | `theme:frontend` / `fe` | dev، build و watch با Vite — [فرانت‌اند و Vite](../basic/frontend-vite.md) |
 | `log:view` / `log:clear` | لاگ |
-| `deps` | composer/npm در اپ‌ها |
+| `deps` | composer/npm در اپ‌ها — [CLI وابستگی‌ها](./deps-cli.md) |
 | `version` / `mode:show` | نسخه / runtime mode |
 
 ### `theme:frontend` (`fe`)
 
+target یک **package** (`com_my_shop`) یا **پوشه تم** (`spark`) است. ترتیب پیشنهادی: `{target} {action}`.
+
 ```bash
-php pinoox fe info com_my_shop
-php pinoox fe install com_my_shop
-php pinoox fe dev com_my_shop              # PHP serve + Vite HMR (تا آماده شدن Vite)
-php pinoox dev com_my_shop                 # میانبر fe dev
-php pinoox fe dev com_my_shop --no-serve   # فقط Vite (MAMP / PHP خارجی)
-php pinoox fe dev com_my_shop --fix-vite   # اتصال @pinooxhq/vite-plugin به vite.config.js
+php pinoox fe spark info
+php pinoox fe spark install
+php pinoox fe spark dev                    # PHP serve + Vite HMR (تا آماده شدن Vite)
+php pinoox dev spark                       # میانبر fe spark dev
+php pinoox dev spark --domain=pinoox.test  # hostname محلی (hosts خودکار)
+php pinoox fe spark dev --no-serve         # فقط Vite (MAMP / PHP خارجی)
+php pinoox fe spark dev --theme=panel      # یک theme context
+php pinoox fe spark dev --theme=all        # همه contextهای Vite در اپ
+php pinoox fe spark dev --fix-vite         # اتصال @pinooxhq/vite-plugin به vite.config.js
+php pinoox dev platform                    # روتر کامل پلتفرم
 php pinoox fe dev:apps                     # چند اپ: یک serve + Vite برای هر package
 php pinoox fe dev:apps --apps=com_pinoox_manager,com_pinoox_welcome
-php pinoox fe build com_my_shop
-php pinoox fe watch com_my_shop
-php pinoox fe scaffold com_my_shop vue
+php pinoox fe spark build
+php pinoox fe:build                        # wizard تم (همان fe build)
+php pinoox fe spark watch
+php pinoox fe spark scaffold vue
 php pinoox serve --app=com_my_shop@/manager # فقط manifest (PINOOX_VITE_HMR=0)
 ```
 
-`fe dev` مقدار `PINOOX_VITE_HMR=1` را تنظیم می‌کند، URLهای `VITE_*` را از روتر اپ resolve می‌کند و مقادیر خالی را در runtime inject می‌کند. **URL PHP** چاپ‌شده در ترمینال را باز کنید — نه port Vite. `php pinoox serve` همیشه از دارایی‌های build‌شده manifest استفاده می‌کند. [فرانت‌اند و Vite](../basic/frontend-vite.md) و [@pinooxhq/vite-plugin](../basic/vite-plugin.md) را ببینید.
+`fe dev` مقدار `PINOOX_VITE_HMR=1` را تنظیم می‌کند، URLهای `VITE_*` را از روتر اپ resolve می‌کند و مقادیر خالی را در runtime inject می‌کند. HMR با **`.pinoox/dev.json`** (نوشته‌شده توسط Vite) سیگنال می‌شود. **URL PHP** چاپ‌شده در ترمینال را باز کنید — نه port Vite. `php pinoox serve` همیشه از دارایی‌های build‌شده manifest استفاده می‌کند. [فرانت‌اند و Vite](../basic/frontend-vite.md) و [@pinooxhq/vite-plugin](../basic/vite-plugin.md) را ببینید.
+
+### `deps`
+
+```bash
+php pinoox deps status all
+php pinoox deps install all
+php pinoox deps install com_my_shop --npm-only
+php pinoox deps install platform --plain --no-interaction
+```
+
+Composer (پلتفرم + هر اپ) و npm (تم) را نصب/به‌روز می‌کند. Scopeها: `all`، `platform`، یا نام پکیج. گزینه‌ها و عیب‌یابی: [CLI وابستگی‌ها (`deps`)](./deps-cli.md).
 
 ---
 
@@ -314,7 +335,7 @@ php pinoox serve --app=com_my_shop@/manager # فقط manifest (PINOOX_VITE_HMR=0
 - [فرانت‌اند و Vite](../basic/frontend-vite.md)
 - [ساخت اولین اپ](./your-first-app.md)
 - [Migration — مهاجرت](../database/migrations.md)
-- [Patch — پچ](../database/patches.md)
+- [Patch — پچ](../advanced/patches.md)
 - [مدیریت کاربر](../advanced/user-management.md)
 - [دسترسی و permission](../advanced/access-permissions.md)
 - [مدیریت توکن](../advanced/token-management.md)

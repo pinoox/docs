@@ -54,6 +54,8 @@ Pinoox 플랫폼(PHP 8.2+, HMVC 아키텍처)에서 앱을 구축하기 위한 �
 ### 고급 주제
 
 #### [Pinker and Cache](./advanced/pinker.md)
+#### [Patches (data updates)](./advanced/patches.md)
+
 #### [App Services (Component + Portal)](./advanced/services.md)
 #### [Global Helpers](./advanced/helpers.md)
 #### [Sending Email](./advanced/mail.md)
@@ -73,7 +75,6 @@ Pinoox 플랫폼(PHP 8.2+, HMVC 아키텍처)에서 앱을 구축하기 위한 �
 #### [Query Builder](./database/query-builder.md)
 #### [Pagination](./database/pagination.md)
 #### [Migrations](./database/migrations.md)
-#### [Patches (data updates)](./database/patches.md)
 
 ### Eloquent ORM
 

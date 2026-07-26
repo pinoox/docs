@@ -54,6 +54,8 @@ Pinoox プラットフォーム（PHP 8.2+、HMVC アーキテクチャ）上で
 ### 高度なトピック
 
 #### [Pinker と Cache](./advanced/pinker.md)
+#### [Patches（データ更新）](./advanced/patches.md)
+
 #### [App Services（Component + Portal）](./advanced/services.md)
 #### [グローバル Helpers](./advanced/helpers.md)
 #### [メール送信](./advanced/mail.md)
@@ -73,7 +75,6 @@ Pinoox プラットフォーム（PHP 8.2+、HMVC アーキテクチャ）上で
 #### [Query Builder](./database/query-builder.md)
 #### [Pagination](./database/pagination.md)
 #### [Migrations](./database/migrations.md)
-#### [Patches（データ更新）](./database/patches.md)
 
 ### Eloquent ORM
 

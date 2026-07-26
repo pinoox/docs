@@ -29,7 +29,7 @@
 | `boot-global` | Boot on every HTTP request |
 | `extends` | Boot when host app boots |
 | `loader` | Extra files (`func.php`) |
-| `depends` | Required apps |
+| `depends` | Required / optional apps — [App dependencies](./app-depends.md) |
 
 See [boot.php & events](../advanced/boot-and-events.md).
 
@@ -54,8 +54,9 @@ See [Flows](../basic/flows.md), [User management](../advanced/user-management.md
 | Key | Purpose |
 |-----|---------|
 | `theme` | Active theme folder |
-| `theme-context`, `theme-contexts`, `theme-extends` | Multi-context / inheritance |
-| `frontend` | `stack`, `profile`, `entry`, `manifest` |
+| `theme-context`, `theme-contexts` | Multiple theme trees — [Theme contexts](../basic/theme-contexts.md) |
+| `theme-extends` | Deprecated fallback; prefer `extends` in [theme.php](../basic/theme-manifest.md) |
+| `frontend` | `stack`, `profile`, `mount`, `entry`, `manifest`, `dev` — [Frontend & Vite](../basic/frontend-vite.md) |
 | `lang` | Default locale |
 | `open` | Manager open behavior |
 
@@ -79,7 +80,7 @@ See [Flows](../basic/flows.md), [User management](../advanced/user-management.md
 | `runtime.mode`, `runtime.debug` | Mode overrides |
 | `cache` | Bake routes/api/boot/twig |
 | `log`, `redis`, `date` | Per-app overrides |
-| `container` | DI bindings |
+| `container` | DI bindings — [Kernel and boot pipeline](../advanced/kernel.md) |
 
 ### Date and timezone
 
@@ -135,6 +136,9 @@ return [
 ## Related docs
 
 - [Project structure](./structure.md)
+- [App dependencies](./app-depends.md)
+- [Theme contexts](../basic/theme-contexts.md)
+- [Theme manifest (`theme.php`)](../basic/theme-manifest.md)
 - [Config](../basic/config.md)
 
 ---

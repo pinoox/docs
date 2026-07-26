@@ -107,7 +107,7 @@ Build and dev:
 
 ```bash
 php pinoox fe build com_acme_shop
-php pinoox fe dev com_acme_shop
+php pinoox fe spark dev
 ```
 
 See [Frontend & Vite](./frontend-vite.md) for env variables, [@pinooxhq/vite-plugin](./vite-plugin.md), and mount-path setup.
@@ -136,17 +136,42 @@ php pinoox cache:build com_acme_shop --only=twig
 
 ---
 
+## Theme inheritance (`theme.php`)
+
+Put metadata and parent themes in the theme folder, not in `app.php`:
+
+```php
+// theme/toranj/theme.php
+return [
+    'name' => 'toranj',
+    'package' => 'com_my_shop',
+    'extends' => ['base'],
+];
+```
+
+`theme.php` → `extends` is the primary inheritance source. `app.php` → `theme-extends` is a deprecated fallback. Full field reference: [Theme manifest](./theme-manifest.md).
+
+---
+
+## Multiple theme contexts
+
+One app can switch between independent theme trees (site / panel / …) with `theme-contexts` and Flow aliases `theme.site`, `theme.panel`, …. See [Theme contexts](./theme-contexts.md).
+
+---
+
 ## Tips
 
 - Use standard Twig syntax; Pinoox adds the helpers above.
 - For public SEO pages, render full HTML in Twig (not an empty `#app` only).
-- Change theme at runtime: `View::changeTheme('panel')`.
+- Change theme at runtime: `View::changeTheme('panel')` or `within_theme('panel', …)`.
 
 ---
 
 ## Related docs
 
 - [Views](./views.md)
+- [Theme contexts](./theme-contexts.md)
+- [Theme manifest (`theme.php`)](./theme-manifest.md)
 - [URL](./url.md)
 - [Language](./language.md)
 - [Frontend & Vite](./frontend-vite.md)
