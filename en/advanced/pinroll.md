@@ -6,6 +6,8 @@
 
 **Pinroll** (`pinoox/pinroll`) builds releases, ships them to **hosts**, and installs them via **PinGate**. It is a Composer library; commands register on install.
 
+Install as a **production** dependency (`composer require pinoox/pinroll`), not `require-dev` — PinGate needs it on the host.
+
 | Concept | Meaning |
 |---------|---------|
 | **Host** | Deploy destination (`production`, …) — config key is the name |
@@ -22,7 +24,7 @@
 | Manual FTP deploys | Scripted push + PinGate install |
 | Half-deployed sites | Atomic install + rollback |
 | Shared hosting without SSH | FTP upload + remote install over HTTP |
-| Core / vendor updates on host | `pinroll:vendor` → replace host `vendor/` |
+| Core / vendor updates on host | `pinroll:vendor --push` → production zip + PinGate extract |
 
 ---
 
@@ -67,7 +69,7 @@ flowchart LR
 php pinoox pinroll:init
 php pinoox pinroll:connect              # setup once; later verifies
 php pinoox pinroll:apps --apps=com_pinoox_shop
-php pinoox pinroll:vendor               # export vendor.zip (install / update core)
+php pinoox pinroll:vendor --push        # production vendor.zip → host (PlatformComposer)
 php pinoox pinroll:check
 php pinoox pinroll:push                 # build & upload only
 php pinoox pinroll:install              # install staged release on host

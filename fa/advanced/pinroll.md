@@ -6,6 +6,8 @@
 
 **Pinroll** (`pinoox/pinroll`) release می‌سازد، به **هاست** می‌فرستد و از طریق **PinGate** نصب می‌کند. یک کتابخانه Composer است؛ دستورات با نصب ثبت می‌شوند.
 
+به‌عنوان وابستگی **production** نصب کنید (`composer require pinoox/pinroll`)، نه فقط `require-dev` — PinGate روی هاست به آن نیاز دارد.
+
 | مفهوم | معنی |
 |-------|------|
 | **Host** | مقصد دیپلوی (`production`، …) — کلید کانفیگ همان نام است |
@@ -22,7 +24,7 @@
 | دیپلوی دستی FTP | push اسکریپتی + نصب PinGate |
 | سایت نیمه‌دیپلوی‌شده | نصب اتمیک + rollback |
 | هاست اشتراکی بدون SSH | آپلود FTP + نصب از راه HTTP |
-| به‌روزرسانی هسته / vendor روی هاست | `pinroll:vendor` → جایگزینی `vendor/` |
+| به‌روزرسانی هسته / vendor روی هاست | `pinroll:vendor --push` → zip production + استخراج PinGate |
 
 ---
 
@@ -67,7 +69,7 @@ flowchart LR
 php pinoox pinroll:init
 php pinoox pinroll:connect              # بار اول setup؛ بعداً فقط verify
 php pinoox pinroll:apps --apps=com_pinoox_shop
-php pinoox pinroll:vendor               # خروجی vendor.zip (نصب / به‌روزرسانی هسته)
+php pinoox pinroll:vendor --push        # vendor.zip production → هاست (PlatformComposer)
 php pinoox pinroll:check
 php pinoox pinroll:push                 # فقط ساخت و آپلود
 php pinoox pinroll:install              # نصب release آماده‌شده روی هاست

@@ -17,11 +17,21 @@ Pinroll یک **کتابخانه Composer** است — نه یک اپ پینوک�
 
 ## نصب
 
-روی پروژه **platform**:
+روی پروژه کامل **platform**، Pinroll را به‌عنوان وابستگی **production** اضافه کنید (روی هاست برای PinGate لازم است):
 
 ```bash
-composer require --dev pinoox/pinroll
+composer require pinoox/pinroll
 ```
+
+```json
+"require": {
+  "php": "^8.2",
+  "pinoox/pincore": "^3.8",
+  "pinoox/pinroll": "^1.1"
+}
+```
+
+`pinoox/pinroll` را **فقط** در `require-dev` نگذارید. بیلد platform و پک vendor هاست، `require-dev` را حذف می‌کنند و PinGate در runtime به Pinroll نیاز دارد.
 
 ---
 
@@ -229,6 +239,8 @@ php pinoox pinroll:install --local --list
 | `store` | `local` \| `remote` \| `both` | کدام طرف آرشیو نگه دارد |
 | `auto_clean` | bool | بعد از install موفق، قدیمی‌تر از `keep` پاک شود |
 
+در `pinroll:deploy` چنداپ، پاک‌سازی retention فقط بعد از **آخرین** install اجرا می‌شود تا releaseهای staged هم‌بچ در میانه حذف نشوند.
+
 **پاک‌سازی لوکال شامل**
 
 - `storage/pinroll/incoming/*.pinx`
@@ -294,6 +306,51 @@ php pinoox pinroll:migrate:dry-run
 
 ---
 
+## Vendor هاست
+
+PinGate و نصب ریموت به یک `vendor/` کامل platform روی هاست نیاز دارند (شامل `pinoox/pinroll` و `pinoox/pincore`).
+
+`pinroll:vendor` یک `pinroll/vendor.zip` **production** می‌سازد با همان پایپ‌لاین **PlatformComposer** که در `pinx:build platform` استفاده می‌شود:
+
+- `require-dev` را حذف می‌کند (Pest، DevDB، Inspector، …)
+- پکیج‌های production را نگه می‌دارد (از جمله `pinoox/pinroll` وقتی در `require` باشد)
+- repositoryهای path در Composer را به فایل واقعی تبدیل می‌کند
+
+```bash
+# فقط ساخت zip
+php pinoox pinroll:vendor
+
+# ساخت، آپلود FTP، استخراج روی هاست با PinGate POST /vendor
+php pinoox pinroll:vendor --push
+```
+
+| فلگ | اثر |
+|-----|-----|
+| (پیش‌فرض) | نوشتن `pinroll/vendor.zip` |
+| `--push` | آپلود FTP + استخراج PinGate (هاست‌های FTP) |
+| `--prune` | هرس اختیاری tests/docs داخل vendor |
+| `-o` / `--output=` | مسیر zip سفارشی |
+
+**جریان پیشنهادی اولین بار / به‌روزرسانی هسته**
+
+```bash
+php pinoox pinroll:gate -n          # آپلود PinGate (شامل مسیر /vendor)
+php pinoox pinroll:vendor --push -n
+php pinoox pinroll:check
+```
+
+`POST /vendor` در PinGate فقط `vendor.zip` کنار `pingate.php` را می‌پذیرد، فقط ورودی‌های زیر `vendor/` را استخراج می‌کند (امن در برابر zip-slip)، توکن‌های نامعتبر را rate-limit می‌کند و بعد از موفقیت zip را حذف می‌کند.
+
+> ترجیحاً `pinroll:vendor --push` را به‌جای `pinroll:deploy --vendor` استفاده کنید. فلگ `--vendor` روی push/deploy درخت خام `vendor/` لوکال را با FTP همگام می‌کند و فقط وقتی هیچ اپی در همان اجرا دیپلوی نشود.
+
+---
+
+## فرانت‌اند اپ (theme dist)
+
+دیپلوی اپ قبل از `pinx:build`، `fe:build` را اجرا می‌کند. پکیج‌های `.pinx` production شامل `dist/` تم هستند و `src/` / ابزار Vite تم را کنار می‌گذارند (حتی اگر `dist/` در gitignore باشد).
+
+---
+
 ## جریان سریع (FTP + PinGate)
 
 ```bash
@@ -301,7 +358,7 @@ php pinoox pinroll:init
 # پر کردن PINROLL_* در .env
 php pinoox pinroll:connect
 php pinoox pinroll:apps --apps=com_pinoox_shop
-php pinoox pinroll:vendor          # اختیاری: هسته/وابستگی‌های هاست
+php pinoox pinroll:vendor --push   # vendor هاست (PlatformComposer + استخراج PinGate)
 php pinoox pinroll:check
 php pinoox pinroll:deploy
 ```
@@ -315,6 +372,7 @@ php pinoox pinroll:deploy
 | `GET` | `/status` | سلامت / نسخه |
 | `GET` | `/incoming` | لیست releaseهای staged |
 | `POST` | `/install` | نصب (`/apply` برای سازگاری) |
+| `POST` | `/vendor` | استخراج امن `vendor.zip` آپلودشده |
 | `POST` | `/rollback` | نصب مجدد نسخه قبلی |
 | `POST` | `/cleanup` | هرس آرشیوهای قدیمی |
 | `GET` | `/history` | تاریخچه rollout |
@@ -330,7 +388,7 @@ php pinoox pinroll:deploy
 | `pinroll:init` | ساخت `pinroll/pinroll.config.php` |
 | `pinroll:connect` | راه‌اندازی / بررسی (`--reset` برای تکرار) |
 | `pinroll:apps` | تنظیم `hosts.*.apps` |
-| `pinroll:vendor` | خروجی `vendor/` → `pinroll/vendor.zip` |
+| `pinroll:vendor` | `vendor.zip` production (`--push` به هاست) |
 | `pinroll:gate` | ساخت / آپلود PinGate |
 | `pinroll:check` | بررسی هاست / PinGate |
 | `pinroll:push` | فقط ساخت و آپلود |
@@ -345,7 +403,7 @@ php pinoox pinroll:deploy
 |-----|-----|
 | (پیش‌فرض) | فقط `.pinx` اپ |
 | `--all` | اپ + vendor + theme |
-| `--vendor` | همگام‌سازی vendor |
+| `--vendor` | همگام‌سازی FTP درخت `vendor/` (بدون اپ در همان اجرا) |
 | `--theme` | همگام‌سازی theme dist |
 | `--app=` / `--apps=` | انتخاب پکیج |
 | `--via=` | override ترنسپورت |
