@@ -68,6 +68,7 @@
 #### [توابع کمکی سراسری (Helpers)](./advanced/helpers.md)
 #### [ارسال ایمیل](./advanced/mail.md)
 #### [HTTP Client](./advanced/http-client.md)
+#### [Rate Limiter](./advanced/rate-limiter.md)
 #### [مدیریت کاربران](./advanced/user-management.md)
 #### [مدیریت فایل](./advanced/file-management.md)
 #### [پروتکل Pinion](./advanced/pinion.md)

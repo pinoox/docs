@@ -176,6 +176,23 @@ group(['prefix' => 'account', 'flows' => ['auth']], function () {
 
 ---
 
+## Rate limiting (`throttle:…`)
+
+Core alias **`throttle`** accepts a named limiter after a colon (see [Rate Limiter](../advanced/rate-limiter.md)):
+
+```php
+post('login', [AuthController::class, 'login'])
+    ->flow('throttle:login');
+
+group(['flows' => ['auth', 'throttle:api']], function () {
+    // ...
+});
+```
+
+Define the named limiter with `RateLimiter::define(...)` before requests hit the route.
+
+---
+
 ## Stopping the chain
 
 If a Flow returns an HTTP response (redirect, error JSON, etc.), the controller action does not run.
@@ -196,6 +213,7 @@ If a Flow returns an HTTP response (redirect, error JSON, etc.), the controller 
 - [Router](./routers.md)
 - [Controllers](./controllers.md)
 - [Request](./requests.md)
+- [Rate Limiter](../advanced/rate-limiter.md)
 - [Project structure](../start/structure.md)
 
 ---

@@ -72,6 +72,7 @@ Read these in order if you are building a new app.
 - [Global helpers](./advanced/helpers.md)
 - [Mail](./advanced/mail.md)
 - [HTTP client](./advanced/http-client.md)
+- [Rate Limiter](./advanced/rate-limiter.md)
 - [User management](./advanced/user-management.md)
 - [File management](./advanced/file-management.md)
 - [Pinion uploads](./advanced/pinion.md)

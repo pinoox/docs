@@ -176,6 +176,23 @@ group(['prefix' => 'account', 'flows' => ['auth']], function () {
 
 ---
 
+## محدودیت نرخ (`throttle:…`)
+
+alias هستهٔ **`throttle`** نام limiter را بعد از دو نقطه می‌گیرد (جزئیات: [Rate Limiter](../advanced/rate-limiter.md)):
+
+```php
+post('login', [AuthController::class, 'login'])
+    ->flow('throttle:login');
+
+group(['flows' => ['auth', 'throttle:api']], function () {
+    // ...
+});
+```
+
+limiter را با `RateLimiter::define(...)` قبل از رسیدن درخواست تعریف کنید.
+
+---
+
 ## توقف زنجیره
 
 اگر Flow پاسخ HTTP برگرداند (redirect، JSON خطا، …)، action کنترلر اجرا نمی‌شود.
@@ -196,6 +213,7 @@ group(['prefix' => 'account', 'flows' => ['auth']], function () {
 - [روتر](./routers.md)
 - [کنترلر](./controllers.md)
 - [درخواست — Request](./requests.md)
+- [Rate Limiter](../advanced/rate-limiter.md)
 - [ساختار پروژه](../start/structure.md)
 
 ---
