@@ -193,6 +193,20 @@ Define the named limiter with `RateLimiter::define(...)` before requests hit the
 
 ---
 
+## CORS (`cors:…`)
+
+Core alias **`cors`** accepts a policy name after a colon (see [CORS](../advanced/cors.md)):
+
+```php
+group(['flows' => ['cors:api', 'auth']], function () {
+    // ...
+});
+```
+
+Register policies with `Cors::define(...)`. Preflight `OPTIONS` returns **204** without running the controller.
+
+---
+
 ## Stopping the chain
 
 If a Flow returns an HTTP response (redirect, error JSON, etc.), the controller action does not run.
@@ -214,6 +228,7 @@ If a Flow returns an HTTP response (redirect, error JSON, etc.), the controller 
 - [Controllers](./controllers.md)
 - [Request](./requests.md)
 - [Rate Limiter](../advanced/rate-limiter.md)
+- [CORS](../advanced/cors.md)
 - [Project structure](../start/structure.md)
 
 ---

@@ -69,6 +69,7 @@
 #### [ارسال ایمیل](./advanced/mail.md)
 #### [HTTP Client](./advanced/http-client.md)
 #### [Rate Limiter](./advanced/rate-limiter.md)
+#### [CORS](./advanced/cors.md)
 #### [مدیریت کاربران](./advanced/user-management.md)
 #### [مدیریت فایل](./advanced/file-management.md)
 #### [پروتکل Pinion](./advanced/pinion.md)

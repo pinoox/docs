@@ -193,6 +193,20 @@ limiter را با `RateLimiter::define(...)` قبل از رسیدن درخواس
 
 ---
 
+## CORS (`cors:…`)
+
+alias هستهٔ **`cors`** نام سیاست را بعد از دو نقطه می‌گیرد (جزئیات: [CORS](../advanced/cors.md)):
+
+```php
+group(['flows' => ['cors:api', 'auth']], function () {
+    // ...
+});
+```
+
+سیاست‌ها را با `Cors::define(...)` ثبت کنید. preflight با پاسخ **۲۰۴** و بدون اجرای کنترلر انجام می‌شود.
+
+---
+
 ## توقف زنجیره
 
 اگر Flow پاسخ HTTP برگرداند (redirect، JSON خطا، …)، action کنترلر اجرا نمی‌شود.
@@ -214,6 +228,7 @@ limiter را با `RateLimiter::define(...)` قبل از رسیدن درخواس
 - [کنترلر](./controllers.md)
 - [درخواست — Request](./requests.md)
 - [Rate Limiter](../advanced/rate-limiter.md)
+- [CORS](../advanced/cors.md)
 - [ساختار پروژه](../start/structure.md)
 
 ---

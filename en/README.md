@@ -73,6 +73,7 @@ Read these in order if you are building a new app.
 - [Mail](./advanced/mail.md)
 - [HTTP client](./advanced/http-client.md)
 - [Rate Limiter](./advanced/rate-limiter.md)
+- [CORS](./advanced/cors.md)
 - [User management](./advanced/user-management.md)
 - [File management](./advanced/file-management.md)
 - [Pinion uploads](./advanced/pinion.md)
