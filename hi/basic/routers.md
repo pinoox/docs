@@ -26,12 +26,25 @@ Pinoox 3.x routing में दो layers हैं: **Named Actions** (logical
 
 ```php
 use function Pinoox\Router\{
-    get, post, put, patch, delete,
-    action, group, routes, collect, route
+    get, post, put, patch, delete, query,
+    options, head, purge, trace, connect, any,
+    route_match, action, group, collection, routes, collect, route
 };
 ```
 
-pincore 3.x में **`collection()`** function मौजूद नहीं है।
+Use **`collection()`** to mount nested route files under a path prefix (optional shared flows).
+
+### Route facade (alternative)
+
+```php
+use Pinoox\Portal\Route;
+
+Route::get('/', '@welcome')->name('home');
+Route::any('/webhook', [WebhookController::class, 'handle'])->name('webhook');
+Route::match(['GET', 'POST'], '/form', 'submit')->name('form.submit');
+```
+
+> Do **not** use **`Pinoox\Portal\Router::get`** for route definitions. Use **`Pinoox\Router`** helpers or **`Pinoox\Portal\Route`** instead.
 
 ---
 
@@ -73,12 +86,27 @@ post('product', [ProductController::class, 'store'])->name('product.store');
 ## HTTP methods
 
 ```php
-use function Pinoox\Router\{get, post, put, patch, delete};
+use function Pinoox\Router\{get, post, put, patch, delete, query, options, head, purge, trace, connect, any, route_match};
 
 post('login', [AuthController::class, 'login'])->name('login');
 put('product/{id}', [ProductController::class, 'update'])->name('product.update');
 delete('product/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
+query('search', [SearchController::class, 'run'])->name('search');
+options('/api/preflight', [CorsController::class, 'preflight'])->name('cors.preflight');
+head('/status', [HealthController::class, 'head'])->name('health.head');
+trace('/debug', [DebugController::class, 'trace'])->name('debug.trace');
+connect('/tunnel', [TunnelController::class, 'connect'])->name('tunnel.connect');
+purge('/cache/{key}', [CacheController::class, 'purge'])->name('cache.purge');
 ```
+
+### Match multiple methods / Any method
+
+```php
+route_match(['GET', 'POST'], '/resource', [ResourceController::class, 'handle'])->name('resource.handle');
+any('/webhook', [WebhookController::class, 'handle'])->name('webhook');
+```
+
+In manifest/config: `'method' => 'any'`, `'all'`, or `'*'`.
 
 ---
 

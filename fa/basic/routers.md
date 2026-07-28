@@ -27,11 +27,27 @@
 ```php
 use function Pinoox\Router\{
     get, post, put, patch, delete, query,
-    action, group, routes, collect, route
+    options, head, purge, trace, connect, any,
+    route_match, action, group, collection, routes, collect, route
 };
 ```
 
-تابع **`collection()`** در pincore ۳.x وجود ندارد.
+از **`collection()`** برای mount کردن فایل یا callback تو در تو زیر یک prefix (با flow مشترک اختیاری) استفاده کنید.
+
+### Route facade (جایگزین)
+
+سینتکس شبیه Laravel — همان API توابع بالا:
+
+```php
+use Pinoox\Portal\Route;
+
+Route::get('/', '@welcome')->name('home');
+Route::post('login', [AuthController::class, 'login'])->name('login');
+Route::any('/webhook', [WebhookController::class, 'handle'])->name('webhook');
+Route::match(['GET', 'POST'], '/form', 'submit')->name('form.submit');
+```
+
+> برای **تعریف route** از **`Pinoox\Portal\Router::get`** استفاده نکنید — آن portal موتور runtime روتر است. از helperهای **`Pinoox\Router`** یا **`Pinoox\Portal\Route`** استفاده کنید.
 
 ---
 
@@ -73,13 +89,53 @@ post('product', [ProductController::class, 'store'])->name('product.store');
 ## متدهای HTTP
 
 ```php
-use function Pinoox\Router\{get, post, put, patch, delete, query};
+use function Pinoox\Router\{
+    get, post, put, patch, delete, query,
+    options, head, purge, trace, connect, any, route_match
+};
 
 post('login', [AuthController::class, 'login'])->name('login');
 put('product/{id}', [ProductController::class, 'update'])->name('product.update');
 delete('product/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
 query('search', [SearchController::class, 'run'])->name('search');
+
+options('/api/preflight', [CorsController::class, 'preflight'])->name('cors.preflight');
+head('/status', [HealthController::class, 'head'])->name('health.head');
+trace('/debug', [DebugController::class, 'trace'])->name('debug.trace');
+connect('/tunnel', [TunnelController::class, 'connect'])->name('tunnel.connect');
+purge('/cache/{key}', [CacheController::class, 'purge'])->name('cache.purge');
 ```
+
+| Helper | متد HTTP |
+|--------|----------|
+| `get()` | GET |
+| `post()` | POST |
+| `put()` | PUT |
+| `patch()` | PATCH |
+| `delete()` | DELETE |
+| `query()` | QUERY (افزونه پینوکس) |
+| `options()` | OPTIONS |
+| `head()` | HEAD |
+| `purge()` | PURGE |
+| `trace()` | TRACE |
+| `connect()` | CONNECT |
+
+### چند متد با `route_match`
+
+```php
+route_match(['GET', 'POST'], '/resource', [ResourceController::class, 'handle'])
+    ->name('resource.handle');
+```
+
+### همه متدها با `any`
+
+یک handler برای تمام متدهای HTTP پشتیبانی‌شده — مناسب webhook، proxy یا endpoint عمومی:
+
+```php
+any('/webhook', [WebhookController::class, 'handle'])->name('webhook');
+```
+
+در manifest/config می‌توانید `'method' => 'any'`، `'all'` یا `'*'` بگذارید.
 
 ### متد QUERY (RFC 10008)
 

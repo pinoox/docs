@@ -27,11 +27,27 @@ Pinoox 3.x routing has two layers: **Named Actions** (logical handlers) and **Ro
 ```php
 use function Pinoox\Router\{
     get, post, put, patch, delete, query,
-    action, group, routes, collect, route
+    options, head, purge, trace, connect, any,
+    route_match, action, group, collection, routes, collect, route
 };
 ```
 
-The **`collection()`** function does not exist in pincore 3.x.
+Use **`collection()`** to mount a nested route file or callback under a path prefix (with optional shared flows).
+
+### Route facade (alternative)
+
+Laravel-style syntax — same API as the helpers above:
+
+```php
+use Pinoox\Portal\Route;
+
+Route::get('/', '@welcome')->name('home');
+Route::post('login', [AuthController::class, 'login'])->name('login');
+Route::any('/webhook', [WebhookController::class, 'handle'])->name('webhook');
+Route::match(['GET', 'POST'], '/form', 'submit')->name('form.submit');
+```
+
+> Do **not** use **`Pinoox\Portal\Router::get`** for route definitions — that portal is the runtime router engine. Use **`Pinoox\Router`** helpers or **`Pinoox\Portal\Route`** instead.
 
 ---
 
@@ -73,13 +89,53 @@ post('product', [ProductController::class, 'store'])->name('product.store');
 ## HTTP methods
 
 ```php
-use function Pinoox\Router\{get, post, put, patch, delete, query};
+use function Pinoox\Router\{
+    get, post, put, patch, delete, query,
+    options, head, purge, trace, connect, any, route_match
+};
 
 post('login', [AuthController::class, 'login'])->name('login');
 put('product/{id}', [ProductController::class, 'update'])->name('product.update');
 delete('product/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
 query('search', [SearchController::class, 'run'])->name('search');
+
+options('/api/preflight', [CorsController::class, 'preflight'])->name('cors.preflight');
+head('/status', [HealthController::class, 'head'])->name('health.head');
+trace('/debug', [DebugController::class, 'trace'])->name('debug.trace');
+connect('/tunnel', [TunnelController::class, 'connect'])->name('tunnel.connect');
+purge('/cache/{key}', [CacheController::class, 'purge'])->name('cache.purge');
 ```
+
+| Helper | HTTP method |
+|--------|-------------|
+| `get()` | GET |
+| `post()` | POST |
+| `put()` | PUT |
+| `patch()` | PATCH |
+| `delete()` | DELETE |
+| `query()` | QUERY (Pinoox extension) |
+| `options()` | OPTIONS |
+| `head()` | HEAD |
+| `purge()` | PURGE |
+| `trace()` | TRACE |
+| `connect()` | CONNECT |
+
+### Match multiple methods
+
+```php
+route_match(['GET', 'POST'], '/resource', [ResourceController::class, 'handle'])
+    ->name('resource.handle');
+```
+
+### Any method (all supported methods)
+
+Register one handler for every supported HTTP method — useful for webhooks, proxies, or catch-all endpoints:
+
+```php
+any('/webhook', [WebhookController::class, 'handle'])->name('webhook');
+```
+
+In manifest/config entries, use `'method' => 'any'`, `'all'`, or `'*'`.
 
 ### QUERY method (RFC 10008)
 
