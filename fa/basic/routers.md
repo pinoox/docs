@@ -237,9 +237,21 @@ echo route('product.show', ['id' => 5]);
 
 ```php
 use Pinoox\Portal\View;
-use function Pinoox\Router\get;
+use function Pinoox\Router\{fallback, get};
 
+// API پیشنهادی (همه متدها + Flow):
+fallback(fn () => View::render('errors/404'))->name('fallback');
+
+// معادل قدیمی:
 get('*', fn () => View::render('errors/404'))->name('fallback');
+```
+
+Fallback محدود به گروه — [Fallback Routes](../advanced/fallback-routes.md):
+
+```php
+group(['prefix' => '/api'], function () {
+    fallback(fn () => response()->json(['message' => 'Not Found'], 404));
+});
 ```
 
 ---

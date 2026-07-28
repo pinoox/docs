@@ -75,6 +75,7 @@ Read these in order if you are building a new app.
 - [Rate Limiter](./advanced/rate-limiter.md)
 - [CORS](./advanced/cors.md)
 - [Route Resolver](./advanced/route-resolver.md)
+- [Fallback Routes](./advanced/fallback-routes.md)
 - [User management](./advanced/user-management.md)
 - [File management](./advanced/file-management.md)
 - [Pinion uploads](./advanced/pinion.md)
