@@ -207,6 +207,21 @@ group(['flows' => ['cors:api', 'auth']], function () {
 
 ---
 
+## Route Resolver (`resolve`)
+
+alias هستهٔ **`resolve`** bindingهای پارامتر را قبل از کنترلر اجرا می‌کند (جزئیات: [Route Resolver](../advanced/route-resolver.md)):
+
+```php
+use Pinoox\Portal\Route;
+
+Route::resolve('user', User::class);
+
+get('users/{user}', [UserController::class, 'show'])
+    ->flow(['resolve', 'auth']);
+```
+
+---
+
 ## توقف زنجیره
 
 اگر Flow پاسخ HTTP برگرداند (redirect، JSON خطا، …)، action کنترلر اجرا نمی‌شود.
@@ -229,6 +244,7 @@ group(['flows' => ['cors:api', 'auth']], function () {
 - [درخواست — Request](./requests.md)
 - [Rate Limiter](../advanced/rate-limiter.md)
 - [CORS](../advanced/cors.md)
+- [Route Resolver](../advanced/route-resolver.md)
 - [ساختار پروژه](../start/structure.md)
 
 ---
