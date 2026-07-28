@@ -71,6 +71,7 @@
 #### [Rate Limiter](./advanced/rate-limiter.md)
 #### [CORS](./advanced/cors.md)
 #### [Route Resolver](./advanced/route-resolver.md)
+#### [Route Parameters](./advanced/route-parameters.md)
 #### [Fallback Routes](./advanced/fallback-routes.md)
 #### [مدیریت کاربران](./advanced/user-management.md)
 #### [مدیریت فایل](./advanced/file-management.md)

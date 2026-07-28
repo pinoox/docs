@@ -82,7 +82,15 @@ post('product', [ProductController::class, 'store'])->name('product.store');
 ```
 
 - `@welcome` → ارجاع به action ثبت‌شده
-- `{id}` → پارامتر داینامیک (به کنترلر یا `$request->parametersOne('id')` می‌رسد)
+- `{id}` → پارامتر داینامیک (`$request->route('id')` یا تزریق به کنترلر)
+
+پارامترهای غنی‌تر (اختیاری، catch-all، تایپ، enum، pattern سفارشی) → [Route Parameters](../advanced/route-parameters.md).
+
+```php
+get('/users/{id?:int}', [UserController::class, 'show']);
+get('/docs/{path*}', [DocsController::class, 'page']);
+get('/orders/{status:pending|paid}', [OrderController::class, 'byStatus']);
+```
 
 ---
 

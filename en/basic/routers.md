@@ -82,7 +82,15 @@ post('product', [ProductController::class, 'store'])->name('product.store');
 ```
 
 - `@welcome` — reference to a registered action
-- `{id}` — dynamic parameter (passed to the controller or via `$request->parametersOne('id')`)
+- `{id}` — dynamic parameter (`$request->route('id')` or controller injection)
+
+Expressive parameters (optional, catch-all, types, enums, custom patterns) → see [Route Parameters](../advanced/route-parameters.md).
+
+```php
+get('/users/{id?:int}', [UserController::class, 'show']);
+get('/docs/{path*}', [DocsController::class, 'page']);
+get('/orders/{status:pending|paid}', [OrderController::class, 'byStatus']);
+```
 
 ---
 
