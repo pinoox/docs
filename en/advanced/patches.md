@@ -11,7 +11,7 @@ A **patch** in Pinoox 3.x is a **one-time operational change**: fix data, move r
 | Tool | Purpose |
 |------|---------|
 | **Migration** | CREATE/ALTER tables and columns |
-| **Seeder** | Initial or sample data (manual runs) |
+| **Seeder** | Initial or sample data (manual / explicit call; not on install) |
 | **Patch** | Run once and track in `history` |
 
 Patch examples:
@@ -98,6 +98,17 @@ Platform namespace: `Pinoox\Patches`.
 | `canRollback()` | Whether rollback is allowed |
 | `description()` | Human-readable text in history |
 | `metadata()` | Extra JSON stored in history |
+| `seed($name, $package?)` | Run seeder(s) by file basename |
+| `seedAll($package?)` | Run all seeders for a package |
+
+```php
+public function up(): void
+{
+    $this->seed('GatewaySeeder');
+}
+```
+
+See [Call seeders from code](../eloquent-orm/factories.md#call-seeders-from-code).
 
 ---
 

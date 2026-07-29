@@ -11,7 +11,7 @@
 | ابزار | کاربرد |
 |-------|--------|
 | **Migration** | ساخت/تغییر جدول و ستون |
-| **Seeder** | داده نمونه یا اولیه (قابل اجرای دستی) |
+| **Seeder** | داده نمونه یا اولیه (دستی / فراخوانی صریح؛ نه موقع نصب) |
 | **Patch** | یک‌بار اجرا شود و در `history` ثبت شود |
 
 مثال‌های Patch:
@@ -98,6 +98,17 @@ Namespace پلتفرم: `Pinoox\Patches`.
 | `canRollback()` | آیا rollback مجاز است |
 | `description()` | توضیح انسانی در history |
 | `metadata()` | داده اضافه JSON در history |
+| `seed($name, $package?)` | اجرای seeder با نام فایل |
+| `seedAll($package?)` | اجرای همهٔ seederهای یک پکیج |
+
+```php
+public function up(): void
+{
+    $this->seed('GatewaySeeder');
+}
+```
+
+جزئیات: [فراخوانی از کد](../eloquent-orm/factories.md#فراخوانی-از-کد-migration--patch--portal).
 
 ---
 

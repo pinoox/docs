@@ -118,8 +118,10 @@ $this->schema->create($this->table(Table::USER, 'platform'), function (Blueprint
 | نوع | کاربرد | دستور |
 |-----|--------|-------|
 | Migration | schema (CREATE/ALTER) | `php pinoox migrate {package}` |
-| Seeder | داده اولیه | `php pinoox seeder:run {package}` |
+| Seeder | داده اولیه (دستی / فراخوانی صریح) | `php pinoox seeder:run {package}` یا `$this->seed()` |
 | Patch | تغییر یک‌باره داده | `php pinoox patch:run {package}` |
+
+نصب اپ فقط migration و patch را اجرا می‌کند — **seeder خودکار نیست**. اگر موقع نصب به seed نیاز دارید، از داخل migration (یا patch) با `$this->seed('Name')` یا `$this->seedAll()` صدا بزنید. جزئیات: [داده آزمایشی — Seeder](../eloquent-orm/factories.md#فراخوانی-از-کد-migration--patch--portal).
 
 راهنمای کامل Patch: [Patch (به‌روزرسانی داده)](../advanced/patches.md).
 
