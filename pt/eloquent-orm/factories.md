@@ -111,6 +111,7 @@ use Pinoox\Portal\Database\Seeder;
 Seeder::run('PostSeeder');
 Seeder::run('PostSeeder', 'com_acme_blog');
 Seeder::run(['RoleSeeder', 'PostSeeder']);
+Seeder::run(DatabaseSeeder::class);
 Seeder::runAll();
 Seeder::runAll('platform');
 ```

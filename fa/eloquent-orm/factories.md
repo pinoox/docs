@@ -113,10 +113,38 @@ use Pinoox\Portal\Database\Seeder;
 Seeder::run('PostSeeder');                        // پکیج فعلی (PackageContext)
 Seeder::run('PostSeeder', 'com_acme_blog');        // اپ دیگر
 Seeder::run(['RoleSeeder', 'PostSeeder']);         // چند seeder با نام فایل
+Seeder::run(DatabaseSeeder::class);               // کلاس نام‌دار که از SeederBase ارث می‌برد
 Seeder::runAll();                                 // همهٔ seederهای پکیج فعلی
 Seeder::runAll('platform');                       // همهٔ seederهای پلتفرم
 Seeder::runAll('com_acme_blog');
 ```
+
+### Seeder با کلاس نام‌دار
+
+فایل‌های anonymous (stub فعلی CLI) همچنان کار می‌کنند. می‌توانید کلاس نام‌دار هم تعریف کنید و با `::class` صدا بزنید:
+
+```php
+namespace App\com_acme_blog\database\seeders;
+
+use Pinoox\Component\Database\Seeder\SeederBase;
+
+class DatabaseSeeder extends SeederBase
+{
+    public function run(): void
+    {
+        $this->call([
+            RoleSeeder::class,
+            PostSeeder::class,
+        ]);
+    }
+}
+
+// migration / patch / هرجا:
+Seeder::run(DatabaseSeeder::class);
+$this->seed(DatabaseSeeder::class);
+```
+
+کلاس باید autoload شود (PSR-4) یا قبل از `Seeder::run()` require شده باشد. برای فراخوانی با `::class` الزامی نیست که داخل `database/seeders/` باشد؛ `runAll()` و CLI فقط همان پوشه را بار می‌کنند.
 
 ### داخل migration
 

@@ -130,10 +130,38 @@ use Pinoox\Portal\Database\Seeder;
 Seeder::run('PostSeeder');                        // current package (PackageContext)
 Seeder::run('PostSeeder', 'com_acme_blog');        // another app
 Seeder::run(['RoleSeeder', 'PostSeeder']);         // several by basename
+Seeder::run(DatabaseSeeder::class);               // named class extending SeederBase
 Seeder::runAll();                                 // all seeders for current package
 Seeder::runAll('platform');                       // all platform seeders
 Seeder::runAll('com_acme_blog');
 ```
+
+### Named class seeder
+
+Anonymous files (CLI stub) still work. You can also define a named class and call it with `::class`:
+
+```php
+namespace App\com_acme_blog\database\seeders;
+
+use Pinoox\Component\Database\Seeder\SeederBase;
+
+class DatabaseSeeder extends SeederBase
+{
+    public function run(): void
+    {
+        $this->call([
+            RoleSeeder::class,
+            PostSeeder::class,
+        ]);
+    }
+}
+
+// migration / patch / anywhere:
+Seeder::run(DatabaseSeeder::class);
+$this->seed(DatabaseSeeder::class);
+```
+
+Named classes must be autoloadable (PSR-4) or required before `Seeder::run()`. They do not need to live under `database/seeders/` for `::class` calls; `runAll()` / CLI still load that folder only.
 
 ### From a migration
 
