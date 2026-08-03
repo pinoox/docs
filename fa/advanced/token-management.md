@@ -164,6 +164,8 @@ Auth::persistClientJwt($jwt);
 - lifetime کوتاه + remember طولانی برای UX بهتر.
 - بعد از `changePassword`، `revokeSessions` فراموش نشود.
 - Transport `session_token => platform` یعنی logout در یک اپ، توکن مشترک را هم تحت تأثیر قرار می‌دهد.
+- برای نشست سرور ترجیحاً کوکی HttpOnly؛ به خواندن `auth.key` از `document.cookie` تکیه نکنید.
+- AuthController را نازک نگه دارید (`token` + `Auth::clientUser()`)؛ بازیابی کلاینت با `@pinooxhq/auth`.
 
 ---
 
@@ -196,9 +198,10 @@ php pinoox token:revoke-user 1 --force
 
 ## مستندات مرتبط
 
-- [مدیریت کاربران](./user-management.md)
+- [مدیریت کاربران](./user-management.md) (`Auth::clientUser`, hydrate اس‌پی‌ای)
 - [ترنسپورت — Transport](./transport.md)
 - [پاسخ — Responses](../basic/responses.md)
+- پکیج: [`@pinooxhq/auth`](https://github.com/pinoox/auth)
 
 ---
 
