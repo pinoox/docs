@@ -43,10 +43,14 @@ $result = Auth::attemptResult([
 ], remember: true);
 
 if ($result->success) {
-    $jwt = $result->token;   // or Auth::token() after login
-    return $this->ok(['token' => $jwt], 'user.logged_in_successfully');
+    return $this->ok([
+        'token' => $result->token,
+        'user' => Auth::clientUser($result->user),
+    ], 'Logged in successfully');
 }
 ```
+
+`Auth::clientUser()` is the shared SPA user envelope — see [User management](./user-management.md).
 
 ---
 
@@ -60,13 +64,19 @@ if (Auth::check()) {
 }
 ```
 
-The client (Vue/React) sends the token in a header:
+The SPA should send **both**:
 
 ```http
 Authorization: Bearer {token}
+Cookie: {auth.key}={jwt}   # HttpOnly; browser sends this when credentials: 'include'
 ```
 
-Or via the key defined in `auth.key` in cookie/localStorage (depending on the SPA).
+| Store | Readable by JS? | Role |
+|-------|-----------------|------|
+| HttpOnly cookie (`auth.key`) | No | Server session for same-origin API |
+| `localStorage[auth.key]` | Yes | `Authorization` header + offline check |
+
+`@pinooxhq/auth` syncs them: login stores the returned `token` in localStorage; `me()` always uses `credentials: 'include'` so a cookie-only session still hydrates when storage was cleared. On `ALREADY_AUTHENTICATED`, it logs out the cookie session and retries login once.
 
 ---
 
@@ -147,6 +157,8 @@ Used to persist the JWT on the client after a token refresh.
 - Short lifetime + long remember improves UX.
 - Call `revokeSessions` after `changePassword`.
 - Transport `session_token => platform` means logout in one app affects shared tokens too.
+- Prefer HttpOnly cookies for the server session; do not rely on JS reading `auth.key` from `document.cookie`.
+- Keep AuthController thin (`token` + `Auth::clientUser()`); leave client recovery to `@pinooxhq/auth`.
 
 ---
 
@@ -179,9 +191,10 @@ See [CLI reference](../start/cli-reference.md).
 
 ## Related docs
 
-- [User management](./user-management.md)
+- [User management](./user-management.md) (`Auth::clientUser`, SPA hydrate)
 - [Transport](./transport.md)
 - [Responses](../basic/responses.md)
+- Package: [`@pinooxhq/auth`](https://github.com/pinoox/auth)
 
 ---
 

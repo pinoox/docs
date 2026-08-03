@@ -96,10 +96,10 @@ class AuthController extends ApiController
         Auth::boot();
 
         if (!Auth::guest()) {
-            return $this->fail('ACCESS_DENIED', 'user.already_logged_in', status: 401);
+            return $this->fail('ALREADY_AUTHENTICATED', 'Already logged in', status: 401);
         }
 
-        $input = $request->validate([
+        $input = $this->validated($request, [
             'username' => 'required',
             'password' => 'required',
         ]);
@@ -110,17 +110,113 @@ class AuthController extends ApiController
         ], remember: (bool) ($input['remember'] ?? false));
 
         if (!$result->success) {
-            return $this->fail('ACCESS_DENIED', $result->message ?? 'user.invalid_credentials');
+            return $this->fail(
+                'INVALID_CREDENTIALS',
+                $result->message ?? 'Invalid username or password',
+                status: 401,
+            );
         }
 
-        return $this->ok(['token' => $result->token], 'user.logged_in_successfully');
+        return $this->ok([
+            'token' => $result->token,
+            'user' => Auth::clientUser($result->user),
+        ], 'Logged in successfully');
+    }
+
+    public function get()
+    {
+        Auth::boot();
+
+        if (!Auth::check()) {
+            return $this->fail('UNAUTHORIZED', 'You must login', status: 401);
+        }
+
+        return $this->ok(Auth::clientUser());
+    }
+
+    public function logout()
+    {
+        Auth::boot();
+        Auth::logout();
+
+        return $this->ok(null, 'Logged out');
     }
 }
 ```
 
-اپ سیستمی `com_pinoox_manager` همان منطق را دارد اما از `$this->error()` و `$this->message()` (کلاس پایه legacy) استفاده می‌کند — هر دو به envelope استاندارد JSON map می‌شوند.
+payload کاربر را در هر اپ دستی نسازید — از `Auth::clientUser()` استفاده کنید.
+
+اپ سیستمی `com_pinoox_manager` همان جریان را دارد اما ممکن است از `$this->error()` / `$this->message()` (legacy) استفاده کند. وقتی نشست سرور هنوز فعال است، کد خطا را `ALREADY_AUTHENTICATED` بگذارید تا `@pinooxhq/auth` بتواند بازیابی کند (پاک‌کردن کوکی + یک‌بار retry لاگین).
 
 فیلدهای مجاز credentials: `username`, `email`, یا `login`.
+
+---
+
+## `Auth::clientUser()` — envelope کاربر برای SPA
+
+شکل ثابت برای پاسخ login / `me` که `@pinooxhq/auth` و تم‌ها مصرف می‌کنند:
+
+```php
+Auth::clientUser(?UserModel $user = null): ?array
+```
+
+| فیلد | توضیح |
+|------|--------|
+| `id` / `user_id` | همان شناسه عددی |
+| `name` | نام کامل؛ در غیر این صورت username |
+| `username`, `email`, `fname`, `lname`, `mobile` | فیلدهای پروفایل |
+| `group_key`, `status` | دسترسی / وضعیت حساب |
+| `abilities` | از `Access::abilitiesFor($user)` |
+| `avatar` / `avatar_url` | بندانگشتی + URL کامل |
+
+```php
+// بعد از login
+'user' => Auth::clientUser($result->user)
+
+// نشست جاری (me)
+Auth::clientUser()          // از Auth::user()
+Auth::clientUser($model)    // UserModel مشخص
+```
+
+برای پنل / صفحه قفل از **`Auth::profile()`** استفاده کنید. برای قرارداد auth اس‌پی‌ای (`token` + `user` / `me`) از **`Auth::clientUser()`**.
+
+---
+
+## کلاینت SPA — `@pinooxhq/auth`
+
+اپ‌های مستقل `auth` (و در صورت نیاز `auth.client`) را در `app.php` تنظیم می‌کنند و در تم یک‌بار auth می‌سازند:
+
+```js
+import { createAuth, createHttp } from '@pinooxhq/auth'
+
+export const auth = createAuth({
+  strategy: 'local',
+  mode: 'jwt',
+  key: 'acme_pinoox',           // باید با auth.key در app.php یکی باشد
+  loginUrl: '/acme/login',
+  endpoints: {
+    login: 'auth/login',
+    logout: 'auth/logout',
+    me: 'auth/get',
+  },
+})
+```
+
+### کوکی JWT با HttpOnly در برابر localStorage
+
+در حالت `jwt` سرور JWT را در کوکی **HttpOnly** با نام `auth.key` می‌گذارد؛ جاوااسکریپت آن را نمی‌خواند. `@pinooxhq/auth` این‌طور رفتار می‌کند:
+
+1. وقتی login مقدار `token` برگرداند، کپی را در `localStorage` نگه می‌دارد (برای `Authorization: Bearer …`).
+2. همیشه `me()` را با `credentials: 'include'` صدا می‌زند — حتی اگر storage خالی باشد — تا کوکی HttpOnly معتبر نشست را hydrate کند.
+3. اگر `login` با `ALREADY_AUTHENTICATED` برگردد (کوکی زنده، storage خالی)، با `logout` نشست سرور را پاک می‌کند و **یک‌بار** با همان credentials دوباره login می‌زند.
+
+کلاینت HTTP باید کوکی را روی درخواست‌های same-origin بفرستد:
+
+```js
+axios.create({ withCredentials: true })
+```
+
+هک «resume session» را در کنترلر یا `main.js` اپ ننویسید — AuthController را نازک نگه دارید و همگام‌سازی کوکی ↔ storage را به `@pinooxhq/auth` بسپارید.
 
 ---
 
@@ -189,8 +285,10 @@ class ManagerAuthFlow extends AuthFlow
 | متد | کاربرد |
 |-----|--------|
 | `Auth::check()` / `guest()` | وضعیت ورود |
-| `Auth::user()` / `id()` | کاربر جاری |
-| `Auth::profile()` | DTO پروفایل برای API |
+| `Auth::user()` / `id()` | مدل / شناسه کاربر جاری |
+| `Auth::clientUser($user = null)` | envelope اس‌پی‌ای (`id`, `name`, `abilities`, avatar…) |
+| `Auth::profile()` | DTO پروفایل برای پنل / قفل صفحه |
+| `Auth::token()` | JWT جاری (بعد از login / setToken) |
 | `Auth::updateProfile($id, $data)` | ویرایش نام/ایمیل |
 | `Auth::changePassword($id, $old, $new)` | تغییر رمز |
 | `Auth::create($data)` / `remove($id)` | CRUD کاربر |
@@ -233,10 +331,11 @@ UserModel (pincore_user) + TokenModel (pincore_token)
 
 ## نکات HMVC
 
-1. منطق Auth در pincore است — در اپ duplicate نکنید.
+1. منطق Auth در pincore است — payload کاربر و هک resume را در اپ duplicate نکنید.
 2. `Auth::boot()` را در BootFlow سراسری صدا بزنید.
 3. محافظت route با Flow alias (`->flows()` یا `'flow'` در manifest API)، نه `if (!isLogin())` در هر کنترلر.
 4. برای اپ‌های مصرف‌کننده فقط `'transport' => ['user' => 'platform']` کافی است.
+5. برای SPA: `token` + `Auth::clientUser()` برگردانید؛ همگام‌سازی storage/کوکی با `@pinooxhq/auth`.
 
 ---
 
@@ -324,8 +423,10 @@ php pinoox user:logout --force
 ## مستندات مرتبط
 
 - [مدیریت توکن](./token-management.md)
+- [دسترسی و مجوزها](./access-permissions.md)
 - [فلو — Flow](../basic/flows.md)
 - [ترنسپورت — Transport](./transport.md)
+- پکیج: [`@pinooxhq/auth`](https://github.com/pinoox/auth)
 
 ---
 

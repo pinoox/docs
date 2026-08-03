@@ -78,7 +78,7 @@ class BootFlow extends Flow
 
 ## Login
 
-New API controllers extend `ApiController` (pincore) and use `ok()` / `fail()`:
+API controllers extend `ApiController` (pincore) and use `ok()` / `fail()`:
 
 ```php
 <?php
@@ -96,10 +96,10 @@ class AuthController extends ApiController
         Auth::boot();
 
         if (!Auth::guest()) {
-            return $this->fail('ACCESS_DENIED', 'user.already_logged_in', status: 401);
+            return $this->fail('ALREADY_AUTHENTICATED', 'Already logged in', status: 401);
         }
 
-        $input = $request->validate([
+        $input = $this->validated($request, [
             'username' => 'required',
             'password' => 'required',
         ]);
@@ -110,17 +110,113 @@ class AuthController extends ApiController
         ], remember: (bool) ($input['remember'] ?? false));
 
         if (!$result->success) {
-            return $this->fail('ACCESS_DENIED', $result->message ?? 'user.invalid_credentials');
+            return $this->fail(
+                'INVALID_CREDENTIALS',
+                $result->message ?? 'Invalid username or password',
+                status: 401,
+            );
         }
 
-        return $this->ok(['token' => $result->token], 'user.logged_in_successfully');
+        return $this->ok([
+            'token' => $result->token,
+            'user' => Auth::clientUser($result->user),
+        ], 'Logged in successfully');
+    }
+
+    public function get()
+    {
+        Auth::boot();
+
+        if (!Auth::check()) {
+            return $this->fail('UNAUTHORIZED', 'You must login', status: 401);
+        }
+
+        return $this->ok(Auth::clientUser());
+    }
+
+    public function logout()
+    {
+        Auth::boot();
+        Auth::logout();
+
+        return $this->ok(null, 'Logged out');
     }
 }
 ```
 
-The system app `com_pinoox_manager` uses the same logic but calls `$this->error()` and `$this->message()` (legacy base class) — both map to the standard JSON envelope.
+Do **not** rebuild the user payload by hand in each app. Use `Auth::clientUser()`.
+
+The system app `com_pinoox_manager` uses the same login flow but may call `$this->error()` / `$this->message()` (legacy base) — both map to the standard JSON envelope. Prefer `ALREADY_AUTHENTICATED` as the error code when the server session is already active so `@pinooxhq/auth` can recover (logout cookie + retry login).
 
 Allowed credential fields: `username`, `email`, or `login`.
+
+---
+
+## `Auth::clientUser()` — SPA user envelope
+
+Stable shape for login / `me` responses consumed by `@pinooxhq/auth` and themes:
+
+```php
+Auth::clientUser(?UserModel $user = null): ?array
+```
+
+| Field | Notes |
+|-------|--------|
+| `id` / `user_id` | Same numeric id |
+| `name` | Full name, else username |
+| `username`, `email`, `fname`, `lname`, `mobile` | Profile fields |
+| `group_key`, `status` | Access / account state |
+| `abilities` | From `Access::abilitiesFor($user)` |
+| `avatar` / `avatar_url` | Thumb + full URL |
+
+```php
+// After login
+'user' => Auth::clientUser($result->user)
+
+// Current session (me)
+Auth::clientUser()          // uses Auth::user()
+Auth::clientUser($model)    // explicit UserModel
+```
+
+Use **`Auth::profile()`** for panel / lock-screen DTOs (avatar focus, lock state). Use **`Auth::clientUser()`** for SPA auth contracts (`token` + `user` / `me`).
+
+---
+
+## SPA client — `@pinooxhq/auth`
+
+Independent apps configure `auth` (and optional `auth.client`) in `app.php`, then create auth once in the theme:
+
+```js
+import { createAuth, createHttp } from '@pinooxhq/auth'
+
+export const auth = createAuth({
+  strategy: 'local',
+  mode: 'jwt',
+  key: 'acme_pinoox',           // must match app.php auth.key
+  loginUrl: '/acme/login',
+  endpoints: {
+    login: 'auth/login',
+    logout: 'auth/logout',
+    me: 'auth/get',
+  },
+})
+```
+
+### HttpOnly JWT cookie vs localStorage
+
+In `jwt` mode the server stores the JWT in an **HttpOnly** cookie named `auth.key`. JavaScript cannot read that cookie. `@pinooxhq/auth` therefore:
+
+1. Keeps a copy in `localStorage` when login returns `token` (for `Authorization: Bearer …`).
+2. Always calls `me()` with `credentials: 'include'` — even when local storage is empty — so a valid HttpOnly cookie still hydrates the session.
+3. If `login` returns `ALREADY_AUTHENTICATED` (cookie alive, SPA storage empty), clears the server session via `logout` and **retries** the login once with the submitted credentials.
+
+HTTP clients should send cookies on same-origin API calls:
+
+```js
+axios.create({ withCredentials: true })
+```
+
+Do not add per-app “resume session” hacks in controllers or `main.js` — keep AuthController thin and let `@pinooxhq/auth` own cookie ↔ storage sync.
 
 ---
 
@@ -189,8 +285,10 @@ class ManagerAuthFlow extends AuthFlow
 | Method | Purpose |
 |--------|---------|
 | `Auth::check()` / `guest()` | Login state |
-| `Auth::user()` / `id()` | Current user |
-| `Auth::profile()` | Profile DTO for API |
+| `Auth::user()` / `id()` | Current user model / id |
+| `Auth::clientUser($user = null)` | SPA envelope (`id`, `name`, `abilities`, avatar…) |
+| `Auth::profile()` | Panel / lock-screen profile DTO |
+| `Auth::token()` | Current JWT (after login / setToken) |
 | `Auth::updateProfile($id, $data)` | Update name/email |
 | `Auth::changePassword($id, $old, $new)` | Change password |
 | `Auth::create($data)` / `remove($id)` | User CRUD |
@@ -233,10 +331,11 @@ UserModel (pincore_user) + TokenModel (pincore_token)
 
 ## HMVC tips
 
-1. Auth logic lives in pincore — do not duplicate it in apps.
+1. Auth logic lives in pincore — do not duplicate user payloads or resume hacks in apps.
 2. Call `Auth::boot()` globally in BootFlow.
 3. Protect routes with Flow aliases (`->flows()` or `'flow'` in API manifest), not `if (!isLogin())` in every controller.
 4. For consumer apps, `'transport' => ['user' => 'platform']` is often enough.
+5. SPA login/me: return `token` + `Auth::clientUser()`; use `@pinooxhq/auth` for storage and cookie hydrate.
 
 ---
 
@@ -324,8 +423,10 @@ See also `.env.example` in the project root.
 ## Related docs
 
 - [Token management](./token-management.md)
+- [Access & permissions](./access-permissions.md)
 - [Flows](../basic/flows.md)
 - [Transport](./transport.md)
+- Package: [`@pinooxhq/auth`](https://github.com/pinoox/auth)
 
 ---
 

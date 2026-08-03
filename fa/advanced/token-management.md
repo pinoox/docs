@@ -33,34 +33,24 @@ PINOOX_JWT_SECRET=your-long-random-secret
 ## دریافت توکن بعد از login
 
 ```php
-use Pinoox\Component\Http\Request;
-use Pinoox\Component\Kernel\Controller\ApiController;
 use Pinoox\Portal\Auth;
 
-class AuthController extends ApiController
-{
-    public function login(Request $request)
-    {
-        Auth::boot();
+Auth::boot();
 
-        $input = $request->validate([
-            'username' => 'required',
-            'password' => 'required',
-        ]);
+$result = Auth::attemptResult([
+    'username' => $input['username'],
+    'password' => $input['password'],
+], remember: true);
 
-        $result = Auth::attemptResult([
-            'username' => $input['username'],
-            'password' => $input['password'],
-        ], remember: true);
-
-        if (!$result->success) {
-            return $this->fail('ACCESS_DENIED', $result->message ?? 'user.invalid_credentials');
-        }
-
-        return $this->ok(['token' => $result->token], 'user.logged_in_successfully');
-    }
+if ($result->success) {
+    return $this->ok([
+        'token' => $result->token,
+        'user' => Auth::clientUser($result->user),
+    ], 'Logged in successfully');
 }
 ```
+
+`Auth::clientUser()` envelope مشترک کاربر برای SPA است — [مدیریت کاربران](./user-management.md).
 
 ---
 
@@ -74,13 +64,19 @@ if (Auth::check()) {
 }
 ```
 
-کلاینت (Vue/React) توکن را در header می‌فرستد:
+اس‌پی‌ای باید **هر دو** را بفرستد:
 
 ```http
 Authorization: Bearer {token}
+Cookie: {auth.key}={jwt}   # HttpOnly؛ مرورگر با credentials: 'include' می‌فرستد
 ```
 
-یا با کلید تعریف‌شده در `auth.key` در cookie/localStorage (بسته به SPA).
+| محل ذخیره | خوانا برای JS؟ | نقش |
+|-----------|----------------|-----|
+| کوکی HttpOnly (`auth.key`) | خیر | نشست سرور برای API هم‌‌مبدأ |
+| `localStorage[auth.key]` | بله | هدر `Authorization` + تشخیص آفلاین |
+
+`@pinooxhq/auth` این دو را همگام می‌کند: login توکن برگشتی را در localStorage می‌گذارد؛ `me()` همیشه با `credentials: 'include'` می‌رود تا نشست فقط‌کوکی هم hydrate شود. روی `ALREADY_AUTHENTICATED` یک‌بار logout کوکی و retry لاگین انجام می‌دهد.
 
 ---
 
