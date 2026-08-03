@@ -70,24 +70,235 @@ class PostController extends ApiController
 
 ---
 
-## collection
+## Static Factory — `make()`
+
+Create a resource instance with optional custom class:
 
 ```php
-PostResource::collection($items, PostResource::class);
-// array of toArray() for each item
+$resource = PostResource::make($post);
+$resource = PostResource::make($post, CustomPostResource::class);
 ```
 
 ---
 
-## PayloadResource (custom array)
+## Conditional Fields
+
+### `when($condition, $value, $default)`
+
+Include a field conditionally — accepts scalar, array, or callable:
 
 ```php
-use Pinoox\Component\Http\Api\PayloadResource;
+public function toArray(): array
+{
+    return [
+        'id' => $this->resource->post_id,
+        'title' => $this->resource->title,
+        'published_at' => $this->when(
+            $this->resource->status === 'published',
+            fn() => $this->resource->published_at?->toIso8601String()
+        ),
+        'is_featured' => $this->when($this->resource->is_featured, true, false),
+    ];
+}
+```
 
-return $this->resource(new PayloadResource([
-    'connected' => true,
-    'version' => '3.1',
-]));
+### `whenHas($key, $value)`
+
+Include only when the key exists on the underlying resource:
+
+```php
+'description' => $this->whenHas('description', 'Custom description'),
+// or use the actual value:
+'description' => $this->whenHas('description'),
+```
+
+### `whenNotNull($value)`
+
+Include only when value is not null:
+
+```php
+'category' => $this->whenNotNull($this->resource->category?->name),
+```
+
+---
+
+## Relationships
+
+### `whenLoaded($relation, $value, $default)`
+
+Include a relation only if it was eager-loaded:
+
+```php
+public function toArray(): array
+{
+    return [
+        'id' => $this->resource->post_id,
+        'author' => $this->whenLoaded('author', [
+            'id' => $this->resource->author->user_id,
+            'name' => $this->resource->author->full_name,
+        ]),
+        'comments' => $this->whenLoaded('comments'),
+    ];
+}
+```
+
+### `whenCounted($relation, $key)`
+
+Include relationship count if loaded:
+
+```php
+'comments_count' => $this->whenCounted('comments'),
+'likes_count' => $this->whenCounted('likes', 'likes_count'),
+```
+
+### `includeRelation($relation, $callback)`
+
+Include relation with optional transformation:
+
+```php
+'tags' => $this->includeRelation('tags', fn($tags) => $tags->pluck('name')),
+```
+
+---
+
+## Array Helpers
+
+### `merge(...$arrays)`
+
+Merge arrays and remove null values:
+
+```php
+return $this->merge(
+    ['id' => $this->resource->post_id],
+    ['title' => $this->resource->title],
+    $this->when($this->resource->status === 'published', [
+        'published_at' => $this->resource->published_at?->toIso8601String(),
+    ])
+);
+```
+
+### `filter($data)`
+
+Filter null values from an array:
+
+```php
+return $this->filter([
+    'id' => $this->resource->post_id,
+    'deleted_at' => $this->resource->deleted_at?->toIso8601String(),
+]);
+```
+
+### `mergeWhen($condition, $value)`
+
+Conditionally merge an array:
+
+```php
+return $this->merge(
+    ['id' => $this->resource->post_id],
+    $this->mergeWhen($this->resource->is_featured, ['featured' => true]),
+);
+```
+
+---
+
+## Dates
+
+### `date($date)`
+
+Transform a date to ISO 8601 string:
+
+```php
+'created_at' => $this->date($this->resource->created_at),
+'published_at' => $this->date($this->resource->published_at),
+```
+
+---
+
+## Additional Data
+
+### `additional($data)` and `with()`
+
+Add top-level data to the response:
+
+```php
+// In resource
+public function with(): array
+{
+    return ['timestamp' => now()->toIso8601String()];
+}
+
+// Or dynamically:
+$resource = (new PostResource($post))->additional(['view_count' => 100]);
+```
+
+---
+
+## Pagination
+
+### `paginator($paginator, $resourceClass)`
+
+Transform a Laravel paginator with meta:
+
+```php
+$paginator = PostModel::paginate(15);
+
+return $this->ok(
+    PostResource::paginator($paginator, PostResource::class),
+    'posts.loaded',
+);
+
+// Returns: { data: [...], meta: { current_page, last_page, per_page, total, from, to } }
+```
+
+### Manual pagination meta
+
+```php
+$paginator = PostModel::paginate(15);
+
+return $this->ok(
+    PostResource::collection($paginator->items(), PostResource::class),
+    meta: [
+        'current_page' => $paginator->currentPage(),
+        'last_page' => $paginator->lastPage(),
+        'total' => $paginator->total(),
+    ],
+);
+```
+
+---
+
+## ResourceCollection
+
+A collection class that wraps resources with optional pagination:
+
+```php
+use Pinoox\Component\Http\Api\ResourceCollection;
+
+class PostCollection extends ResourceCollection
+{
+    public $collects = PostResource::class;
+}
+
+// Usage in controller:
+return $this->resource(new PostCollection($posts));
+return $this->resource(PostCollection::fromPaginator($paginator, PostResource::class));
+```
+
+---
+
+## Proxy Access
+
+Access properties and methods directly on the underlying resource:
+
+```php
+public function toArray(): array
+{
+    // $this->title proxies to $this->resource->title
+    return [
+        'title' => $this->title,
+        'upper_title' => strtoupper($this->title), // calls method on resource
+    ];
+}
 ```
 
 ---
@@ -109,27 +320,12 @@ return $this->resource(new PayloadResource([
 
 ---
 
-## meta for pagination
-
-```php
-$paginator = PostModel::paginate(15);
-
-return $this->ok(
-    PostResource::collection($paginator->items(), PostResource::class),
-    meta: [
-        'current_page' => $paginator->currentPage(),
-        'last_page' => $paginator->lastPage(),
-        'total' => $paginator->total(),
-    ],
-);
-```
-
----
-
 ## Tips
 
 - Resources define **API shape only** — queries belong in Model/Controller.
 - Do not expose sensitive fields (`password`) in resources.
+- Use conditional methods to build flexible APIs based on request state.
+- Use `make()` factory for cleaner instantiation.
 - API controllers should extend `ApiController` and use `ok()` / `fail()` / `resource()`.
 
 ---

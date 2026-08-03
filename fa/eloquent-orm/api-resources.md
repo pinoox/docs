@@ -70,24 +70,235 @@ class PostController extends ApiController
 
 ---
 
-## collection
+## کارخانه استاتیک — `make()`
+
+ایجاد نمونه از resource با کلاس سفارشی:
 
 ```php
-PostResource::collection($items, PostResource::class);
-// آرایه‌ای از toArray() هر آیتم
+$resource = PostResource::make($post);
+$resource = PostResource::make($post, CustomPostResource::class);
 ```
 
 ---
 
-## PayloadResource (آرایه دلخواه)
+## فیلدهای شرطی
+
+### `when($condition, $value, $default)`
+
+شامل کردن فیلد به صورت شرطی — مقدار می‌تواند scalar، آرایه یا callable باشد:
 
 ```php
-use Pinoox\Component\Http\Api\PayloadResource;
+public function toArray(): array
+{
+    return [
+        'id' => $this->resource->post_id,
+        'title' => $this->resource->title,
+        'published_at' => $this->when(
+            $this->resource->status === 'published',
+            fn() => $this->resource->published_at?->toIso8601String()
+        ),
+        'is_featured' => $this->when($this->resource->is_featured, true, false),
+    ];
+}
+```
 
-return $this->resource(new PayloadResource([
-    'connected' => true,
-    'version' => '3.1',
-]));
+### `whenHas($key, $value)`
+
+شامل کردن فقط زمانی که کلید در resource وجود دارد:
+
+```php
+'description' => $this->whenHas('description', 'توضیحات سفارشی'),
+// یا استفاده از مقدار واقعی:
+'description' => $this->whenHas('description'),
+```
+
+### `whenNotNull($value)`
+
+شامل کردن فقط زمانی که مقدار null نیست:
+
+```php
+'category' => $this->whenNotNull($this->resource->category?->name),
+```
+
+---
+
+## روابط
+
+### `whenLoaded($relation, $value, $default)`
+
+شامل کردن رابطه فقط زمانی که eager-load شده:
+
+```php
+public function toArray(): array
+{
+    return [
+        'id' => $this->resource->post_id,
+        'author' => $this->whenLoaded('author', [
+            'id' => $this->resource->author->user_id,
+            'name' => $this->resource->author->full_name,
+        ]),
+        'comments' => $this->whenLoaded('comments'),
+    ];
+}
+```
+
+### `whenCounted($relation, $key)`
+
+شامل کردن تعداد رابطه در صورت لود شدن:
+
+```php
+'comments_count' => $this->whenCounted('comments'),
+'likes_count' => $this->whenCounted('likes', 'likes_count'),
+```
+
+### `includeRelation($relation, $callback)`
+
+شامل کردن رابطه با تبدیل اختیاری:
+
+```php
+'tags' => $this->includeRelation('tags', fn($tags) => $tags->pluck('name')),
+```
+
+---
+
+## کمک‌های آرایه
+
+### `merge(...$arrays)`
+
+ادغام آرایه‌ها و حذف مقادیر null:
+
+```php
+return $this->merge(
+    ['id' => $this->resource->post_id],
+    ['title' => $this->resource->title],
+    $this->when($this->resource->status === 'published', [
+        'published_at' => $this->resource->published_at?->toIso8601String(),
+    ])
+);
+```
+
+### `filter($data)`
+
+فیلتر کردن مقادیر null از آرایه:
+
+```php
+return $this->filter([
+    'id' => $this->resource->post_id,
+    'deleted_at' => $this->resource->deleted_at?->toIso8601String(),
+]);
+```
+
+### `mergeWhen($condition, $value)`
+
+شرطی ادغام کردن آرایه:
+
+```php
+return $this->merge(
+    ['id' => $this->resource->post_id],
+    $this->mergeWhen($this->resource->is_featured, ['featured' => true]),
+);
+```
+
+---
+
+## تاریخ‌ها
+
+### `date($date)`
+
+تبدیل تاریخ به رشته ISO 8601:
+
+```php
+'created_at' => $this->date($this->resource->created_at),
+'published_at' => $this->date($this->resource->published_at),
+```
+
+---
+
+## داده‌های اضافی
+
+### `additional($data)` و `with()`
+
+اضافه کردن داده‌های سطح بالا به پاسخ:
+
+```php
+// در resource
+public function with(): array
+{
+    return ['timestamp' => now()->toIso8601String()];
+}
+
+// یا پویا:
+$resource = (new PostResource($post))->additional(['view_count' => 100]);
+```
+
+---
+
+## صفحه‌بندی
+
+### `paginator($paginator, $resourceClass)`
+
+تبدیل paginator لاراول با meta:
+
+```php
+$paginator = PostModel::paginate(15);
+
+return $this->ok(
+    PostResource::paginator($paginator, PostResource::class),
+    'posts.loaded',
+);
+
+// برمی‌گرداند: { data: [...], meta: { current_page, last_page, per_page, total, from, to } }
+```
+
+### meta دستی صفحه‌بندی
+
+```php
+$paginator = PostModel::paginate(15);
+
+return $this->ok(
+    PostResource::collection($paginator->items(), PostResource::class),
+    meta: [
+        'current_page' => $paginator->currentPage(),
+        'last_page' => $paginator->lastPage(),
+        'total' => $paginator->total(),
+    ],
+);
+```
+
+---
+
+## ResourceCollection
+
+کلاسی برای مجموعه resourceها با صفحه‌بندی اختیاری:
+
+```php
+use Pinoox\Component\Http\Api\ResourceCollection;
+
+class PostCollection extends ResourceCollection
+{
+    public $collects = PostResource::class;
+}
+
+// استفاده در کنترلر:
+return $this->resource(new PostCollection($posts));
+return $this->resource(PostCollection::fromPaginator($paginator, PostResource::class));
+```
+
+---
+
+## دسترسی پروکسی
+
+دسترسی مستقیم به property و methodهای resource زیرین:
+
+```php
+public function toArray(): array
+{
+    // $this->title پروکسی می‌شود به $this->resource->title
+    return [
+        'title' => $this->title,
+        'upper_title' => strtoupper($this->title), // فراخوانی متد روی resource
+    ];
+}
 ```
 
 ---
@@ -109,27 +320,12 @@ return $this->resource(new PayloadResource([
 
 ---
 
-## meta برای pagination
-
-```php
-$paginator = PostModel::paginate(15);
-
-return $this->ok(
-    PostResource::collection($paginator->items(), PostResource::class),
-    meta: [
-        'current_page' => $paginator->currentPage(),
-        'last_page' => $paginator->lastPage(),
-        'total' => $paginator->total(),
-    ],
-);
-```
-
----
-
 ## نکات
 
 - Resource فقط **شکل API** را تعریف می‌کند — query در Model/Controller.
 - فیلدهای حساس (`password`) را در Resource expose نکنید.
+- از متدهای شرطی برای ساخت APIهای انعطاف‌پذیر بر اساس state درخواست استفاده کنید.
+- از کارخانه `make()` برای نمونه‌سازی تمیزتر استفاده کنید.
 - کنترلر API از `ApiController` ارث ببرد و `ok()` / `fail()` / `resource()` استفاده کند.
 
 ---
