@@ -26,12 +26,25 @@ Pinoox 3.x のルーティングには 2 つのレイヤーがあります: **Na
 
 ```php
 use function Pinoox\Router\{
-    get, post, put, patch, delete,
-    action, group, routes, collect, route
+    get, post, put, patch, delete, query,
+    options, head, purge, trace, connect, any,
+    route_match, action, group, collection, routes, collect, route
 };
 ```
 
-**`collection()`** 関数は pincore 3.x には存在しません。
+Use **`collection()`** to mount nested route files under a path prefix (optional shared flows).
+
+### Route facade (alternative)
+
+```php
+use Pinoox\Portal\Route;
+
+Route::get('/', '@welcome')->name('home');
+Route::any('/webhook', [WebhookController::class, 'handle'])->name('webhook');
+Route::match(['GET', 'POST'], '/form', 'submit')->name('form.submit');
+```
+
+> Do **not** use **`Pinoox\Portal\Router::get`** for route definitions. Use **`Pinoox\Router`** helpers or **`Pinoox\Portal\Route`** instead.
 
 ---
 
@@ -73,12 +86,51 @@ post('product', [ProductController::class, 'store'])->name('product.store');
 ## HTTP メソッド
 
 ```php
-use function Pinoox\Router\{get, post, put, patch, delete};
+use function Pinoox\Router\{
+    get, post, put, patch, delete, query,
+    options, head, purge, trace, connect, any, route_match
+};
 
 post('login', [AuthController::class, 'login'])->name('login');
 put('product/{id}', [ProductController::class, 'update'])->name('product.update');
 delete('product/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
+query('search', [SearchController::class, 'run'])->name('search');
+
+options('/api/preflight', [CorsController::class, 'preflight'])->name('cors.preflight');
+head('/status', [HealthController::class, 'head'])->name('health.head');
+trace('/debug', [DebugController::class, 'trace'])->name('debug.trace');
+connect('/tunnel', [TunnelController::class, 'connect'])->name('tunnel.connect');
+purge('/cache/{key}', [CacheController::class, 'purge'])->name('cache.purge');
 ```
+
+| Helper | HTTP method |
+|--------|-------------|
+| `get()` | GET |
+| `post()` | POST |
+| `put()` | PUT |
+| `patch()` | PATCH |
+| `delete()` | DELETE |
+| `query()` | QUERY (Pinoox extension) |
+| `options()` | OPTIONS |
+| `head()` | HEAD |
+| `purge()` | PURGE |
+| `trace()` | TRACE |
+| `connect()` | CONNECT |
+
+### Match multiple methods
+
+```php
+route_match(['GET', 'POST'], '/resource', [ResourceController::class, 'handle'])
+    ->name('resource.handle');
+```
+
+### Any method (all supported methods)
+
+```php
+any('/webhook', [WebhookController::class, 'handle'])->name('webhook');
+```
+
+In manifest/config: `'method' => 'any'`, `'all'`, or `'*'`.
 
 ---
 

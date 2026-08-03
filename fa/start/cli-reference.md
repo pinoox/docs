@@ -76,7 +76,7 @@ php pinoox help migrate
 | `migrate {package}` | migration (اپ، `platform`, `pincore`) |
 | `migrate:create` | فایل migration |
 | `migrate:status` / `migrate:rollback` | وضعیت / برگشت |
-| `seeder:run` | اجرای seeder |
+| `seeder:run` | اجرای seeder (`-c` نام فایل) |
 | `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patch](../advanced/patches.md) |
 | `query` | SQL خام (debug؛ `--dry-run` فقط چاپ بدون اجرا) |
 

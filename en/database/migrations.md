@@ -118,8 +118,10 @@ Pinoox still reads the old `apps/{package}/migrations/` folder, but **new** file
 | Type | Purpose | Command |
 |------|---------|---------|
 | Migration | Schema (CREATE/ALTER) | `php pinoox migrate {package}` |
-| Seeder | Initial data | `php pinoox seeder:run {package}` |
+| Seeder | Initial data (manual / explicit call) | `php pinoox seeder:run {package}` or `$this->seed()` |
 | Patch | One-time data change | `php pinoox patch:run {package}` |
+
+App install runs migrations and patches — **not** seeders. To seed on install, call `$this->seed('Name')` or `$this->seedAll()` from a migration (or patch). See [Factories and seeders](../eloquent-orm/factories.md#call-seeders-from-code).
 
 Full patch guide: [Patches (data updates)](../advanced/patches.md).
 

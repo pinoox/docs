@@ -77,7 +77,7 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | `migrate {package}` | Run migrations (app, `platform`, `pincore`) |
 | `migrate:create` | New migration file |
 | `migrate:status` / `migrate:rollback` | Status / rollback |
-| `seeder:run` | Run seeders |
+| `seeder:run` | Run seeders (`-c` file basename) |
 | `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patches](../advanced/patches.md) |
 | `query` | Raw SQL (debug; `--dry-run` to print without executing) |
 

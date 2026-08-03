@@ -49,7 +49,7 @@ action('welcome', [MainController::class, 'home']);
 get('/', '@welcome')->name('home');
 ```
 
-This pattern makes refactoring and testing easier.
+This pattern makes refactoring and testing easier. Route helpers cover all common HTTP methods (`get`, `post`, `put`, `patch`, `delete`, `query`, `options`, `head`, `purge`, `trace`, `connect`) plus `any()` for catch-all handlers.
 
 ---
 

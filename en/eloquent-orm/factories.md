@@ -105,20 +105,107 @@ for ($i = 1; $i <= 20; $i++) {
 
 ---
 
-## Run Seeders
+## Run Seeders (CLI)
+
+`-c` / `--class` matches the **file basename** (e.g. `PostSeeder`), not the anonymous class name.
 
 ```bash
 php pinoox seeder:run com_acme_blog
 php pinoox seeder:run com_acme_blog --class=PostSeeder
 php pinoox seeder:run com_acme_blog -c PostSeeder
+php pinoox seeder:run platform
 ```
+
+Pinx: `pinx seed` / `pinx seed -c PostSeeder`. Local `pinx setup` may run seeders; use `--skip-seed` to skip. **App install / update does not run seeders automatically.**
+
+---
+
+## Call Seeders From Code
+
+Use `Pinoox\Portal\Database\Seeder` (or `$this->seed()` / `$this->seedAll()` inside migrations and patches). Seeders are never auto-run on install — call them only when you need them.
+
+```php
+use Pinoox\Portal\Database\Seeder;
+
+Seeder::run('PostSeeder');                        // current package (PackageContext)
+Seeder::run('PostSeeder', 'com_acme_blog');        // another app
+Seeder::run(['RoleSeeder', 'PostSeeder']);         // several by basename
+Seeder::run(DatabaseSeeder::class);               // named class extending SeederBase
+Seeder::runAll();                                 // all seeders for current package
+Seeder::runAll('platform');                       // all platform seeders
+Seeder::runAll('com_acme_blog');
+```
+
+### Named class seeder
+
+Anonymous files (CLI stub) still work. You can also define a named class and call it with `::class`:
+
+```php
+namespace App\com_acme_blog\database\seeders;
+
+use Pinoox\Component\Database\Seeder\SeederBase;
+
+class DatabaseSeeder extends SeederBase
+{
+    public function run(): void
+    {
+        $this->call([
+            RoleSeeder::class,
+            PostSeeder::class,
+        ]);
+    }
+}
+
+// migration / patch / anywhere:
+Seeder::run(DatabaseSeeder::class);
+$this->seed(DatabaseSeeder::class);
+```
+
+Named classes must be autoloadable (PSR-4) or required before `Seeder::run()`. They do not need to live under `database/seeders/` for `::class` calls; `runAll()` / CLI still load that folder only.
+
+### From a migration
+
+```php
+public function up(): void
+{
+    // schema...
+    $this->seed('GatewaySeeder');
+    // or every seeder for this package:
+    // $this->seedAll();
+}
+```
+
+### From a patch
+
+```php
+public function up(): void
+{
+    $this->seed('GatewaySeeder');
+    // $this->seedAll('com_other_app');
+}
+```
+
+### From another seeder
+
+```php
+public function run(): void
+{
+    $this->call([
+        'RoleSeeder',           // file basename
+        'UserSeeder',
+        // NamedClassSeeder::class,  // also supported when it extends SeederBase
+    ]);
+}
+```
+
+Prefer putting heavy logic in a service (idempotent, e.g. `importIfEmpty`) and calling that from both the seeder and the migration.
 
 ---
 
 ## Recommended Order
 
 1. `php pinoox migrate com_acme_blog`
-2. `php pinoox seeder:run com_acme_blog`
+2. Seed only if needed: call from migration/patch, or `php pinoox seeder:run com_acme_blog`
 
 ---
 
@@ -126,6 +213,7 @@ php pinoox seeder:run com_acme_blog -c PostSeeder
 
 - Only seed essential data such as roles and default settings.
 - Guard fake/dev data with `APP_ENV`.
+- Do not rely on install to seed — wire required bootstrap data in a migration or patch explicitly.
 
 ```php
 public function run(): void
@@ -146,6 +234,7 @@ public function run(): void
 |--------|-------|
 | Initial or sample data | One-time fix for existing data |
 | `seeder:run` is repeatable with caution | `patch:run` is tracked once |
+| Not run on app install | Run on install/update (unless skipped) |
 
 ---
 

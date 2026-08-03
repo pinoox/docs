@@ -62,8 +62,8 @@ return new class extends SeederBase
 public function run(): void
 {
     $this->call([
-        RoleSeeder::class,
-        UserSeeder::class,
+        'RoleSeeder',
+        'UserSeeder',
     ]);
 
     // données dépendantes après les utilisateurs
@@ -94,7 +94,40 @@ for ($i = 1; $i <= 20; $i++) {
 php pinoox seeder:run com_acme_blog
 php pinoox seeder:run com_acme_blog --class=PostSeeder
 php pinoox seeder:run com_acme_blog -c PostSeeder
+php pinoox seeder:run platform
 ```
+
+`-c` matches the **file basename** (e.g. `PostSeeder`). App install does **not** auto-run seeders.
+
+---
+
+## Call Seeders From Code
+
+Use `Pinoox\Portal\Database\Seeder`, or `$this->seed()` / `$this->seedAll()` in migrations and patches.
+
+```php
+use Pinoox\Portal\Database\Seeder;
+
+Seeder::run('PostSeeder');
+Seeder::run('PostSeeder', 'com_acme_blog');
+Seeder::run(['RoleSeeder', 'PostSeeder']);
+Seeder::run(DatabaseSeeder::class);
+Seeder::runAll();
+Seeder::runAll('platform');
+```
+
+```php
+// migration / patch
+$this->seed('GatewaySeeder');
+$this->seedAll();
+```
+
+```php
+// from another seeder
+$this->call(['RoleSeeder', 'UserSeeder']);
+```
+
+See English docs: [Factories and seeders](../../en/eloquent-orm/factories.md#call-seeders-from-code).
 
 ---
 

@@ -13,11 +13,14 @@ use Pinoox\Portal\View;
 use Pinoox\Portal\Url;
 use Pinoox\Portal\Path;
 use Pinoox\Portal\Lang;
+use Pinoox\Portal\Route;
 use Pinoox\Portal\Validation;
 use Pinoox\Portal\Database\DB;
 use Pinoox\Portal\Date;
 
 View::render('home', $data);
+Route::get('/', '@welcome')->name('home');
+Route::any('/webhook', 'handle')->name('webhook');
 Date::display($item->created_at, 'datetime');
 Url::link('products');
 Url::forApp('com_acme_shop');

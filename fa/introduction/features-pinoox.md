@@ -49,7 +49,7 @@ action('welcome', [MainController::class, 'home']);
 get('/', '@welcome')->name('home');
 ```
 
-این الگو refactor و تست را ساده‌تر می‌کند.
+این الگو refactor و تست را ساده‌تر می‌کند. helperهای route همه متدهای رایج HTTP (`get`, `post`, `put`, `patch`, `delete`, `query`, `options`, `head`, `purge`, `trace`, `connect`) و همچنین `any()` برای handler عمومی را پوشش می‌دهند.
 
 ---
 

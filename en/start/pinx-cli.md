@@ -253,7 +253,7 @@ Run `pinx list` for a sectioned overview. Shorthand aliases appear in brackets.
 | `migrate:rollback` | `migrate:rb` | Rollback last batch (`--ignore-fk`) |
 | `migrate:create <name>` | `migrate:cr` | Create migration file |
 | `migrate:platform` | `migrate:pl` | Platform migrations only |
-| `seeder:run` | `seed` | Run seeders (`-c` class) |
+| `seeder:run` | `seed` | Run seeders (`-c` file basename) |
 
 ### Patches
 

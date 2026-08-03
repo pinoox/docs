@@ -176,6 +176,52 @@ group(['prefix' => 'account', 'flows' => ['auth']], function () {
 
 ---
 
+## Rate limiting (`throttle:…`)
+
+Core alias **`throttle`** accepts a named limiter after a colon (see [Rate Limiter](../advanced/rate-limiter.md)):
+
+```php
+post('login', [AuthController::class, 'login'])
+    ->flow('throttle:login');
+
+group(['flows' => ['auth', 'throttle:api']], function () {
+    // ...
+});
+```
+
+Define the named limiter with `RateLimiter::define(...)` before requests hit the route.
+
+---
+
+## CORS (`cors:…`)
+
+Core alias **`cors`** accepts a policy name after a colon (see [CORS](../advanced/cors.md)):
+
+```php
+group(['flows' => ['cors:api', 'auth']], function () {
+    // ...
+});
+```
+
+Register policies with `Cors::define(...)`. Preflight `OPTIONS` returns **204** without running the controller.
+
+---
+
+## Route Resolver (`resolve`)
+
+Core alias **`resolve`** runs registered parameter bindings before the controller (see [Route Resolver](../advanced/route-resolver.md)):
+
+```php
+use Pinoox\Portal\Route;
+
+Route::resolve('user', User::class);
+
+get('users/{user}', [UserController::class, 'show'])
+    ->flow(['resolve', 'auth']);
+```
+
+---
+
 ## Stopping the chain
 
 If a Flow returns an HTTP response (redirect, error JSON, etc.), the controller action does not run.
@@ -196,6 +242,9 @@ If a Flow returns an HTTP response (redirect, error JSON, etc.), the controller 
 - [Router](./routers.md)
 - [Controllers](./controllers.md)
 - [Request](./requests.md)
+- [Rate Limiter](../advanced/rate-limiter.md)
+- [CORS](../advanced/cors.md)
+- [Route Resolver](../advanced/route-resolver.md)
 - [Project structure](../start/structure.md)
 
 ---

@@ -228,7 +228,7 @@ pinx doctor --no-fixes      # عدم نمایش دستورهای پیشنهاد�
 | `migrate:rollback` | `migrate:rb` | بازگشت آخرین batch (`--ignore-fk`) |
 | `migrate:create <name>` | `migrate:cr` | ساخت فایل مایگریشن |
 | `migrate:platform` | `migrate:pl` | فقط مایگریشن‌های platform |
-| `seeder:run` | `seed` | اجرای seeder ها (`-c` کلاس) |
+| `seeder:run` | `seed` | اجرای seeder ها (`-c` نام فایل) |
 
 ### پچ‌ها
 
