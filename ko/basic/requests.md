@@ -77,7 +77,7 @@ base Controller는 **`$this->validate()`**와 **`$this->validation()`**도 제�
 ```php
 $file = $request->file('avatar');
 
-$uploader = $request->store('avatar', 'avatars'); // → storage/apps/{package}/avatars
+$uploader = $request->store('avatar', 'avatars'); // → storage/local/{package}/avatars
 if ($uploader) {
     $path = $uploader->getPath();
 }

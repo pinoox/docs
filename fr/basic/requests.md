@@ -77,7 +77,7 @@ Le contrôleur de base fournit aussi **`$this->validate()`** et **`$this->valida
 ```php
 $file = $request->file('avatar');
 
-$uploader = $request->store('avatar', 'avatars'); // → storage/apps/{package}/avatars
+$uploader = $request->store('avatar', 'avatars'); // → storage/local/{package}/avatars
 if ($uploader) {
     $path = $uploader->getPath();
 }

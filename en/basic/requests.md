@@ -77,9 +77,9 @@ The base controller also provides **`$this->validate()`** and **`$this->validati
 ```php
 $file = $request->file('avatar');
 
-$uploader = $request->store('avatar', 'avatars'); // → storage/apps/{package}/avatars
+$uploader = $request->store('avatar', 'avatars', 'public'); // → storage/public/{package}/avatars
 if ($uploader) {
-    $path = $uploader->getPath();
+    $result = $uploader->save();
 }
 ```
 

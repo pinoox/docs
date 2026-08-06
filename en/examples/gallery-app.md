@@ -42,7 +42,7 @@ return [
     ],
     'filesystem' => [
         'disk' => 'local',
-        'default_access' => 'public',
+        'hash_length' => 8,
         'thumb_width' => 320,
         'thumb_height' => 320,
     ],
@@ -194,7 +194,8 @@ class GalleryController extends Controller
         ]);
 
         $result = File::upload('photo')
-            ->to('gallery')   // → storage/apps/com_acme_gallery/gallery
+            ->to('gallery')   // → storage/public/com_acme_gallery/gallery
+            ->public()
             ->group('gallery')
             ->thumb()
             ->maxSize('4MB')

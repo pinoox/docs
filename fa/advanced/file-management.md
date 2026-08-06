@@ -2,7 +2,24 @@
 
 [← بازگشت به فهرست](../README.md)
 
-آپلود و ذخیره فایل در پینوکس 3.x از یک Portal واحد انجام می‌شود: **`Pinoox\Portal\File`**. متادیتا در `pincore_file` (یا scope مشترک transport) و فایل فیزیکی روی دیسک (local، S3، …) نگه‌داری می‌شود.
+آپلود و ذخیره‌سازی از **`Pinoox\Portal\File`** انجام می‌شود. متادیتا در جدول فایل (platform یا transport اپ) و بایت‌ها روی **دیسک** هستند.
+
+```text
+storage/                      ← ریشه (همیشه از وب deny)
+├── local/{package}/…         ← دیسک `local`  (protect: lock)  → /file/{hash}
+├── public/{package}/…        ← دیسک `public` (protect: unlock) → /storage/public/…
+└── tmp/                      ← دیسک `temp`   (protect: lock)
+```
+
+| فراخوانی | دیسک | `file_access` داخلی | URL |
+|------|------|------------------------|-----|
+| `->public()` | `public` | `public` | `/storage/public/{package}/…` |
+| `->private()` | `local` (یا `filesystem.disk` اپ) | `private` | `/file/{hash}` |
+| `->disk('s3')` | `s3` | `private` | `/file/{hash}` (یا URL ریموت) |
+
+بدون `public()` / `private()`، حالت فقط از **`filesystem.disk`** می‌آید: `public` ⇒ آپلود عمومی؛ هر دیسک دیگر ⇒ خصوصی.
+
+`access()` فقط برای موارد خاص است (مثلاً لینک اشتراکی روی دیسک خصوصی). ترجیح با `disk()` / `public()` / `private()`.
 
 ---
 
@@ -14,46 +31,111 @@ use Pinoox\Portal\File;
 
 | نیاز | API |
 |------|-----|
-| آپلود + رکورد DB + URL | `File::upload(...)->save()` |
-| جستجو / حذف / URL | `File::find()`, `File::url()`, `File::remove()` |
-| دسترسی خام به دیسک | `File::storage()->put(...)` |
+| آپلود + DB + URL | `File::upload(...)->save()` |
+| پیدا کردن / حذف / URL | `File::find()`, `File::url()`, `File::remove()` |
+| URL موقت امضاشده | `File::temporaryUrl($file, 1800)` |
+| I/O خام دیسک | `File::storage()->put(...)` |
 
-برای آپلود کاربر از `Storage::` مستقیم استفاده نکنید — prefix، دیسک و URL با `File::` یکپارچه می‌ماند.
+برای آپلود کاربر اگر رکورد DB، `hash_id` و URL یکدست می‌خواهید، مستقیم از `Storage::` استفاده نکنید — از `File::` استفاده کنید.
 
 ---
 
-## تنظیم app.php
+## app.php
 
 ```php
 return [
     'transport' => [
-        'file_storage' => 'platform',   // یا 'local'
+        'file_storage' => 'platform', // یا 'local'
     ],
     'filesystem' => [
-        'disk' => 'local',
-        'default_access' => 'public',
+        'disk' => 'local',            // دیسک public ⇒ آپلود عمومی؛ وگرنه خصوصی
+        'hash_length' => 8,           // طول hash_id (۴–۵۰)
+        'file_policy' => 'owner',     // سیاست پیش‌فرض دانلود خصوصی
+        'groups' => [
+            // 'avatar' => 'public',
+            // 'docs' => 'login',
+            // 'admin' => 'role:admin',
+            // 'staff' => 'roles:admin,editor',
+            // 'reports' => 'permission:reports.view',
+            // 'custom' => 'callback',
+        ],
         'thumb_width' => 512,
         'thumb_height' => 512,
     ],
 ];
 ```
 
-دیسک‌های global در `config/filesystems.config.php` و `.env`:
+### سیاست‌های دانلود خصوصی
 
-```env
-FILESYSTEM_DISK=local
-AWS_ACCESS_KEY_ID=...
-AWS_BUCKET=...
-AWS_URL=https://cdn.example.com
+| سیاست | چه کسی از `/file/{hash}` می‌تواند بگیرد |
+|--------|-------------------------------------|
+| `owner` | مالک لاگین‌شده (`user_id`) |
+| `login` / `auth` | هر کاربر لاگین‌شده |
+| `public` | همه (اگر روی دیسک public نباشد، همچنان از dispatcher) |
+| `callback` | فقط اگر `FileDispatcher::auth` / `authFor` اجازه دهد |
+| `role:admin` | کاربر با آن `role_key` / `group_key` |
+| `roles:a,b` | هر نقش لیست‌شده |
+| `permission:x.y` | `Access::can(...)` |
+| `permissions:a,b` | هر permission لیست‌شده |
+
+اولویت: امضای موقت معتبر → دیسک public / `file_access=public` → callback پکیج → `groups[file_group]` → `file_policy`.
+
+```php
+// boot.php — گیت سفارشی اختیاری
+use Pinoox\Component\File\FileDispatcher;
+
+FileDispatcher::auth(function ($file, $user) {
+    return $user && $user->user_id === $file->user_id;
+});
 ```
 
 ---
 
-## آپلود با رکورد دیتابیس
+## دیسک‌های سراسری (`filesystems.config.php`)
+
+```php
+'local' => [
+    'driver' => 'local',
+    'root' => '~storage/local',
+    'protect' => 'lock',          // اگر حذف شود هم پیش‌فرض lock است
+],
+'public' => [
+    'driver' => 'local',
+    'root' => '~storage/public',
+    'protect' => 'unlock',        // برای سرو HTTP باید صریح باشد
+    'url' => rtrim(env('APP_URL'), '/') . '/storage/public',
+],
+'temp' => [
+    'driver' => 'local',
+    'root' => '~storage/tmp',
+    'protect' => 'lock',
+],
+```
+
+`protect` پیش‌فرض **`lock`** است. فقط `unlock` پوشه را برای وب باز می‌کند (stubهای Apache/IIS؛ Nginx/Caddy راهنما هستند).
+
+```env
+FILESYSTEM_DISK=local
+FILESYSTEM_LOCAL_ROOT=~storage/local
+FILESYSTEM_PUBLIC_ROOT=~storage/public
+FILESYSTEM_TEMP_ROOT=~storage/tmp
+FILESYSTEM_PUBLIC_LINK=public/storage
+FILE_HASH_LENGTH=8
+FILE_LOOKUP_CACHE_TTL=60
+FILE_XSENDFILE=auto
+FILE_XACCEL=false
+```
+
+---
+
+## آپلود (با رکورد DB)
+
+**disk** به سبک لاراول منبع حقیقت است. `public()` / `private()` میانبرند.
 
 ```php
 $result = File::upload('avatar')
-    ->to('avatar')                  // → storage/apps/{package}/avatar
+    ->to('avatar')                  // → storage/public/{package}/avatar
+    ->public()                      // یا ->disk('public')
     ->group('avatar')
     ->thumb()
     ->maxSize('2MB')
@@ -62,9 +144,21 @@ $result = File::upload('avatar')
 
 if ($result->success) {
     $fileId = $result->id;
-    $url = $result->url;
+    $url = $result->url;            // /storage/public/...
     $thumb = $result->thumb;
 }
+```
+
+فایل خصوصی (File Dispatcher):
+
+```php
+$result = File::upload('invoice')
+    ->to('invoices')                // → storage/local/{package}/invoices
+    ->private()                     // یا ->disk('local')
+    ->group('invoice')
+    ->save();
+
+// URL: /file/{hash_id}   (thumb: /file/{hash_id}/thumb)
 ```
 
 ---
@@ -72,29 +166,31 @@ if ($result->success) {
 ## از Request
 
 ```php
-$result = $request->store('photo', 'gallery')
+// آرگومان دوم = نام دیسک (Laravel-style)، نه access
+$result = $request->file('photo')->store('gallery', 'public')
     ->group('gallery')
     ->thumb(256, 256)
     ->save();
+
+// میانبر: 'private' → دیسک خصوصی؛ بدون disk → filesystem.disk اپ
+$request->store('doc', 'invoices', 'private')->save();
 ```
 
 ---
 
-## اتصال به مدل
+## اتصال / جایگزینی روی مدل
 
 ```php
 $result = File::upload('cover')
     ->to('posts')
+    ->private()
     ->group('post_cover')
     ->attach($post, 'cover_id')
     ->save();
-```
 
-جایگزینی فایل قبلی:
-
-```php
 $result = File::upload('avatar')
     ->to('avatar')
+    ->public()
     ->group('avatar')
     ->replaceOn($user, 'avatar_id')
     ->thumb()
@@ -118,12 +214,13 @@ if ($result->success) {
 
 ---
 
-## خواندن و حذف
+## خواندن، URL موقت، حذف
 
 ```php
-$record = File::find($fileId);
+$record = File::find($fileId);           // file_id یا hash_id
 $url = File::url($fileId);
 $thumb = File::thumb($fileId);
+$temp = File::temporaryUrl($fileId, 1800); // امضای S3 یا /file/{hash}?expires=&signature=
 $list = File::listByGroup('avatar');
 
 File::remove($fileId);
@@ -131,32 +228,33 @@ File::remove($fileId);
 
 ---
 
-## UploadBuilder — متدهای مهم
+## UploadBuilder
 
 | متد | توضیح |
-|-----|-------|
-| `to($dir)` | پوشه مقصد |
-| `group($name)` | گروه منطقی در DB |
-| `thumb($w, $h)` | بندانگشتی تصویر |
-| `maxSize('2MB')` | حداکثر حجم |
-| `extensions('jpg,png')` | پسوند مجاز |
-| `disk('s3')` | override دیسک |
+|--------|-------------|
+| `to($dir)` | پوشه زیر ریشه دیسک پکیج |
+| `disk('public'\|'local'\|'s3')` | دیسک هدف (access داخلی را ست می‌کند) |
+| `public()` / `private()` | میانبر دیسک عمومی / خصوصی |
+| `group($name)` | گروه منطقی (سیاست‌های `filesystem.groups`) |
+| `thumb($w, $h)` | تصویر بندانگشتی |
+| `maxSize('2MB')` | سقف حجم |
+| `extensions('jpg,png')` | پسوندهای مجاز |
 | `attach($model, $column)` | ست کردن FK بعد از آپلود |
-| `replaceOn($model, $column)` | حذف قبلی + آپلود جدید |
-| `save()` | اجرا → `UploadResult` |
+| `replaceOn($model, $column)` | حذف فایل قبلی + آپلود |
+| `access($mode)` | override مورد خاص |
+| `diskOnly()` | بدون رکورد DB |
+| `save()` | → `UploadResult` |
 
----
-
-## UploadResult
+### UploadResult
 
 ```php
-$result->success;   // bool
-$result->id;        // file_id
-$result->url;       // file_link
-$result->thumb;     // thumb_link
-$result->path;      // مسیر مطلق
-$result->record;    // FileModel
-$result->error;     // پیام خطا
+$result->success; // bool
+$result->id;      // file_id
+$result->url;
+$result->thumb;
+$result->path;
+$result->record;  // FileModel
+$result->error;
 ```
 
 ---
@@ -167,61 +265,46 @@ $result->error;     // پیام خطا
 // app.php
 'filesystem' => ['disk' => 's3'],
 
-// یا per-upload
+// یا per upload
 File::upload('doc')->to('docs')->disk('s3')->save();
-```
 
-فایل‌های private روی S3:
-
-```php
-$url = File::storage('s3')->temporaryUrl('private/doc.pdf', now()->addHour());
+$url = File::temporaryUrl($file, now()->addHour());
+// native:
+$url = File::storage('s3')->temporaryUrl('path/doc.pdf', now()->addHour());
 ```
 
 ---
 
-## نکات
-
-- قبل از `File::upload()` اعتبارسنجی را در FormRequest انجام دهید.
-- `user_id` آپلودکننده از `Auth::id()` پر می‌شود.
-- با `transport.file_storage => platform` فایل‌ها بین اپ‌های پلتفرم مشترک می‌مانند.
-
----
-
-## CLI (ترمینال)
-
-| دستور | کاربرد |
-|--------|--------|
-| `file:list {package}` | لیست با وضعیت storage |
-| `file:show {file}` | جزئیات با `file_id` یا `hash_id` |
-| `file:update {file}` | metadata، access، نام |
-| `file:delete {file}` | پیش‌فرض: ردیف DB **و** storage |
-| `file:purge` | پاکسازی گروهی |
-
-حالت‌های `file:delete`:
-
-| پرچم | اثر |
-|------|-----|
-| *(پیش‌فرض)* | حذف ردیف + storage (از hook مدل) |
-| `--db-only` | فقط ردیف DB |
-| `--storage-only` | فقط فایل روی disk/S3 |
-| `--force` | بدون تأیید |
+## CLI
 
 ```bash
+php pinoox storage:setup
+php pinoox storage:lock local
+php pinoox storage:unlock public
+php pinoox storage:link
+php pinoox storage:unlink
+
 php pinoox file:list com_my_shop
-php pinoox file:delete 12 --storage-only --force
+php pinoox file:show a1b2c3d4
+php pinoox file:delete 12 --force
+php pinoox file:purge com_my_shop --group=avatar --force
 ```
 
-Alias: `files` → `file:list`.
+| دستور | کاربرد |
+|---------|---------|
+| `storage:setup` | deny ریشه + `protect` هر دیسک |
+| `storage:lock [disk]` | قفل اجباری (بدون disk → ریشه storage) |
+| `storage:unlock [disk]` | باز کردن اجباری (بدون disk → public) |
+| `storage:link` / `unlink` | symlink از `filesystems.links` |
+| `file:list` / `show` / `update` / `delete` / `purge` | مدیریت `FileModel` و فایل‌ها |
 
-مرجع: [CLI](../start/cli-reference.md).
+همچنین [مرجع CLI](../start/cli-reference.md).
 
 ---
 
----
+## فایل‌های بزرگ (Pinion)
 
-## فایل‌های بزرگ
-
-برای فایل‌هایی که از `upload_max_filesize` بیشترند یا نیاز به resume دارند، از پروتکل **[Pinion](./pinion.md)** استفاده کنید. chunkها در `storage/pinion` نگه داشته می‌شوند و در `complete` به دیسک اپ (local یا S3) منتقل می‌شوند.
+برای resume/progress بالاتر از `upload_max_filesize` از **[Pinion](./pinion.md)** استفاده کنید. چانک‌ها زیر `storage/pinion`؛ در `complete`، `StorageCompletion` با `disk` / `public()` / `private()` از طریق `File` منتشر می‌کند.
 
 ```javascript
 import { uploadFile } from '@pinooxhq/pinion-client';
@@ -232,14 +315,37 @@ await uploadFile(file, {
 });
 ```
 
+```php
+protected function pinionDefaults(): array
+{
+    return [
+        'destination' => 'uploads/media',
+        'disk' => 'public',
+        'mode' => 'auto',
+        'record' => true,
+        'group' => 'media',
+    ];
+}
+```
+
 ---
 
-## مستندات مرتبط
+## نکات
 
-- [پروتکل Pinion](./pinion.md)
-- [مدیریت کاربران](./user-management.md)
-- [ترنسپورت — Transport](./transport.md)
-- [اعتبارسنجی — Validation](../basic/validation.md)
+- قبل از `File::upload()` در FormRequest اعتبارسنجی کنید.
+- `user_id` از `Auth::id()` پر می‌شود.
+- `transport.file_storage => platform` جدول فایل را بین اپ‌های platform مشترک می‌کند.
+- بعد از دیپلوی `php pinoox storage:setup` را اجرا کنید تا stubهای `protect` ساخته شوند.
+- URL عمومی `/storage/public/{package}/…` است (یکی با پوشه دیسک؛ Apache/PHP همان مسیر را مستقیم سرو می‌کنند).
+
+---
+
+## مرتبط
+
+- [Pinion](./pinion.md)
+- [مدیریت کاربر](./user-management.md)
+- [Transport](./transport.md)
+- [اعتبارسنجی](../basic/validation.md)
 - [نمونه گالری تصاویر](../examples/gallery-app.md)
 
 ---
