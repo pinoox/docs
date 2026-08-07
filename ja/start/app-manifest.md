@@ -68,7 +68,7 @@
 | `database` | DB 接続の上書き |
 | `table.prefix` | テーブルプレフィックス |
 | `transport.user` / `file_storage` / `access` | プリセットまたは詳細キー |
-| `filesystem` | disk、thumbs、access |
+| `filesystem` | disk, hash_length, dispatcher, file_policy, groups, thumbs |
 
 ---
 

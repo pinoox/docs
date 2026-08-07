@@ -68,7 +68,7 @@ Veja [Flows](../basic/flows.md), [Gerenciamento de usuários](../advanced/user-m
 | `database` | Sobrescrita de conexão DB |
 | `table.prefix` | Prefixo de tabela |
 | `transport.user` / `file_storage` / `access` | Presets ou chaves granulares |
-| `filesystem` | disk, thumbs, access |
+| `filesystem` | disk, hash_length, dispatcher, file_policy, groups, thumbs |
 
 ---
 

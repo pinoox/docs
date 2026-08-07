@@ -68,7 +68,7 @@
 | `database` | تجاوز اتصال قاعدة البيانات |
 | `table.prefix` | بادئة الجداول |
 | `transport.user` / `file_storage` / `access` | إعدادات مسبقة أو مفاتيح تفصيلية |
-| `filesystem` | القرص (disk)، المصغّرات، الوصول |
+| `filesystem` | disk, hash_length, dispatcher, file_policy, groups, thumbs |
 
 ---
 

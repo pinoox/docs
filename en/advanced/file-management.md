@@ -66,6 +66,7 @@ return [
     'filesystem' => [
         'disk' => 'local',            // default upload disk when you omit public()/private()
         'hash_length' => 8,           // hash_id length (4–50)
+        'dispatcher' => 'file',       // private URL prefix → /file/{hash} (e.g. 'direct', 'link/to')
         'file_policy' => 'owner',     // default private-download policy
         'groups' => [
             'avatar' => 'public',                 // anyone via /file/{hash} if still private disk
@@ -79,6 +80,19 @@ return [
     ],
 ];
 ```
+
+### Custom dispatcher URL prefix
+
+Private downloads default to `/file/{hash}`. Override per app (or globally via `FILE_DISPATCHER` / `~filesystems.dispatcher`):
+
+```php
+'filesystem' => [
+    'dispatcher' => 'direct',   // → /direct/{hash} and /direct/{hash}/thumb
+    // 'dispatcher' => 'link/to', // → /link/to/{hash}
+],
+```
+
+`File::url()` / temporary URLs use the **owning package’s** prefix (`file.app`). Segments may contain letters, digits, `_`, `-`, and `/` (nested prefixes).
 
 ### Private download policies
 
@@ -155,6 +169,7 @@ FILESYSTEM_PUBLIC_ROOT=~storage/public
 FILESYSTEM_TEMP_ROOT=~storage/tmp
 FILESYSTEM_PUBLIC_URL=   # defaults to {APP_URL}/storage/public
 FILE_HASH_LENGTH=8
+FILE_DISPATCHER=file     # private download prefix: /file/{hash}
 FILE_LOOKUP_CACHE_TTL=60
 ```
 

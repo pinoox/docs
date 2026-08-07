@@ -68,7 +68,7 @@
 | `database` | Переопределение подключения к БД |
 | `table.prefix` | Префикс таблиц |
 | `transport.user` / `file_storage` / `access` | Пресеты или детальные ключи |
-| `filesystem` | disk, миниатюры, доступ |
+| `filesystem` | disk, hash_length, dispatcher, file_policy, groups, thumbs |
 
 ---
 

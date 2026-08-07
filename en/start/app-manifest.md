@@ -69,7 +69,7 @@ See [Flows](../basic/flows.md), [User management](../advanced/user-management.md
 | `database` | DB connection override |
 | `table.prefix` | Table prefix |
 | `transport.user` / `file_storage` / `access` | Presets or granular keys |
-| `filesystem` | disk, thumbs, access |
+| `filesystem` | disk, hash_length, dispatcher, file_policy, groups, thumbs |
 
 ---
 

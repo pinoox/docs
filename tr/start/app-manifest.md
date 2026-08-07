@@ -68,7 +68,7 @@ Bkz. [Flow'lar](../basic/flows.md), [Kullanıcı yönetimi](../advanced/user-man
 | `database` | DB bağlantı geçersiz kılma |
 | `table.prefix` | Tablo öneki |
 | `transport.user` / `file_storage` / `access` | Ön ayarlar veya ayrıntılı anahtarlar |
-| `filesystem` | disk, thumbs, access |
+| `filesystem` | disk, hash_length, dispatcher, file_policy, groups, thumbs |
 
 ---
 

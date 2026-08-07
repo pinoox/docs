@@ -69,7 +69,7 @@
 | `database` | override اتصال DB |
 | `table.prefix` | prefix جداول |
 | `transport.user` / `file_storage` / `access` | preset یا granular |
-| `filesystem` | disk، thumb، access |
+| `filesystem` | disk, hash_length, dispatcher, file_policy, groups, thumbs |
 
 ---
 

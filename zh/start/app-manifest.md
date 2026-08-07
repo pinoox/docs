@@ -68,7 +68,7 @@
 | `database` | 覆盖数据库连接 |
 | `table.prefix` | 表前缀 |
 | `transport.user` / `file_storage` / `access` | 预设值或细粒度键 |
-| `filesystem` | disk、缩略图、访问权限 |
+| `filesystem` | disk, hash_length, dispatcher, file_policy, groups, thumbs |
 
 ---
 

@@ -66,6 +66,7 @@ return [
     'filesystem' => [
         'disk' => 'local',            // دیسک پیش‌فرض وقتی public()/private() ننویسید
         'hash_length' => 8,           // طول hash_id (۴–۵۰)
+        'dispatcher' => 'file',       // پیشوند URL خصوصی → /file/{hash} (مثلاً 'direct' یا 'link/to')
         'file_policy' => 'owner',     // سیاست پیش‌فرض دانلود خصوصی
         'groups' => [
             'avatar' => 'public',
@@ -79,6 +80,19 @@ return [
     ],
 ];
 ```
+
+### پیشوند سفارشی URL دیسپچر
+
+دانلود خصوصی به‌طور پیش‌فرض `/file/{hash}` است. در هر اپ (یا سراسری با `FILE_DISPATCHER` / `~filesystems.dispatcher`) عوض کنید:
+
+```php
+'filesystem' => [
+    'dispatcher' => 'direct',   // → /direct/{hash} و /direct/{hash}/thumb
+    // 'dispatcher' => 'link/to', // → /link/to/{hash}
+],
+```
+
+`File::url()` و URL موقت از پیشوند **پکیج مالک** فایل (`file.app`) استفاده می‌کنند.
 
 ### سیاست‌های دانلود خصوصی
 
@@ -145,6 +159,7 @@ FILESYSTEM_PUBLIC_ROOT=~storage/public
 FILESYSTEM_TEMP_ROOT=~storage/tmp
 FILESYSTEM_PUBLIC_URL=
 FILE_HASH_LENGTH=8
+FILE_DISPATCHER=file
 ```
 
 بعد از تغییر دیسک‌ها یا دیپلوی:
