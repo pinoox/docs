@@ -5,6 +5,8 @@
 Pinoox supports Laravel-style model factories in `apps/{package}/database/factories/`.
 Use factories for repeatable test/dev records and seeders for initial or demo data.
 
+The recommended default is a named class extending `Factory` (what `factory:create` generates).
+
 ---
 
 ## Create a Factory
@@ -51,6 +53,32 @@ PostModel::factory()->state(['status' => 'published'])->create();
 
 Factories also support `sequence()`, `raw()`, `afterMaking()`, and `afterCreating()`.
 If `fakerphp/faker` is installed, call `$this->faker()` inside `definition()`.
+
+### Optional: anonymous `FactoryBase`
+
+Same idea as seeders — you may return an anonymous class extending `FactoryBase` instead of a named class:
+
+```php
+namespace App\com_acme_blog\database\factories;
+
+use App\com_acme_blog\Model\PostModel;
+use Pinoox\Component\Database\Factories\FactoryBase;
+
+return new class extends FactoryBase
+{
+    protected ?string $model = PostModel::class;
+
+    public function definition(): array
+    {
+        return [
+            'title' => 'Sample post',
+            'status' => 'draft',
+        ];
+    }
+};
+```
+
+`Model::factory()` resolves named classes first, then loads anonymous factory files from `database/factories/`.
 
 ---
 
@@ -241,6 +269,7 @@ public function run(): void
 ## Tips
 
 - Keep factories focused on one model's default attributes.
+- Prefer `class PostFactory extends Factory` (CLI default); use `FactoryBase` anonymous files only if you want the seeder-style pattern.
 - Use factory states for variants such as `published` or `admin`.
 - Write seeders idempotently when they may run more than once.
 - Do not commit real credentials in seeders or factories.
