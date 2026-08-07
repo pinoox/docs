@@ -4,22 +4,34 @@
 
 آپلود و ذخیره‌سازی از **`Pinoox\Portal\File`** انجام می‌شود. متادیتا در جدول فایل (platform یا transport اپ) و بایت‌ها روی **دیسک** هستند.
 
+## مفاهیم (نقشه سریع)
+
+| مفهوم | یعنی چه |
+|---------|------------|
+| **Disk** | محل فیزیکی فایل (`local`، `public`، `s3` یا نام سفارشی) |
+| **`protect`** | دسترسی وب به پوشه: `lock` (پیش‌فرض) یا `unlock` |
+| **`file_access`** | فلگ داخلی DB (`public` / `private`)، معمولاً از دیسک sync می‌شود |
+| **`hash_id`** | شناسه کوتاه برای دانلود خصوصی (`/file/{hash}`) |
+| **`file_policy` / `groups`** | چه کسی فایل **خصوصی** را از dispatcher بگیرد |
+
 ```text
-storage/                      ← ریشه (همیشه از وب deny)
-├── local/{package}/…         ← دیسک `local`  (protect: lock)  → /file/{hash}
-├── public/{package}/…        ← دیسک `public` (protect: unlock) → /storage/public/…
-└── tmp/                      ← دیسک `temp`   (protect: lock)
+storage/                         ← ریشه storage پروژه (از وب deny)
+├── local/{package}/…            ← دیسک `local`   protect:lock   → /file/{hash}
+├── public/{package}/…           ← دیسک `public`  protect:unlock → /storage/public/{package}/…
+├── tmp/                         ← دیسک `temp`    protect:lock
+└── {دیسک-شما}/{package}/…       ← دیسک‌های سفارشی همین الگو را دارند
 ```
 
-| فراخوانی | دیسک | `file_access` داخلی | URL |
-|------|------|------------------------|-----|
+| فراخوانی | دیسک | `file_access` داخلی | URL معمول |
+|------|------|------------------------|-------------|
 | `->public()` | `public` | `public` | `/storage/public/{package}/…` |
 | `->private()` | `local` (یا `filesystem.disk` اپ) | `private` | `/file/{hash}` |
 | `->disk('s3')` | `s3` | `private` | `/file/{hash}` (یا URL ریموت) |
+| `->disk('contracts')` | سفارشی | مگر دیسک `public` باشد → private | `/file/{hash}` (اگر lock باشد) |
 
-بدون `public()` / `private()`، حالت فقط از **`filesystem.disk`** می‌آید: `public` ⇒ آپلود عمومی؛ هر دیسک دیگر ⇒ خصوصی.
+بدون `public()` / `private()`، حالت فقط از **`filesystem.disk`** می‌آید: نام دیسک `public` ⇒ آپلود عمومی؛ هر چیز دیگر ⇒ خصوصی.
 
-`access()` فقط برای موارد خاص است (مثلاً لینک اشتراکی روی دیسک خصوصی). ترجیح با `disk()` / `public()` / `private()`.
+ترجیح با `disk()` / `public()` / `private()`. `access()` فقط برای موارد خاص (مثلاً لینک اشتراکی روی دیسک خصوصی).
 
 ---
 
@@ -27,6 +39,7 @@ storage/                      ← ریشه (همیشه از وب deny)
 
 ```php
 use Pinoox\Portal\File;
+use Pinoox\Portal\Storage;
 ```
 
 | نیاز | API |
@@ -34,30 +47,32 @@ use Pinoox\Portal\File;
 | آپلود + DB + URL | `File::upload(...)->save()` |
 | پیدا کردن / حذف / URL | `File::find()`, `File::url()`, `File::remove()` |
 | URL موقت امضاشده | `File::temporaryUrl($file, 1800)` |
-| I/O خام دیسک | `File::storage()->put(...)` |
+| دیسک scoped به پکیج | `Storage::app($package, 'local')` |
+| I/O خام دیسک | `File::storage('public')->put(...)` یا `Storage::disk('local')` |
 
-برای آپلود کاربر اگر رکورد DB، `hash_id` و URL یکدست می‌خواهید، مستقیم از `Storage::` استفاده نکنید — از `File::` استفاده کنید.
+اگر رکورد DB، `hash_id` و URL یکدست می‌خواهید، برای آپلود کاربر فقط از `Storage::` استفاده نکنید — از `File::` استفاده کنید.
 
 ---
 
-## app.php
+## تنظیم اپ (`app.php`)
 
 ```php
 return [
+    'package' => 'com_acme_shop',
     'transport' => [
-        'file_storage' => 'platform', // یا 'local'
+        // 'platform' = جدول فایل مشترک؛ 'local' = scope خود اپ
+        'file_storage' => 'platform',
     ],
     'filesystem' => [
-        'disk' => 'local',            // دیسک public ⇒ آپلود عمومی؛ وگرنه خصوصی
+        'disk' => 'local',            // دیسک پیش‌فرض وقتی public()/private() ننویسید
         'hash_length' => 8,           // طول hash_id (۴–۵۰)
         'file_policy' => 'owner',     // سیاست پیش‌فرض دانلود خصوصی
         'groups' => [
-            // 'avatar' => 'public',
-            // 'docs' => 'login',
-            // 'admin' => 'role:admin',
-            // 'staff' => 'roles:admin,editor',
-            // 'reports' => 'permission:reports.view',
-            // 'custom' => 'callback',
+            'avatar' => 'public',
+            'invoice' => 'login',
+            'hr' => 'role:admin',
+            'finance' => 'permissions:pay.view,pay.export',
+            'custom' => 'callback',
         ],
         'thumb_width' => 512,
         'thumb_height' => 512,
@@ -78,200 +93,251 @@ return [
 | `permission:x.y` | `Access::can(...)` |
 | `permissions:a,b` | هر permission لیست‌شده |
 
-اولویت: امضای موقت معتبر → دیسک public / `file_access=public` → callback پکیج → `groups[file_group]` → `file_policy`.
+**اولویت:** امضای موقت معتبر → دیسک public / `file_access=public` → callback پکیج → `groups[file_group]` → `file_policy`.
 
 ```php
-// boot.php — گیت سفارشی اختیاری
+// boot.php — گیت سفارشی برای سیاست callback
 use Pinoox\Component\File\FileDispatcher;
 
 FileDispatcher::auth(function ($file, $user) {
-    return $user && $user->user_id === $file->user_id;
+    return $user && (int) $user->user_id === (int) $file->user_id;
+});
+
+FileDispatcher::authFor('com_acme_shop', function ($file, $user) {
+    return $user && $user->hasPermission('files.download');
 });
 ```
 
 ---
 
-## دیسک‌های سراسری (`filesystems.config.php`)
+## دیسک‌های داخلی (`filesystems.config.php`)
 
 ```php
-'local' => [
-    'driver' => 'local',
-    'root' => '~storage/local',
-    'protect' => 'lock',          // اگر حذف شود هم پیش‌فرض lock است
-],
-'public' => [
-    'driver' => 'local',
-    'root' => '~storage/public',
-    'protect' => 'unlock',        // برای سرو HTTP باید صریح باشد
-    'url' => rtrim(env('APP_URL'), '/') . '/storage/public',
-],
-'temp' => [
-    'driver' => 'local',
-    'root' => '~storage/tmp',
-    'protect' => 'lock',
+'disks' => [
+    'local' => [
+        'driver' => 'local',
+        'root' => '~storage/local',
+        'protect' => 'lock',
+        'visibility' => 'private',
+    ],
+    'public' => [
+        'driver' => 'local',
+        'root' => '~storage/public',
+        'protect' => 'unlock',   // باید صریح باشد — پیش‌فرض lock است
+        'url' => rtrim(env('APP_URL'), '/') . '/storage/public',
+        'visibility' => 'public',
+    ],
+    'temp' => [
+        'driver' => 'local',
+        'root' => '~storage/tmp',
+        'protect' => 'lock',
+    ],
+    's3' => [ /* ... */ ],
 ],
 ```
 
-`protect` پیش‌فرض **`lock`** است. فقط `unlock` پوشه را برای وب باز می‌کند (stubهای Apache/IIS؛ Nginx/Caddy راهنما هستند).
+`protect` پیش‌فرض **`lock`** است. فقط `unlock` پوشه را برای وب باز می‌کند.
 
 ```env
 FILESYSTEM_DISK=local
 FILESYSTEM_LOCAL_ROOT=~storage/local
 FILESYSTEM_PUBLIC_ROOT=~storage/public
 FILESYSTEM_TEMP_ROOT=~storage/tmp
-FILESYSTEM_PUBLIC_LINK=public/storage
+FILESYSTEM_PUBLIC_URL=
 FILE_HASH_LENGTH=8
-FILE_LOOKUP_CACHE_TTL=60
-FILE_XSENDFILE=auto
-FILE_XACCEL=false
+```
+
+بعد از تغییر دیسک‌ها یا دیپلوی:
+
+```bash
+php pinoox storage:setup
 ```
 
 ---
 
-## آپلود (با رکورد DB)
+## ساخت دیسک سفارشی در اپ
 
-**disk** به سبک لاراول منبع حقیقت است. `public()` / `private()` میانبرند.
+### ۱) کانفیگ پروژه (پیشنهادی برای دیسک دائمی)
+
+در `config/filesystems.config.php` پروژه (یا override پینکر `~filesystems`):
+
+```php
+return [
+    'disks' => [
+        // ... local/public/temp/s3 موجود
+
+        'contracts' => [
+            'driver' => 'local',
+            'root' => '~storage/contracts',
+            'protect' => 'lock',
+            'visibility' => 'private',
+            'throw' => false,
+        ],
+
+        'media' => [
+            'driver' => 'local',
+            'root' => '~storage/media',
+            'protect' => 'unlock',
+            'url' => rtrim(env('APP_URL'), '/') . '/storage/media',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+    ],
+];
+```
+
+```bash
+mkdir -p storage/contracts storage/media
+php pinoox storage:setup
+php pinoox storage:lock contracts
+php pinoox storage:unlock media
+```
+
+برای درایور local، فایل‌ها زیر `storage/{disk}/{package}/…` می‌روند.
+
+### ۲) ثبت در `boot.php`
+
+```php
+use Pinoox\Portal\Config;
+
+Config::name('~filesystems')->set('disks.contracts', [
+    'driver' => 'local',
+    'root' => '~storage/contracts',
+    'protect' => 'lock',
+    'visibility' => 'private',
+]);
+```
+
+### ۳) دیسک یک‌بارمصرف با `Storage::build()`
+
+```php
+use Pinoox\Portal\Storage;
+
+$disk = Storage::build([
+    'driver' => 'local',
+    'root' => path('~storage/exports'),
+    'protect' => 'lock',
+]);
+
+Storage::set('exports', $disk);
+File::upload($file)->to('reports')->disk('exports')->save();
+```
+
+### استفاده
+
+```php
+File::upload($request->file('pdf'))
+    ->to('2026')
+    ->disk('contracts')
+    ->group('invoice')
+    ->extensions('pdf')
+    ->save();
+
+File::upload($request->file('banner'))
+    ->to('home')
+    ->disk('media')
+    ->save();
+```
+
+پیش‌فرض اپ:
+
+```php
+'filesystem' => ['disk' => 'contracts'],
+```
+
+---
+
+## مثال‌ها
+
+### الف — آواتار عمومی
 
 ```php
 $result = File::upload('avatar')
-    ->to('avatar')                  // → storage/public/{package}/avatar
-    ->public()                      // یا ->disk('public')
+    ->to('avatars')
+    ->public()
     ->group('avatar')
-    ->thumb()
+    ->thumb(256, 256)
     ->maxSize('2MB')
     ->extensions('jpg,jpeg,png,webp')
+    ->replaceOn(auth()->user(), 'avatar_id')
     ->save();
-
-if ($result->success) {
-    $fileId = $result->id;
-    $url = $result->url;            // /storage/public/...
-    $thumb = $result->thumb;
-}
 ```
 
-فایل خصوصی (File Dispatcher):
+### ب — فاکتور خصوصی (login)
 
 ```php
-$result = File::upload('invoice')
-    ->to('invoices')                // → storage/local/{package}/invoices
-    ->private()                     // یا ->disk('local')
+// app.php → groups.invoice = 'login'
+
+$result = File::upload($request->file('pdf'))
+    ->to('invoices/' . date('Y'))
+    ->private()
     ->group('invoice')
+    ->extensions('pdf')
     ->save();
 
-// URL: /file/{hash_id}   (thumb: /file/{hash_id}/thumb)
+$url = File::url($result->id);
+$temp = File::temporaryUrl($result->id, 3600);
 ```
 
----
-
-## از Request
+### ج — از Request
 
 ```php
-// آرگومان دوم = نام دیسک (Laravel-style)، نه access
 $result = $request->file('photo')->store('gallery', 'public')
     ->group('gallery')
     ->thumb(256, 256)
     ->save();
 
-// میانبر: 'private' → دیسک خصوصی؛ بدون disk → filesystem.disk اپ
-$request->store('doc', 'invoices', 'private')->save();
+$request->store('contract', '2026', 'contracts')->group('invoice')->save();
 ```
 
----
-
-## اتصال / جایگزینی روی مدل
+### د — اتصال به مدل
 
 ```php
-$result = File::upload('cover')
+File::upload('cover')
     ->to('posts')
     ->private()
     ->group('post_cover')
     ->attach($post, 'cover_id')
     ->save();
-
-$result = File::upload('avatar')
-    ->to('avatar')
-    ->public()
-    ->group('avatar')
-    ->replaceOn($user, 'avatar_id')
-    ->thumb()
-    ->save();
 ```
 
----
-
-## فقط دیسک (بدون DB)
+### ه — فقط دیسک (بدون DB)
 
 ```php
-$result = File::upload('file')
-    ->to('packages')
-    ->diskOnly()
-    ->save();
-
-if ($result->success) {
-    $path = $result->path;
-}
+File::upload($zip)->to('imports')->disk('local')->diskOnly()->extensions('zip')->save();
 ```
 
----
-
-## خواندن، URL موقت، حذف
+### و — خواندن / حذف
 
 ```php
-$record = File::find($fileId);           // file_id یا hash_id
-$url = File::url($fileId);
-$thumb = File::thumb($fileId);
-$temp = File::temporaryUrl($fileId, 1800); // امضای S3 یا /file/{hash}?expires=&signature=
-$list = File::listByGroup('avatar');
-
+$record = File::find($fileId);
+File::url($fileId);
+File::listByGroup('avatar');
 File::remove($fileId);
 ```
 
+### ز — S3
+
+```php
+File::upload('doc')->to('docs')->disk('s3')->save();
+File::temporaryUrl($file, now()->addHour());
+```
+
 ---
 
-## UploadBuilder
+## مرجع UploadBuilder
 
 | متد | توضیح |
 |--------|-------------|
 | `to($dir)` | پوشه زیر ریشه دیسک پکیج |
-| `disk('public'\|'local'\|'s3')` | دیسک هدف (access داخلی را ست می‌کند) |
-| `public()` / `private()` | میانبر دیسک عمومی / خصوصی |
-| `group($name)` | گروه منطقی (سیاست‌های `filesystem.groups`) |
-| `thumb($w, $h)` | تصویر بندانگشتی |
-| `maxSize('2MB')` | سقف حجم |
-| `extensions('jpg,png')` | پسوندهای مجاز |
-| `attach($model, $column)` | ست کردن FK بعد از آپلود |
-| `replaceOn($model, $column)` | حذف فایل قبلی + آپلود |
+| `disk(...)` | دیسک هدف |
+| `public()` / `private()` | میانبر |
+| `group($name)` | گروه → سیاست `filesystem.groups` |
+| `thumb` / `maxSize` / `extensions` | محدودیت‌ها و بندانگشتی |
+| `attach` / `replaceOn` | اتصال به مدل |
 | `access($mode)` | override مورد خاص |
 | `diskOnly()` | بدون رکورد DB |
 | `save()` | → `UploadResult` |
-
-### UploadResult
-
-```php
-$result->success; // bool
-$result->id;      // file_id
-$result->url;
-$result->thumb;
-$result->path;
-$result->record;  // FileModel
-$result->error;
-```
-
----
-
-## S3
-
-```php
-// app.php
-'filesystem' => ['disk' => 's3'],
-
-// یا per upload
-File::upload('doc')->to('docs')->disk('s3')->save();
-
-$url = File::temporaryUrl($file, now()->addHour());
-// native:
-$url = File::storage('s3')->temporaryUrl('path/doc.pdf', now()->addHour());
-```
 
 ---
 
@@ -279,64 +345,28 @@ $url = File::storage('s3')->temporaryUrl('path/doc.pdf', now()->addHour());
 
 ```bash
 php pinoox storage:setup
-php pinoox storage:lock local
-php pinoox storage:unlock public
-php pinoox storage:link
-php pinoox storage:unlink
-
-php pinoox file:list com_my_shop
+php pinoox storage:lock contracts
+php pinoox storage:unlock media
+php pinoox file:list com_acme_shop
 php pinoox file:show a1b2c3d4
-php pinoox file:delete 12 --force
-php pinoox file:purge com_my_shop --group=avatar --force
 ```
 
-| دستور | کاربرد |
-|---------|---------|
-| `storage:setup` | deny ریشه + `protect` هر دیسک |
-| `storage:lock [disk]` | قفل اجباری (بدون disk → ریشه storage) |
-| `storage:unlock [disk]` | باز کردن اجباری (بدون disk → public) |
-| `storage:link` / `unlink` | symlink از `filesystems.links` |
-| `file:list` / `show` / `update` / `delete` / `purge` | مدیریت `FileModel` و فایل‌ها |
-
-همچنین [مرجع CLI](../start/cli-reference.md).
+جزئیات بیشتر: [مرجع CLI](../start/cli-reference.md).
 
 ---
 
 ## فایل‌های بزرگ (Pinion)
 
-برای resume/progress بالاتر از `upload_max_filesize` از **[Pinion](./pinion.md)** استفاده کنید. چانک‌ها زیر `storage/pinion`؛ در `complete`، `StorageCompletion` با `disk` / `public()` / `private()` از طریق `File` منتشر می‌کند.
-
-```javascript
-import { uploadFile } from '@pinooxhq/pinion-client';
-
-await uploadFile(file, {
-  baseURL: '/api/v1/upload',
-  unwrapPreset: 'pinoox',
-});
-```
-
-```php
-protected function pinionDefaults(): array
-{
-    return [
-        'destination' => 'uploads/media',
-        'disk' => 'public',
-        'mode' => 'auto',
-        'record' => true,
-        'group' => 'media',
-    ];
-}
-```
+برای resume/progress از **[Pinion](./pinion.md)** استفاده کنید. در `pinionDefaults` می‌توانید `'disk' => 'public'` یا دیسک سفارشی بگذارید.
 
 ---
 
 ## نکات
 
-- قبل از `File::upload()` در FormRequest اعتبارسنجی کنید.
-- `user_id` از `Auth::id()` پر می‌شود.
-- `transport.file_storage => platform` جدول فایل را بین اپ‌های platform مشترک می‌کند.
-- بعد از دیپلوی `php pinoox storage:setup` را اجرا کنید تا stubهای `protect` ساخته شوند.
-- URL عمومی `/storage/public/{package}/…` است (یکی با پوشه دیسک؛ Apache/PHP همان مسیر را مستقیم سرو می‌کنند).
+- قبل از آپلود در FormRequest اعتبارسنجی کنید.
+- بعد از افزودن دیسک، `storage:setup` را اجرا کنید.
+- URL عمومی `/storage/public/{package}/…` است (یکی با پوشه دیسک).
+- نام دیسک سفارشی را با پوشه‌اش هم‌نام کنید (`contracts` → `storage/contracts`).
 
 ---
 
@@ -346,7 +376,7 @@ protected function pinionDefaults(): array
 - [مدیریت کاربر](./user-management.md)
 - [Transport](./transport.md)
 - [اعتبارسنجی](../basic/validation.md)
-- [نمونه گالری تصاویر](../examples/gallery-app.md)
+- [نمونه گالری](../examples/gallery-app.md)
 
 ---
 
