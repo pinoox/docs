@@ -22,7 +22,7 @@ apps/com_acme_blog/database/migrations/2026_06_10_120000_create_posts_table.php
 
 Aliases: `mg:create`, `mg:make`, `make:migration`.
 
-### Naming (Laravel-style)
+### Naming conventions
 
 The stub is chosen from the name, or from `--create` / `--table`:
 
@@ -58,7 +58,7 @@ return new class extends MigrationBase
 {
     public function up()
     {
-        $this->schema->create($this->table('posts', 'com_acme_blog'), function (Blueprint $table) {
+        $this->schema->create('posts', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('user_id')->nullable();
             $table->string('title', 255);
@@ -72,12 +72,25 @@ return new class extends MigrationBase
 
     public function down(): void
     {
-        $this->schema->dropIfExists($this->table('posts', 'com_acme_blog'));
+        $this->schema->dropIfExists('posts');
     }
 };
 ```
 
-`$this->table('posts', $package)` applies the correct app prefix.
+The current package is detected automatically. These are equivalent:
+
+```php
+$this->schema->create('posts', function (Blueprint $table) { /* ... */ });
+$this->schema->create($this->table('posts'), function (Blueprint $table) { /* ... */ });
+```
+
+Pass a package only when this migration targets **another** app:
+
+```php
+$this->schema->create($this->table('posts', 'com_acme_blog'), function (Blueprint $table) {
+    // ...
+});
+```
 
 ---
 
@@ -110,7 +123,7 @@ namespace Pinoox\Database\migrations;
 
 use Pinoox\Model\Table;
 
-$this->schema->create($this->table(Table::USER, 'platform'), function (Blueprint $table) {
+$this->schema->create(Table::USER, function (Blueprint $table) {
     $table->increments('user_id');
     // ...
 });
@@ -154,7 +167,7 @@ Full patch guide: [Patches (data updates)](../advanced/patches.md).
 - One logical change per migration (one table or one ALTER).
 - Always write `down()`.
 - Do not edit a migration that has already run — create a new one.
-- Foreign keys to core tables use `$this->table(Table::FILE, 'platform')`.
+- Foreign keys to another package (e.g. core from an app): `$this->table(Table::FILE, 'platform')`.
 
 ---
 

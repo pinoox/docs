@@ -74,7 +74,7 @@ php pinoox help migrate
 | دستور | کاربرد |
 |--------|--------|
 | `migrate {package}` | اجرای migration (اپ یا `platform`) |
-| `migrate:create` | فایل migration (`--create`، `--table`؛ نام‌گذاری سبک لاراول) |
+| `migrate:create` | فایل migration (`--create`، `--table`) |
 | `migrate:drop` | حذف سخت جداول پکیج و پاک کردن تاریخچه |
 | `migrate:status` / `migrate:rollback` | وضعیت / برگشت |
 | `seeder:run` | اجرای seeder (`-c` نام فایل) |

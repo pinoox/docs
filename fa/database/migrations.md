@@ -22,7 +22,7 @@ apps/com_acme_blog/database/migrations/2026_06_10_120000_create_posts_table.php
 
 alias: `mg:create`، `mg:make`، `make:migration`.
 
-### نام‌گذاری (سبک لاراول)
+### نام‌گذاری
 
 stub از روی نام، یا از `--create` / `--table` انتخاب می‌شود:
 
@@ -58,7 +58,7 @@ return new class extends MigrationBase
 {
     public function up()
     {
-        $this->schema->create($this->table('posts', 'com_acme_blog'), function (Blueprint $table) {
+        $this->schema->create('posts', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('user_id')->nullable();
             $table->string('title', 255);
@@ -72,12 +72,25 @@ return new class extends MigrationBase
 
     public function down(): void
     {
-        $this->schema->dropIfExists($this->table('posts', 'com_acme_blog'));
+        $this->schema->dropIfExists('posts');
     }
 };
 ```
 
-`$this->table('posts', $package)` prefix صحیح اپ را اعمال می‌کند.
+پکیج فعلی خودش تشخیص داده می‌شود. این دو معادل‌اند:
+
+```php
+$this->schema->create('posts', function (Blueprint $table) { /* ... */ });
+$this->schema->create($this->table('posts'), function (Blueprint $table) { /* ... */ });
+```
+
+آرگومان پکیج را فقط وقتی بگذارید که این migration جدول **اپ دیگری** را هدف بگیرد:
+
+```php
+$this->schema->create($this->table('posts', 'com_acme_blog'), function (Blueprint $table) {
+    // ...
+});
+```
 
 ---
 
@@ -110,7 +123,7 @@ namespace Pinoox\Database\migrations;
 
 use Pinoox\Model\Table;
 
-$this->schema->create($this->table(Table::USER, 'platform'), function (Blueprint $table) {
+$this->schema->create(Table::USER, function (Blueprint $table) {
     $table->increments('user_id');
     // ...
 });
@@ -154,7 +167,7 @@ $this->schema->create($this->table(Table::USER, 'platform'), function (Blueprint
 - هر migration یک تغییر منطقی (یک جدول یا یک ALTER).
 - `down()` را همیشه بنویسید.
 - migration اجراشده را edit نکنید — migration جدید بسازید.
-- foreign key به جداول core با `$this->table(Table::FILE, 'platform')`.
+- foreign key به پکیج دیگر (مثلاً core از داخل اپ): `$this->table(Table::FILE, 'platform')`.
 
 ---
 

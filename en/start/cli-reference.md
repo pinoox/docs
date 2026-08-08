@@ -75,7 +75,7 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | Command | Purpose |
 |---------|---------|
 | `migrate {package}` | Run migrations (app or `platform`) |
-| `migrate:create` | New migration file (`--create`, `--table`; Laravel-style names) |
+| `migrate:create` | New migration file (`--create`, `--table`) |
 | `migrate:drop` | Hard-drop package tables and clear history |
 | `migrate:status` / `migrate:rollback` | Status / rollback |
 | `seeder:run` | Run seeders (`-c` file basename) |
