@@ -2,21 +2,46 @@
 
 [← بازگشت به فهرست](../README.md)
 
-Migrationها تغییرات **schema** دیتابیس را نسخه‌بندی می‌کنند. در پینوکس 3.x فایل‌های اپ در `apps/{package}/database/migrations/` و core در `system/database/migrations/` قرار دارند.
+Migrationها تغییرات **schema** دیتابیس را نسخه‌بندی می‌کنند. در پینوکس 3.x فایل‌های اپ در `apps/{package}/database/migrations/` و core در `pincore/database/migrations/` (`~pincore/database/migrations`) قرار دارند.
 
 ---
 
 ## ساخت migration
 
 ```bash
+php pinoox migrate:create posts com_acme_blog
 php pinoox migrate:create CreatePosts com_acme_blog
+php pinoox migrate:create create_posts_table com_acme_blog
 ```
 
-خروجی:
+هر سه این فایل را می‌سازند:
 
 ```text
 apps/com_acme_blog/database/migrations/2026_06_10_120000_create_posts_table.php
 ```
+
+alias: `mg:create`، `mg:make`، `make:migration`.
+
+### نام‌گذاری (سبک لاراول)
+
+stub از روی نام، یا از `--create` / `--table` انتخاب می‌شود:
+
+| ورودی | فایل | Stub |
+|-------|------|------|
+| `posts` / `CreatePosts` / `create_posts_table` | `create_posts_table.php` | `$this->schema->create()` |
+| `add_email_to_users` | `add_email_to_users.php` | `$this->schema->table()` |
+| `drop_posts_table` | `drop_posts_table.php` | `$this->schema->dropIfExists()` |
+| `sync_legacy_flags --table=users` | `sync_legacy_flags.php` | `$this->schema->table()` |
+| `add_status --create=orders` | `add_status.php` | `$this->schema->create()` |
+
+```bash
+php pinoox migrate:create add_email_to_users com_acme_blog
+php pinoox migrate:create drop_posts_table com_acme_blog
+php pinoox migrate:create sync_legacy_flags com_acme_blog --table=users
+php pinoox make:migration add_status --create=orders com_acme_blog
+```
+
+`migrate:drop` **جداول را واقعاً حذف می‌کند** و تاریخچه را پاک می‌کند. برای ساخت فایل DROP/ALTER از `migrate:create drop_*_table` (یا `add_*` / `--table=`) استفاده کنید.
 
 ---
 
@@ -62,10 +87,7 @@ return new class extends MigrationBase
 # migration اپ
 php pinoox migrate com_acme_blog
 
-# migration هسته
-php pinoox migrate pincore
-
-# migration پلتفرم (جداول pinx_*)
+# migration پلتفرم / هسته (جداول pinx_*)
 php pinoox migrate platform
 ```
 
@@ -94,7 +116,7 @@ $this->schema->create($this->table(Table::USER, 'platform'), function (Blueprint
 });
 ```
 
-جداول core: prefix **`pincore_`** (یا `pinx_` برای scope platform).
+جداول core: prefix **`pinx_`**.
 
 ---
 
@@ -109,7 +131,7 @@ $this->schema->create($this->table(Table::USER, 'platform'), function (Blueprint
 
 ## مسیر legacy
 
-پینوکس هنوز `apps/{package}/migrations/` قدیمی را می‌خواند، اما فایل **جدید** در `database/migrations/` ساخته می‌شود.
+فایل‌های جدید و موجود فقط از `database/migrations/` خوانده می‌شوند. پوشهٔ قدیمی `apps/{package}/migrations/` **اسکن نمی‌شود**.
 
 ---
 

@@ -21,7 +21,7 @@ php pinoox help migrate
 | alias | دستور |
 |-------|--------|
 | `mg` | `migrate` |
-| `mg:create` | `migrate:create` |
+| `mg:create` / `mg:make` / `make:migration` | `migrate:create` |
 | `patch` | `patch:run` |
 | `seed` | `seeder:run` |
 | `cb` | `cache:build` |
@@ -73,8 +73,9 @@ php pinoox help migrate
 
 | دستور | کاربرد |
 |--------|--------|
-| `migrate {package}` | migration (اپ، `platform`, `pincore`) |
-| `migrate:create` | فایل migration |
+| `migrate {package}` | اجرای migration (اپ یا `platform`) |
+| `migrate:create` | فایل migration (`--create`، `--table`؛ نام‌گذاری سبک لاراول) |
+| `migrate:drop` | حذف سخت جداول پکیج و پاک کردن تاریخچه |
 | `migrate:status` / `migrate:rollback` | وضعیت / برگشت |
 | `seeder:run` | اجرای seeder (`-c` نام فایل) |
 | `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patch](../advanced/patches.md) |

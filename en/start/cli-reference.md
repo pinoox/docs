@@ -21,7 +21,7 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | Alias | Command |
 |-------|---------|
 | `mg` | `migrate` |
-| `mg:create` | `migrate:create` |
+| `mg:create` / `mg:make` / `make:migration` | `migrate:create` |
 | `patch` | `patch:run` |
 | `seed` | `seeder:run` |
 | `cb` | `cache:build` |
@@ -74,8 +74,9 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 
 | Command | Purpose |
 |---------|---------|
-| `migrate {package}` | Run migrations (app, `platform`, `pincore`) |
-| `migrate:create` | New migration file |
+| `migrate {package}` | Run migrations (app or `platform`) |
+| `migrate:create` | New migration file (`--create`, `--table`; Laravel-style names) |
+| `migrate:drop` | Hard-drop package tables and clear history |
 | `migrate:status` / `migrate:rollback` | Status / rollback |
 | `seeder:run` | Run seeders (`-c` file basename) |
 | `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patches](../advanced/patches.md) |

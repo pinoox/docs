@@ -2,21 +2,46 @@
 
 [← Back to index](../README.md)
 
-Migrations version **schema** changes in the database. In Pinoox 3.x, app files live in `apps/{package}/database/migrations/` and core files in `system/database/migrations/`.
+Migrations version **schema** changes in the database. In Pinoox 3.x, app files live in `apps/{package}/database/migrations/` and core files in `pincore/database/migrations/` (`~pincore/database/migrations`).
 
 ---
 
 ## Create a migration
 
 ```bash
+php pinoox migrate:create posts com_acme_blog
 php pinoox migrate:create CreatePosts com_acme_blog
+php pinoox migrate:create create_posts_table com_acme_blog
 ```
 
-Output:
+All three write:
 
 ```text
 apps/com_acme_blog/database/migrations/2026_06_10_120000_create_posts_table.php
 ```
+
+Aliases: `mg:create`, `mg:make`, `make:migration`.
+
+### Naming (Laravel-style)
+
+The stub is chosen from the name, or from `--create` / `--table`:
+
+| Input | File | Stub |
+|-------|------|------|
+| `posts` / `CreatePosts` / `create_posts_table` | `create_posts_table.php` | `$this->schema->create()` |
+| `add_email_to_users` | `add_email_to_users.php` | `$this->schema->table()` |
+| `drop_posts_table` | `drop_posts_table.php` | `$this->schema->dropIfExists()` |
+| `sync_legacy_flags --table=users` | `sync_legacy_flags.php` | `$this->schema->table()` |
+| `add_status --create=orders` | `add_status.php` | `$this->schema->create()` |
+
+```bash
+php pinoox migrate:create add_email_to_users com_acme_blog
+php pinoox migrate:create drop_posts_table com_acme_blog
+php pinoox migrate:create sync_legacy_flags com_acme_blog --table=users
+php pinoox make:migration add_status --create=orders com_acme_blog
+```
+
+`migrate:drop` **hard-drops tables** and clears history. To scaffold a DROP/ALTER file, use `migrate:create drop_*_table` (or `add_*` / `--table=`).
 
 ---
 
@@ -62,10 +87,7 @@ return new class extends MigrationBase
 # app migration
 php pinoox migrate com_acme_blog
 
-# core migration
-php pinoox migrate pincore
-
-# platform migration (pinx_* tables)
+# platform / core migration (pinx_* tables)
 php pinoox migrate platform
 ```
 
@@ -94,7 +116,7 @@ $this->schema->create($this->table(Table::USER, 'platform'), function (Blueprint
 });
 ```
 
-Core tables: prefix **`pincore_`** (or `pinx_` for platform scope).
+Core tables: prefix **`pinx_`**.
 
 ---
 
@@ -109,7 +131,7 @@ Core tables: prefix **`pincore_`** (or `pinx_` for platform scope).
 
 ## Legacy path
 
-Pinoox still reads the old `apps/{package}/migrations/` folder, but **new** files are created in `database/migrations/`.
+New and existing files are loaded only from `database/migrations/`. The old `apps/{package}/migrations/` folder is **not** scanned.
 
 ---
 

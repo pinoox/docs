@@ -102,11 +102,11 @@ pinx dev --open             # باز کردن مرورگر (فقط با --no-fro
 
 pinx migrate                # اجرای مایگریشن‌های اپ (--platform اول platform را اجرا می‌کند)
 pinx migrate:st             # وضعیت مایگریشن
-pinx migrate:cr create_products_table
+pinx migrate:cr add_email_to_users
 
 pinx make controller ProductController
 pinx make model ProductModel
-pinx make migration create_products_table
+pinx make migration add_email_to_users
 pinx make portal ShopService
 
 pinx routes                 # لیست اکشن‌های نام‌دار (--validate, --json)
@@ -226,7 +226,7 @@ pinx doctor --no-fixes      # عدم نمایش دستورهای پیشنهاد�
 | `migrate:run` | `migrate` | اجرای مایگریشن‌های اپ (`--platform` اول platform را اجرا می‌کند) |
 | `migrate:status` | `migrate:st` | وضعیت مایگریشن |
 | `migrate:rollback` | `migrate:rb` | بازگشت آخرین batch (`--ignore-fk`) |
-| `migrate:create <name>` | `migrate:cr` | ساخت فایل مایگریشن |
+| `migrate:create <name>` | `migrate:cr` | ساخت فایل مایگریشن (`--create`، `--table`) |
 | `migrate:platform` | `migrate:pl` | فقط مایگریشن‌های platform |
 | `seeder:run` | `seed` | اجرای seeder ها (`-c` نام فایل) |
 
