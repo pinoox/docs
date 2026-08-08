@@ -76,13 +76,37 @@ $this->schema->create('posts', function (Blueprint $table) { /* ... */ });
 $this->schema->create($this->table('posts'), function (Blueprint $table) { /* ... */ });
 ```
 
-آرگومان پکیج را فقط وقتی بگذارید که این فایل جدول **اپ دیگری** را هدف بگیرد:
+آرگومان پکیج را فقط وقتی بگذارید که این فایل جدول **اپ دیگری** را هدف بگیرد.
+
+یک جدول (یا یک FK) در پکیج دیگر:
 
 ```php
 $this->schema->create($this->table('posts', 'com_acme_blog'), function (Blueprint $table) {
     // ...
 });
 ```
+
+کل فایل روی اتصال پکیج دیگر — پکیج را به `MigrationBase` بدهید:
+
+```php
+return new class('com_acme_blog') extends MigrationBase
+{
+    public function up()
+    {
+        $this->schema->create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        $this->schema->dropIfExists('posts');
+    }
+};
+```
+
+بعد روی `$this->schema` همان `'posts'` کافی است. اگر `$this->table()` یا `$this->seed()` هم صدا می‌زنید، همان پکیج را به‌عنوان آرگومان دوم بدهید.
 
 `down()` را همیشه بنویسید تا rollback بتواند تغییر را برگرداند.
 

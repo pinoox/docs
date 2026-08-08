@@ -76,13 +76,37 @@ $this->schema->create('posts', function (Blueprint $table) { /* ... */ });
 $this->schema->create($this->table('posts'), function (Blueprint $table) { /* ... */ });
 ```
 
-Pass a package only when this file must touch **another** app:
+Pass a package only when this file must touch **another** app.
+
+One table (or one FK) in another package:
 
 ```php
 $this->schema->create($this->table('posts', 'com_acme_blog'), function (Blueprint $table) {
     // ...
 });
 ```
+
+The **whole file** against another package’s connection — pass it to `MigrationBase`:
+
+```php
+return new class('com_acme_blog') extends MigrationBase
+{
+    public function up()
+    {
+        $this->schema->create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        $this->schema->dropIfExists('posts');
+    }
+};
+```
+
+Then `'posts'` on `$this->schema` is enough. If you still call `$this->table()` or `$this->seed()`, pass the same package as the second argument.
 
 Always implement `down()` so rollback can undo the change.
 
