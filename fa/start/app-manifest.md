@@ -28,10 +28,11 @@
 | `boot` | اجرای `boot.php` (پیش‌فرض true) |
 | `boot-global` | boot در هر درخواست |
 | `extends` | boot وقتی اپ میزبان boot شد |
+| `lifecycle` | اجرای `lifecycle.php` موقع نصب/آپدیت/حذف/ریست (`true` / `false` / مسیر سفارشی) |
 | `loader` | فایل‌های اضافه (`func.php`) |
 | `depends` | اپ‌های پیش‌نیاز / اختیاری — [وابستگی اپ‌ها](./app-depends.md) |
 
-جزئیات boot: [boot.php و رویدادها](../advanced/boot-and-events.md).
+جزئیات boot: [boot.php و رویدادها](../advanced/boot-and-events.md) (شامل چرخه عمر پکیج).
 
 ---
 

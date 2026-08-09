@@ -49,6 +49,7 @@ php pinoox help migrate
 | `app:create {package}` | ساخت اپ (`--simple`, `--stack`, `--profile`) |
 | `app:list` | لیست اپ‌ها |
 | `app:delete` | حذف اپ |
+| `app:reset {package}` | ریست دیتای اپ (فولدر می‌ماند)، سپس migrate + patch + lifecycle نصب |
 | `app:router set /path {package}` | نگاشت URL |
 | `app:domain` | تنظیم host → اپ |
 | `app:resolve` | debug: کدام اپ handle می‌کند |
@@ -65,6 +66,7 @@ php pinoox help migrate
 | `form-request:create` | FormRequest class |
 | `seeder:create` | `database/seeders/` |
 | `test:create` | فایل Pest |
+| `lifecycle:create` | `lifecycle.php` (نصب/آپدیت/حذف/ریست) |
 | `theme:frontend` | Frontend tooling (Vue/React/Vite) — see [Frontend & Vite](../basic/frontend-vite.md) |
 
 ---
@@ -264,7 +266,8 @@ php pinoox pinroll:deploy
 | دستور | کاربرد |
 |--------|--------|
 | `pinx:build` | ساخت `.pinx` |
-| `pinx:install` | نصب package |
+| `pinx:install` | نصب package (`--skip-lifecycle` برای رد `lifecycle.php`) |
+| `pinx:uninstall` | حذف اپ/تم (`--skip-lifecycle`) |
 | `pinx:info` | metadata |
 | `wizard:list` / `wizard:install` | wizard نصب |
 

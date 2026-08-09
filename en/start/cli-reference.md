@@ -49,6 +49,7 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | `app:create {package}` | Scaffold app (`--simple`, `--stack`, `--profile`) |
 | `app:list` | List apps |
 | `app:delete` | Remove app |
+| `app:reset {package}` | Wipe app data (keep files), then migrate + patch + install lifecycle |
 | `app:router set /path {package}` | URL mapping |
 | `app:domain` | Host → app map |
 | `app:resolve` | Debug active app |
@@ -66,6 +67,7 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | `seeder:create` | `database/seeders/` |
 | `factory:create` | `database/factories/` |
 | `test:create` | Pest file |
+| `lifecycle:create` | `lifecycle.php` (install/update/uninstall/reset) |
 | `theme:frontend` | Frontend tooling (Vue/React/Vite) — see [Frontend & Vite](../basic/frontend-vite.md) |
 
 ---
@@ -265,7 +267,8 @@ See [Schedule](../advanced/schedule.md).
 | Command | Purpose |
 |---------|---------|
 | `pinx:build` | Build `.pinx` package |
-| `pinx:install` | Install package |
+| `pinx:install` | Install package (`--skip-lifecycle` to skip `lifecycle.php`) |
+| `pinx:uninstall` | Uninstall app/theme (`--skip-lifecycle`) |
 | `pinx:info` | Metadata |
 | `wizard:list` / `wizard:install` | Install wizard |
 

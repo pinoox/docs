@@ -28,10 +28,11 @@
 | `boot` | Run `boot.php` (default true) |
 | `boot-global` | Boot on every HTTP request |
 | `extends` | Boot when host app boots |
+| `lifecycle` | Run `lifecycle.php` on install/update/uninstall/reset (`true` / `false` / custom path) |
 | `loader` | Extra files (`func.php`) |
 | `depends` | Required / optional apps — [App dependencies](./app-depends.md) |
 
-See [boot.php & events](../advanced/boot-and-events.md).
+See [boot.php & events](../advanced/boot-and-events.md) (includes [package lifecycle](../advanced/boot-and-events.md#package-lifecycle-lifecyclephp)).
 
 ---
 

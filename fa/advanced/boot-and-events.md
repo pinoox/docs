@@ -446,11 +446,92 @@ app_boot(?string $package = null): AppRegister
 
 ---
 
+## چرخه عمر پکیج (`lifecycle.php`)
+
+`boot.php` روی **هر درخواست** اجرا می‌شود. نصب / آپدیت / حذف / ریست **عملیات یک‌باره پکیج** هستند (اغلب CLI). سایدافکت‌ها را در **`apps/{package}/lifecycle.php`** اختیاری بگذارید — همان سبک drop-in مثل `boot.php`، نه چهار فایل جدا.
+
+```bash
+php pinoox lifecycle:create com_acme_shop
+```
+
+```php
+<?php
+
+use Pinoox\Component\Package\Lifecycle\AppLifecycle;
+use Pinoox\Component\Package\Lifecycle\AppLifecycleContext;
+
+return function (AppLifecycle $life): void {
+    $life->onInstall(function (AppLifecycleContext $ctx): void {
+        // اولین نصب: سید، پوشه. idempotent باشد.
+    });
+
+    $life->onUpdate(function (AppLifecycleContext $ctx): void {
+        // هر آپدیت غیر-DB. تغییر schema/داده نسخه‌ای → migration / patch.
+    });
+
+    $life->onUninstall(function (AppLifecycleContext $ctx): void {
+        // قبل از drop جداول و حذف فولدر.
+    });
+
+    $life->onReset(function (AppLifecycleContext $ctx): void {
+        // پاکسازی اختیاری غیر-DB؛ بعد از ریست دوباره onInstall اجرا می‌شود.
+    });
+};
+```
+
+فرم آرایه هم پشتیبانی می‌شود: `return ['install' => function (AppLifecycleContext $ctx) {}, …];`. فایل جدا: `$life->onInstall(require __DIR__.'/setup/install.php');`.
+
+`app.php`:
+
+| مقدار | معنی |
+|-------|------|
+| `true` (پیش‌فرض) | اگر `lifecycle.php` باشد اجرا شود |
+| `false` | رد شود |
+| `'setup/lifecycle.php'` | مسیر سفارشی نسبت به ریشه اپ |
+
+نبود فایل → silent skip.
+
+| لایه | کاربرد |
+|------|--------|
+| **migration** | اسکیما |
+| **patch** | دیتای نسخه‌ای یک‌بارمصرف (`history`) |
+| **lifecycle.php** | سید، پوشه، کانفیگ، پاکسازی فایل |
+
+### زمان اجرا
+
+| عملیات | ترتیب |
+|--------|--------|
+| **Install** | extract → migrate → patches → `app.installing` + `onInstall` → `app.installed` → cache |
+| **Update** | همان، با `updating` / `onUpdate` / `updated` |
+| **Uninstall** | `uninstalling` + `onUninstall` → rollback پچ + پاک کردن history → rollback migrate → حذف فولدر → `uninstalled` |
+| **Reset** (`app:reset`) | `resetting` + `onReset` → rollback پچ/مایگریشن → migrate + patch → `onInstall` → `app.reset` |
+| **Provision** | `onInstall` فقط اگر در `history` (`type=lifecycle`) ثبت نشده باشد |
+
+```bash
+php pinoox app:reset com_acme_shop
+php pinoox pinx:install shop.pinx --skip-lifecycle
+Pinx::resetApp('com_acme_shop');
+```
+
+### ایونت‌های پکیج (گوش دادن از `boot.php`)
+
+| نام | زمان |
+|-----|------|
+| `app.installing` / `app.installed` | قبل / بعد از هوک نصب |
+| `app.updating` / `app.updated` | قبل / بعد از هوک آپدیت |
+| `app.uninstalling` / `app.uninstalled` | قبل از هوک / بعد از حذف فولدر |
+| `app.resetting` / `app.reset` | قبل از هوک ریست / بعد از نصب مجدد |
+
+اپ دیگر / پلاگین از `boot.php` خودش `listen` می‌کند (`boot-global`). سایدافکت **خود اپ** در `lifecycle.php` می‌ماند تا نصب CLI مجبور به boot کامل درخواست نشود.
+
+---
+
 ## فایل‌های مرتبط
 
 | فایل | نقش |
 |------|-----|
-| `boot.php` | ثبت programmatic |
+| `boot.php` | ثبت programmatic (هر درخواست) |
+| `lifecycle.php` | هوک نصب / آپدیت / حذف / ریست |
 | `bindings.php` | DI bindings |
 | `schedule.php` | cron (فایل) |
 | `routes/web.php` | route وب |
@@ -462,6 +543,7 @@ app_boot(?string $package = null): AppRegister
 
 - [Kernel و pipeline بوت](./kernel.md)
 - [زمان‌بندی — Schedule](./schedule.md)
+- [Patch](./patches.md)
 - [فلو — Flow](../basic/flows.md)
 - [View](../basic/views.md)
 - [Twig](../basic/templates.md)

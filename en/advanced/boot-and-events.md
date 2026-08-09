@@ -452,11 +452,102 @@ Build: `php pinoox cache:build {package}` (or via `.pinx install`). See [Pinker]
 
 ---
 
+## Package lifecycle (`lifecycle.php`)
+
+`boot.php` runs on **every request**. Install / update / uninstall / reset are **one-shot package operations** (often CLI). Put those side-effects in optional **`apps/{package}/lifecycle.php`** — same drop-in style as `boot.php`, not four separate files.
+
+```bash
+php pinoox lifecycle:create com_acme_shop
+```
+
+```php
+<?php
+
+use Pinoox\Component\Package\Lifecycle\AppLifecycle;
+use Pinoox\Component\Package\Lifecycle\AppLifecycleContext;
+
+return function (AppLifecycle $life): void {
+    $life->onInstall(function (AppLifecycleContext $ctx): void {
+        // First install: seed defaults, create folders. Keep idempotent.
+    });
+
+    $life->onUpdate(function (AppLifecycleContext $ctx): void {
+        // Every update (non-DB). Schema/data version bumps → migration / patch.
+        // $ctx->fromVersionCode → $ctx->toVersionCode
+    });
+
+    $life->onUninstall(function (AppLifecycleContext $ctx): void {
+        // Before tables and folder are removed.
+    });
+
+    $life->onReset(function (AppLifecycleContext $ctx): void {
+        // Optional non-DB cleanup; install runs again after reset.
+    });
+};
+```
+
+Array form also works: `return ['install' => function (AppLifecycleContext $ctx) {}, …];`. Split files yourself with `$life->onInstall(require __DIR__.'/setup/install.php');`.
+
+`app.php`:
+
+| Value | Meaning |
+|-------|---------|
+| `true` (default) | Run `lifecycle.php` if present |
+| `false` | Skip |
+| `'setup/lifecycle.php'` | Custom path relative to the app root |
+
+Missing file → silent skip.
+
+| Layer | Use for |
+|-------|---------|
+| **migration** | Schema |
+| **patch** | One-time versioned data (`history`) |
+| **lifecycle.php** | Seed, folders, config, file cleanup |
+
+### When it runs
+
+| Operation | Order |
+|-----------|--------|
+| **Install** | extract → migrate → patches → `app.installing` + `onInstall` → `app.installed` → cache |
+| **Update** | same, with `updating` / `onUpdate` / `updated` |
+| **Uninstall** | `uninstalling` + `onUninstall` → rollback patches + clear patch/lifecycle history → rollback migrate → delete folder → `uninstalled` |
+| **Reset** (`app:reset`) | `resetting` + `onReset` → rollback patches/migrate → migrate + patch → `onInstall` → `app.reset` |
+| **Provision** (installer / on-disk apps) | `onInstall` only if not already recorded in `history` (`type=lifecycle`) |
+
+```bash
+php pinoox app:reset com_acme_shop
+php pinoox pinx:install shop.pinx --skip-lifecycle
+Pinx::resetApp('com_acme_shop');
+```
+
+### Package events (observe from `boot.php`)
+
+| Name | When |
+|------|------|
+| `app.installing` / `app.installed` | Before / after install hook |
+| `app.updating` / `app.updated` | Before / after update hook |
+| `app.uninstalling` / `app.uninstalled` | Before hook / after folder delete |
+| `app.resetting` / `app.reset` | Before reset hook / after re-install |
+
+```php
+use Pinoox\Component\AppEvent\AppEventNames;
+use Pinoox\Component\Package\Lifecycle\AppLifecycleEvent;
+
+$register->listen(AppEventNames::INSTALLED, function (AppLifecycleEvent $event): void {
+    // $event->package, $event->context
+});
+```
+
+Other apps / plugins listen from their `boot.php` (especially `boot-global`). The **target app’s own** seed/cleanup stays in `lifecycle.php` so CLI install does not have to boot the full request pipeline.
+
+---
+
 ## Related files
 
 | File | Role |
 |------|------|
-| `boot.php` | Programmatic registration |
+| `boot.php` | Programmatic registration (every request) |
+| `lifecycle.php` | Install / update / uninstall / reset hooks |
 | `bindings.php` | DI bindings |
 | `schedule.php` | Cron tasks (file-based) |
 | `routes/web.php` | Web routes |
@@ -468,6 +559,7 @@ Build: `php pinoox cache:build {package}` (or via `.pinx install`). See [Pinker]
 
 - [Kernel and boot pipeline](./kernel.md)
 - [Schedule](./schedule.md)
+- [Patches](./patches.md)
 - [Flows](../basic/flows.md)
 - [Views](../basic/views.md)
 - [Twig templates](../basic/templates.md)

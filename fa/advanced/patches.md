@@ -13,6 +13,7 @@
 | **Migration** | ساخت/تغییر جدول و ستون |
 | **Seeder** | داده نمونه یا اولیه (دستی / فراخوانی صریح؛ نه موقع نصب) |
 | **Patch** | یک‌بار اجرا شود و در `history` ثبت شود |
+| **lifecycle.php** | هر نصب/آپدیت/حذف/ریست (سید، پوشه، پاکسازی فایل) — [boot و رویدادها](./boot-and-events.md) |
 
 مثال‌های Patch:
 
@@ -142,12 +143,12 @@ alias کوتاه: `php pinoox patch` = `patch:run`.
 Migration و Patch هر دو در جدول **`history`** ثبت می‌شوند:
 
 ```text
-type = migration | patch
+type = migration | patch | lifecycle
 app  = platform | com_acme_shop
 status = success | failed | skipped | rolled_back
 ```
 
-هر patch موفق دوباره **اجرا نمی‌شود** مگر با `--force` روی خطا یا تغییر دستی history (توصیه نمی‌شود).
+هر patch موفق دوباره **اجرا نمی‌شود** مگر با `--force` روی خطا یا تغییر دستی history (توصیه نمی‌شود). `type=lifecycle` اجرای `onInstall` را ثبت می‌کند تا provision دوباره double-seed نکند. Uninstall/reset تاریخچهٔ patch و lifecycle را **پاک** می‌کند تا reinstall دوباره اجرا شود.
 
 ---
 
@@ -169,6 +170,7 @@ status = success | failed | skipped | rolled_back
 ## مستندات مرتبط
 
 - [Migration — مهاجرت](./migrations.md)
+- [چرخه عمر پکیج (`lifecycle.php`)](./boot-and-events.md)
 - [Seeder / Factory — داده آزمایشی](../eloquent-orm/factories.md)
 - [CLI — خط فرمان](../start/cli-reference.md)
 
