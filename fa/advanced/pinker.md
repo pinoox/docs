@@ -26,6 +26,7 @@ pinker/
 ```
 pinker/config/          ← config bake‌شده (غیر env-sensitive)
 pinker/state/config/    ← override بعد از نصب (مثلاً database)
+pinker/state/identity.php  ← Pinoox ID پایدار همین نصب
 ```
 
 ---
@@ -133,6 +134,7 @@ php pinoox pinker:rebuild com_acme_shop
 ## نکات
 
 - `pinker/state/` را دستی edit نکنید — installer آنجا می‌نویسد.
+- `pinker/state/identity.php` شناسهٔ نصب است؛ داخل ایمیج bake نشود. جزئیات: [Pinoox ID](./pinoox-id.md).
 - در development معمولاً cache runtime خاموش است؛ فقط بعد از تغییر سنگین rebuild کنید.
 - `.pinx` می‌تواند cache از قبل build‌شده را حمل کند؛ روی سرور مقصد یک بار `cache:build --only=pinker` بزنید.
 
@@ -141,6 +143,7 @@ php pinoox pinker:rebuild com_acme_shop
 ## مستندات مرتبط
 
 - [پیکربندی](../basic/config.md)
+- [Pinoox ID](./pinoox-id.md)
 - [قالب Twig](../basic/templates.md)
 - [Kernel و pipeline بوت](./kernel.md)
 - [CLI — خط فرمان](../start/cli-reference.md)

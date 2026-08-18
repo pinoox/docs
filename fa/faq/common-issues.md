@@ -153,6 +153,14 @@ php pinoox test com_my_shop
 
 ---
 
+## استیج کپی‌شده از پروداکشن همان Pinoox ID را دارد
+
+**علائم:** هاب، لایسنس یا تله‌متری استیج را با پروداکشن یکی می‌گیرد.
+
+**راه‌حل:** روی کپی، فایل `pinker/state/identity.php` را حذف کنید و یک‌بار boot کنید. [Pinoox ID](../advanced/pinoox-id.md) جدید ساخته می‌شود. کپی `pinker/state/` عمداً هویت نصب را هم کپی می‌کند.
+
+---
+
 ## مستندات مرتبط
 
 - [نصب و راه‌اندازی](../start/installing-pinoox.md)
@@ -160,6 +168,7 @@ php pinoox test com_my_shop
 - [روتر — Routers](../basic/routers.md)
 - [پیکربندی — Config](../basic/config.md)
 - [Pinker — بیلد Pinoox](../advanced/pinker.md)
+- [Pinoox ID](../advanced/pinoox-id.md)
 - [شروع دیتابیس](../database/getting-started.md)
 - [تماس با پشتیبانی](./contact-support.md)
 

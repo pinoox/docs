@@ -26,6 +26,7 @@ At project level:
 ```
 pinker/config/          ← baked config (non env-sensitive)
 pinker/state/config/    ← post-install overrides (e.g. database)
+pinker/state/identity.php  ← stable Pinoox ID for this install
 ```
 
 ---
@@ -132,7 +133,8 @@ php pinoox pinker:rebuild com_acme_shop
 
 ## Tips
 
-- Do not edit `pinker/state/` manually — the installer writes there.
+- Do not edit `pinker/state/` config overlays manually — the installer writes there.
+- `pinker/state/identity.php` is the install Pinoox ID; do not bake it into images. See [Pinoox ID](./pinoox-id.md).
 - In development runtime cache is usually off; rebuild only after heavy changes.
 - `.pinx` can ship pre-built cache; on the target server run `cache:build --only=pinker` once.
 
@@ -141,6 +143,7 @@ php pinoox pinker:rebuild com_acme_shop
 ## Related docs
 
 - [Config](../basic/config.md)
+- [Pinoox ID](./pinoox-id.md)
 - [Twig Templates](../basic/templates.md)
 - [Kernel and boot pipeline](./kernel.md)
 - [CLI Reference](../start/cli-reference.md)

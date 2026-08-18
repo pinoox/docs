@@ -29,6 +29,7 @@ Pinoox 3.x loads global helpers from `pincore/functions/`. For day-to-day app de
 | `alias()` | Flow/class alias | `alias('auth')` |
 | `jalali()`, `gregorian()`, `date_display()` | Date / calendar | `date_display($time, 'datetime')` |
 | `event()`, `event_listen()`, `event_has()`, `event_fake()` | Dispatch / listen / test events | `event('order.register', ['id' => 12])` |
+| `pinoox_id()` | Stable per-install Pinoox ID | `pinoox_id()` |
 
 For HTML in controllers use **`View::render()`** (same as system apps). The `view()` helper exists but prefer the Portal in controllers.
 
@@ -141,6 +142,21 @@ Full guide: [Events](./events.md).
 
 ---
 
+## Pinoox ID
+
+Stable identifier for this install — created on first boot:
+
+```php
+use Pinoox\Portal\Identity;
+
+$id = pinoox_id();
+$id = Identity::id();
+```
+
+Full guide: [Pinoox ID](./pinoox-id.md).
+
+---
+
 ## Date and calendar
 
 ```php
@@ -204,6 +220,7 @@ In addition to PHP helpers, these are available in Twig:
 - [Path](../basic/path.md)
 - [Language](../basic/language.md)
 - [Events](./events.md)
+- [Pinoox ID](./pinoox-id.md)
 - [Services](./services.md)
 
 ---

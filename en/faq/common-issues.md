@@ -153,6 +153,14 @@ Details: [Getting started with testing](../test/getting-started.md)
 
 ---
 
+## Staging copied from production shares the same Pinoox ID
+
+**Symptoms:** Hub, license, or telemetry treats staging as production.
+
+**Fix:** Delete `pinker/state/identity.php` on the copy and boot once. A new [Pinoox ID](../advanced/pinoox-id.md) is created. Copying `pinker/state/` copies the install identity on purpose.
+
+---
+
 ## Related docs
 
 - [Installing Pinoox](../start/installing-pinoox.md)
@@ -160,6 +168,7 @@ Details: [Getting started with testing](../test/getting-started.md)
 - [Routers](../basic/routers.md)
 - [Config](../basic/config.md)
 - [Pinoox Baker (Pinker)](../advanced/pinker.md)
+- [Pinoox ID](../advanced/pinoox-id.md)
 - [Database getting started](../database/getting-started.md)
 - [Contact support](./contact-support.md)
 

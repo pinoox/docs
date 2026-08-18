@@ -66,6 +66,7 @@ Read these in order if you are building a new app.
 ## Build, Runtime, And Advanced Features
 
 - [Pinker and cache](./en/advanced/pinker.md)
+- [Pinoox ID (install identity)](./en/advanced/pinoox-id.md)
 - [Patches for data updates](./en/advanced/patches.md)
 - [Scheduling](./en/advanced/schedule.md)
 - [App services](./en/advanced/services.md)

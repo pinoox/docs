@@ -62,6 +62,7 @@
 ### مفاهیم پیشرفته
 
 #### [Pinker و Cache](./advanced/pinker.md)
+#### [Pinoox ID (هویت نصب)](./advanced/pinoox-id.md)
 #### [Patch (به‌روزرسانی داده)](./advanced/patches.md)
 
 #### [سرویس‌های اپ (Component + Portal)](./advanced/services.md)

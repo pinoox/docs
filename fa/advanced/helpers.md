@@ -29,6 +29,7 @@
 | `alias()` | Flow/class alias | `alias('auth')` |
 | `jalali()`, `gregorian()`, `date_display()` | تاریخ / تقویم | `date_display($time, 'datetime')` |
 | `event()`, `event_listen()`, `event_has()`, `event_fake()` | ارسال / گوش‌دادن / تست رویداد | `event('order.register', ['id' => 12])` |
+| `pinoox_id()` | شناسه پایدار همین نصب | `pinoox_id()` |
 
 برای رندر HTML در کنترلر از **`View::render()`** استفاده کنید (مثل اپ‌های سیستمی). تابع `view()` هم وجود دارد اما در کنترلر Portal را ترجیح دهید.
 
@@ -138,6 +139,21 @@ event_listen(function (OrderPlaced $event) {
 
 ---
 
+## Pinoox ID
+
+شناسه پایدار همین نصب — در اولین boot ساخته می‌شود:
+
+```php
+use Pinoox\Portal\Identity;
+
+$id = pinoox_id();
+$id = Identity::id();
+```
+
+راهنمای کامل: [Pinoox ID](./pinoox-id.md).
+
+---
+
 ## تاریخ و تقویم
 
 ```php
@@ -199,6 +215,7 @@ function format_price(float $amount): string
 - [مسیر — Path](../basic/path.md)
 - [زبان](../basic/language.md)
 - [رویدادها (Events)](./events.md)
+- [Pinoox ID](./pinoox-id.md)
 - [سرویس‌ها](services.md)
 
 ---
