@@ -4,7 +4,7 @@
 
 How Pinoox boots an app, resolves controllers, and caches production metadata — while keeping **Portal / HMVC / Flow** as the core architecture.
 
-For registering routes, listeners, and plugins in `boot.php`, see [boot.php and events](./boot-and-events.md).
+For registering routes, listeners, and plugins in `boot.php`, see [boot.php and events](./boot-and-events.md). Domain events and auto-discovery: [Events](./events.md).
 
 ---
 
@@ -157,6 +157,7 @@ No breaking changes: container DI is **opt-in**.
 ## Related docs
 
 - [boot.php and events](./boot-and-events.md)
+- [Events](./events.md)
 - [Pinker and cache](./pinker.md)
 - [Flows](../basic/flows.md)
 - [app.php manifest](../start/app-manifest.md)

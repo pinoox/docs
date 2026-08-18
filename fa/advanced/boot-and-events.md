@@ -408,14 +408,12 @@ return [
 
 ## Portal Event
 
+رویداد دامنه، نام رشته‌ای، auto-discovery و helperها: **[رویدادها (Events)](./events.md)**.
+
 ```php
-use Pinoox\Portal\Event;
-
-Event::dispatch($event, OrderPlaced::NAME);
-Event::listen(OrderPlaced::NAME, SendOrderEmail::class);
+event('order.register', ['id' => 12]);
+OrderPlaced::dispatch($orderId, $email);
 ```
-
-در [ایمیل](./mail.md) از Event برای جدا کردن ارسال از کنترلر استفاده شده است.
 
 **Flow** = قبل از کنترلر (middleware). **Event** = بعد از عمل (side effect).
 
@@ -542,6 +540,7 @@ Pinx::resetApp('com_acme_shop');
 ## مستندات مرتبط
 
 - [Kernel و pipeline بوت](./kernel.md)
+- [رویدادها (Events)](./events.md)
 - [زمان‌بندی — Schedule](./schedule.md)
 - [Patch](./patches.md)
 - [فلو — Flow](../basic/flows.md)

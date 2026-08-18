@@ -173,6 +173,7 @@ In CI, configure `.env.testing` or `APP_ENV=test` when needed.
 - [Browser (HTML) tests](./browser-tests.md)
 - [Database tests](./database.md)
 - [Mocking](./mocking.md)
+- [Events](../advanced/events.md)
 - [Your first app](../start/your-first-app.md)
 - [Project structure](../start/structure.md)
 

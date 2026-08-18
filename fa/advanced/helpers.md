@@ -28,6 +28,7 @@
 | `_env()` | متغیر محیط | `_env('APP_DEBUG', false)` |
 | `alias()` | Flow/class alias | `alias('auth')` |
 | `jalali()`, `gregorian()`, `date_display()` | تاریخ / تقویم | `date_display($time, 'datetime')` |
+| `event()`, `event_listen()`, `event_has()`, `event_fake()` | ارسال / گوش‌دادن / تست رویداد | `event('order.register', ['id' => 12])` |
 
 برای رندر HTML در کنترلر از **`View::render()`** استفاده کنید (مثل اپ‌های سیستمی). تابع `view()` هم وجود دارد اما در کنترلر Portal را ترجیح دهید.
 
@@ -119,6 +120,24 @@ $css = assets('dist/panel.css');
 
 ---
 
+## رویدادها
+
+```php
+event('order.register', ['id' => 12, 'user_id' => 4]);
+event_listen('order.register', function ($event) {
+    $id = $event->get('id');
+});
+
+OrderPlaced::dispatch($orderId, $email);
+event_listen(function (OrderPlaced $event) {
+    // type-hint کافی است
+});
+```
+
+راهنمای کامل: [رویدادها](./events.md).
+
+---
+
 ## تاریخ و تقویم
 
 ```php
@@ -179,6 +198,7 @@ function format_price(float $amount): string
 - [URL — آدرس](../basic/url.md)
 - [مسیر — Path](../basic/path.md)
 - [زبان](../basic/language.md)
+- [رویدادها (Events)](./events.md)
 - [سرویس‌ها](services.md)
 
 ---

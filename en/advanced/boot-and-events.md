@@ -412,14 +412,12 @@ For the full boot pipeline stages, dual-container model, and controller construc
 
 ## Event portal
 
+Domain events, named string events, auto-discovery, and helpers: **[Events](./events.md)**.
+
 ```php
-use Pinoox\Portal\Event;
-
-Event::dispatch($event, OrderPlaced::NAME);
-Event::listen(OrderPlaced::NAME, SendOrderEmail::class);
+event('order.register', ['id' => 12]);
+OrderPlaced::dispatch($orderId, $email);
 ```
-
-See [Email](./mail.md) for decoupling mail from controllers.
 
 **Flow** = before the controller (middleware). **Event** = after an action (side effects).
 
@@ -558,6 +556,7 @@ Other apps / plugins listen from their `boot.php` (especially `boot-global`). Th
 ## Related docs
 
 - [Kernel and boot pipeline](./kernel.md)
+- [Events](./events.md)
 - [Schedule](./schedule.md)
 - [Patches](./patches.md)
 - [Flows](../basic/flows.md)

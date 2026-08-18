@@ -28,6 +28,7 @@ Pinoox 3.x loads global helpers from `pincore/functions/`. For day-to-day app de
 | `_env()` | Environment variable | `_env('APP_DEBUG', false)` |
 | `alias()` | Flow/class alias | `alias('auth')` |
 | `jalali()`, `gregorian()`, `date_display()` | Date / calendar | `date_display($time, 'datetime')` |
+| `event()`, `event_listen()`, `event_has()`, `event_fake()` | Dispatch / listen / test events | `event('order.register', ['id' => 12])` |
 
 For HTML in controllers use **`View::render()`** (same as system apps). The `view()` helper exists but prefer the Portal in controllers.
 
@@ -122,6 +123,24 @@ $css = assets('dist/panel.css');
 
 ---
 
+## Events
+
+```php
+event('order.register', ['id' => 12, 'user_id' => 4]);
+event_listen('order.register', function ($event) {
+    $id = $event->get('id');
+});
+
+OrderPlaced::dispatch($orderId, $email);
+event_listen(function (OrderPlaced $event) {
+    // type-hint is enough
+});
+```
+
+Full guide: [Events](./events.md).
+
+---
+
 ## Date and calendar
 
 ```php
@@ -184,6 +203,7 @@ In addition to PHP helpers, these are available in Twig:
 - [URL](../basic/url.md)
 - [Path](../basic/path.md)
 - [Language](../basic/language.md)
+- [Events](./events.md)
 - [Services](./services.md)
 
 ---

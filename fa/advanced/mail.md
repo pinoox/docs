@@ -65,14 +65,17 @@ final class MailService
 
 ## رویداد و Listener
 
+کلاس‌ها را در `Event/` و `Listener/` بگذارید — موقع بوت خودکار کشف می‌شوند. ثبت در `boot.php` لازم نیست.
+
 ```php
 <?php
-namespace App\com_acme_shop\Component\Event;
+// Event/OrderPlaced.php
+namespace App\com_acme_shop\Event;
 
-final class OrderPlaced
+use Pinoox\Component\Event\Event;
+
+class OrderPlaced extends Event
 {
-    public const NAME = 'shop.order.placed';
-
     public function __construct(
         public readonly int $orderId,
         public readonly string $customerEmail,
@@ -82,15 +85,16 @@ final class OrderPlaced
 
 ```php
 <?php
-namespace App\com_acme_shop\Component\Listener;
+// Listener/SendOrderConfirmation.php
+namespace App\com_acme_shop\Listener;
 
-use App\com_acme_shop\Component\Event\OrderPlaced;
+use App\com_acme_shop\Event\OrderPlaced;
 use App\com_acme_shop\Component\MailService;
 use Pinoox\Portal\View;
 
-final class SendOrderConfirmation
+class SendOrderConfirmation
 {
-    public function __invoke(OrderPlaced $event): void
+    public function handle(OrderPlaced $event): void
     {
         $html = View::render('emails/order-confirm.twig', [
             'order_id' => $event->orderId,
@@ -105,38 +109,16 @@ final class SendOrderConfirmation
 }
 ```
 
----
-
-## ثبت Listener در boot.php
-
-```php
-<?php
-use App\com_acme_shop\Component\Event\OrderPlaced;
-use App\com_acme_shop\Component\Listener\SendOrderConfirmation;
-use Pinoox\Component\AppEvent\AppRegister;
-
-return function (AppRegister $register): void {
-    $register->listen(OrderPlaced::NAME, SendOrderConfirmation::class);
-};
-```
-
-یا در `app.php`:
-
-```php
-'event' => [
-    OrderPlaced::NAME => SendOrderConfirmation::class,
-],
-```
+listener اضافه را می‌توانید در `boot.php` یا `events.listen` در `app.php` ثبت کنید. راهنمای کامل: [رویدادها](./events.md).
 
 ---
 
 ## فراخوانی از کنترلر
 
 ```php
-use App\com_acme_shop\Component\Event\OrderPlaced;
+use App\com_acme_shop\Event\OrderPlaced;
 use Pinoox\Component\Http\Request;
 use Pinoox\Component\Kernel\Controller\ApiController;
-use Pinoox\Portal\Event;
 
 class CheckoutController extends ApiController
 {
@@ -144,7 +126,7 @@ class CheckoutController extends ApiController
     {
         $order = $this->createOrder($request);
 
-        Event::dispatch(new OrderPlaced($order->id, $order->email), OrderPlaced::NAME);
+        OrderPlaced::dispatch($order->id, $order->email);
 
         return $this->ok(['order_id' => $order->id], 'order.created');
     }
@@ -175,6 +157,7 @@ class CheckoutController extends ApiController
 ## مستندات مرتبط
 
 - [سرویس‌های اپ](./services.md)
+- [رویدادها (Events)](./events.md)
 - [رویدادها و boot.php](./boot-and-events.md)
 - [کنترلر — Controllers](../basic/controllers.md)
 - [View و Twig](../basic/views.md)

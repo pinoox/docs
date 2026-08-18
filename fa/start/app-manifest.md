@@ -29,10 +29,11 @@
 | `boot-global` | boot در هر درخواست |
 | `extends` | boot وقتی اپ میزبان boot شد |
 | `lifecycle` | اجرای `lifecycle.php` موقع نصب/آپدیت/حذف/ریست (`true` / `false` / مسیر سفارشی) |
+| `events` | کشف خودکار `Listener/` (`true`، پیش‌فرض)، خاموش (`false`)، یا map: `discover`، `path`، `listen`، `subscribe` — [رویدادها](../advanced/events.md) |
 | `loader` | فایل‌های اضافه (`func.php`) |
 | `depends` | اپ‌های پیش‌نیاز / اختیاری — [وابستگی اپ‌ها](./app-depends.md) |
 
-جزئیات boot: [boot.php و رویدادها](../advanced/boot-and-events.md) (شامل چرخه عمر پکیج).
+جزئیات boot: [boot.php و رویدادها](../advanced/boot-and-events.md) (شامل چرخه عمر پکیج). رویداد دامنه: [رویدادها](../advanced/events.md).
 
 ---
 
@@ -137,6 +138,8 @@ return [
 ## مستندات مرتبط
 
 - [ساختار پوشه‌بندی](../start/structure.md)
+- [boot.php و رویدادها](../advanced/boot-and-events.md)
+- [رویدادها (Events)](../advanced/events.md)
 - [وابستگی اپ‌ها](./app-depends.md)
 - [کانتکست تم](../basic/theme-contexts.md)
 - [مانیفست تم (`theme.php`)](../basic/theme-manifest.md)

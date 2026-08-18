@@ -173,6 +173,7 @@ config('~pinoox')->get('mode'); // 'test'
 - [تست مرورگر (HTML)](./browser-tests.md)
 - [تست دیتابیس](./database.md)
 - [Mocking — شبیه‌سازی](./mocking.md)
+- [رویدادها (Events)](../advanced/events.md)
 - [ساخت اولین اپلیکیشن](../start/your-first-app.md)
 - [ساختار پوشه‌بندی](../start/structure.md)
 

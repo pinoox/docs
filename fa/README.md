@@ -66,6 +66,7 @@
 
 #### [سرویس‌های اپ (Component + Portal)](./advanced/services.md)
 #### [توابع کمکی سراسری (Helpers)](./advanced/helpers.md)
+#### [رویدادها (Events)](./advanced/events.md)
 #### [ارسال ایمیل](./advanced/mail.md)
 #### [HTTP Client](./advanced/http-client.md)
 #### [Rate Limiter](./advanced/rate-limiter.md)

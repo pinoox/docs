@@ -88,6 +88,28 @@ $logger->shouldReceive('info')->once()->with('order.created');
 
 ---
 
+## Fake رویدادها
+
+dispatchها را ثبت کنید بدون اجرای listener. راهنمای کامل: [رویدادها](../advanced/events.md#testing).
+
+```php
+use App\com_acme_shop\Event\OrderPlaced;
+use Pinoox\Portal\Event;
+
+it('dispatches OrderPlaced on checkout', function () {
+    event_fake(OrderPlaced::class);
+
+    // … checkout …
+
+    Event::assertDispatched(OrderPlaced::class);
+    Event::dontFake();
+});
+```
+
+`event_fake()` بدون آرگومان همهٔ رویدادها را fake می‌کند (از جمله رویدادهای هسته). لیست کلاس/نام بدهید و در پایان تست حتماً `Event::dontFake()` را صدا بزنید.
+
+---
+
 ## اجرا
 
 ```bash
@@ -111,6 +133,7 @@ php pinoox test com_my_shop -f OrderService
 - [تست HTTP](./http-tests.md)
 - [تست Console](./console-tests.md)
 - [Portal — پورتال](../basic/portal.md)
+- [رویدادها (Events)](../advanced/events.md)
 - [سرویس‌ها](../advanced/services.md)
 
 ---

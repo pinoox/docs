@@ -70,6 +70,7 @@ Read these in order if you are building a new app.
 - [Scheduling](./en/advanced/schedule.md)
 - [App services](./en/advanced/services.md)
 - [Global helpers](./en/advanced/helpers.md)
+- [Events](./en/advanced/events.md)
 - [Mail](./en/advanced/mail.md)
 - [HTTP client](./en/advanced/http-client.md)
 - [Rate Limiter](./en/advanced/rate-limiter.md)
