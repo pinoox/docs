@@ -6,13 +6,13 @@
 
 **Pinroll** (`pinoox/pinroll`) builds releases, ships them to **hosts**, and installs them via **PinGate**. It is a Composer library; commands register on install.
 
-Install as a **production** dependency (`composer require pinoox/pinroll`), not `require-dev` — PinGate needs it on the host.
+Install as **dev** (`composer require --dev pinoox/pinroll`). The host does not need Pinroll in `vendor/` — `pingate.php` uses pincore.
 
 | Concept | Meaning |
 |---------|---------|
 | **Host** | Deploy destination (`production`, …) — config key is the name |
 | **`via`** | Transport: `ftp`, `ssh`, `pinion`, `local` |
-| **PinGate** | Host HTTP API: `pingate.php` + `gate/` |
+| **PinGate** | Host HTTP API: one file `pingate.php` (`?route=`) |
 | **Bundle** | Optional build recipe (`--bundle=…`) |
 
 ---
@@ -55,9 +55,8 @@ flowchart LR
 | Layer | Location |
 |-------|----------|
 | Engine | `pinoox/pinroll` |
-| Project config | `pinroll/pinroll.config.php` |
+| Project config | `.pinoox/pinroll.config.php` |
 | PinGate entry | `{deploy_path}/pingate.php` |
-| PinGate app | `{deploy_path}/gate/` |
 | Runtime | `storage/pinroll/` |
 | Local build artifacts | `apps/{package}/pinx/export/` |
 
@@ -67,7 +66,9 @@ flowchart LR
 
 ```bash
 php pinoox pinroll:init
-php pinoox pinroll:connect              # setup once; later verifies
+php pinoox pinroll:provision           # blank host
+php pinoox pinroll:connect             # existing site
+php pinoox pinroll:deploy --full       # platform + every app
 php pinoox pinroll:apps --apps=com_pinoox_shop
 php pinoox pinroll:vendor --push        # production vendor.zip → host (PlatformComposer)
 php pinoox pinroll:check

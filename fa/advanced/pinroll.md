@@ -6,13 +6,13 @@
 
 **Pinroll** (`pinoox/pinroll`) release می‌سازد، به **هاست** می‌فرستد و از طریق **PinGate** نصب می‌کند. یک کتابخانه Composer است؛ دستورات با نصب ثبت می‌شوند.
 
-به‌عنوان وابستگی **production** نصب کنید (`composer require pinoox/pinroll`)، نه فقط `require-dev` — PinGate روی هاست به آن نیاز دارد.
+به‌صورت **dev** نصب کنید (`composer require --dev pinoox/pinroll`). هاست به Pinroll داخل `vendor/` نیاز ندارد — `pingate.php` از pincore استفاده می‌کند.
 
 | مفهوم | معنی |
 |-------|------|
 | **Host** | مقصد دیپلوی (`production`، …) — کلید کانفیگ همان نام است |
 | **`via`** | ترنسپورت: `ftp`، `ssh`، `pinion`، `local` |
-| **PinGate** | API روی هاست: `pingate.php` + `gate/` |
+| **PinGate** | API روی هاست: یک فایل `pingate.php` (`?route=`) |
 | **Bundle** | دستور ساخت اختیاری (`--bundle=…`) |
 
 ---
@@ -55,9 +55,8 @@ flowchart LR
 | لایه | مسیر |
 |------|------|
 | موتور | `pinoox/pinroll` |
-| کانفیگ پروژه | `pinroll/pinroll.config.php` |
+| کانفیگ پروژه | `.pinoox/pinroll.config.php` |
 | ورودی PinGate | `{deploy_path}/pingate.php` |
-| اپ PinGate | `{deploy_path}/gate/` |
 | Runtime | `storage/pinroll/` |
 | خروجی بیلد لوکال | `apps/{package}/pinx/export/` |
 
@@ -67,7 +66,9 @@ flowchart LR
 
 ```bash
 php pinoox pinroll:init
-php pinoox pinroll:connect              # بار اول setup؛ بعداً فقط verify
+php pinoox pinroll:provision           # هاست خالی
+php pinoox pinroll:connect             # سایت موجود
+php pinoox pinroll:deploy --full       # پلتفرم + همه اپ‌ها
 php pinoox pinroll:apps --apps=com_pinoox_shop
 php pinoox pinroll:vendor --push        # vendor.zip production → هاست (PlatformComposer)
 php pinoox pinroll:check

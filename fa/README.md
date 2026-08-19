@@ -88,7 +88,7 @@
 
 ### دیپلوی (Deploy)
 
-#### [Pinroll — انتشار و دیپلوی](./deploy/pinroll.md)
+#### [Pinroll — انتشار و دیپلوی](./deploy/pinroll.md) (هاست خالی، `--full`، کانفیگ و env)
 
 ### کار با دیتابیس
 
