@@ -54,7 +54,8 @@ flowchart LR
 | Layer | Location |
 |-------|----------|
 | Engine | `pinoox/pinroll` |
-| Project config | `.pinoox/pinroll.config.php` |
+| Canonical config | library `config/pinroll.php` |
+| Project overlay | `.pinoox/pinroll.config.php` (gitignored) |
 | PinGate entry | `{deploy_path}/pingate.php` |
 | Runtime | `storage/pinroll/` |
 | Local build artifacts | `apps/{package}/pinx/export/` |
@@ -67,6 +68,7 @@ flowchart LR
 php pinoox pinroll:init
 php pinoox pinroll:provision           # blank host
 php pinoox pinroll:connect             # existing site
+php pinoox pinroll:config              # resolved host (token redacted)
 php pinoox pinroll:deploy --full       # platform + every app
 php pinoox pinroll:setup               # migrate + patch
 php pinoox pinroll:rollback

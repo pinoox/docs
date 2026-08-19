@@ -54,7 +54,8 @@ flowchart LR
 | لایه | مسیر |
 |------|------|
 | موتور | `pinoox/pinroll` |
-| کانفیگ پروژه | `.pinoox/pinroll.config.php` |
+| کانفیگ canonical | `config/pinroll.php` کتابخانه |
+| Overlay پروژه | `.pinoox/pinroll.config.php` (gitignore) |
 | ورودی PinGate | `{deploy_path}/pingate.php` |
 | Runtime | `storage/pinroll/` |
 | خروجی بیلد لوکال | `apps/{package}/pinx/export/` |
@@ -67,6 +68,7 @@ flowchart LR
 php pinoox pinroll:init
 php pinoox pinroll:provision           # هاست خالی
 php pinoox pinroll:connect             # سایت موجود
+php pinoox pinroll:config              # هاست resolveشده (token سانسور)
 php pinoox pinroll:deploy --full       # پلتفرم + همه اپ‌ها
 php pinoox pinroll:setup               # migrate + patch
 php pinoox pinroll:rollback

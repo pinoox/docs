@@ -9,7 +9,7 @@ Install it on the **dev machine**. The host does **not** need Pinroll in `vendor
 ```bash
 composer require --dev pinoox/pinroll
 php pinoox pinroll:init
-# fill PINROLL_* in .env (FTP/SSH + site URL)
+# fill FTP/SSH in .pinoox/pinroll.config.php or PINROLL_* in .env
 ```
 
 Then pick a scenario. Full reference is in [Advanced](#advanced).
@@ -72,7 +72,7 @@ php pinoox pinroll:check
 php pinoox pinroll:deploy
 ```
 
-`pinroll:connect` asks for deploy path + site URL, uploads PinGate, and verifies. If the host is already configured, it only checks connectivity (`--reset` to redo).
+`pinroll:connect` asks for deploy path + site origin (e.g. `https://pinoox.com`), uploads PinGate, and writes **site + token** into `.pinoox/pinroll.config.php`. If the host is already configured, it only checks connectivity (`--reset` to redo).
 
 ### 3. Update platform + every app
 
@@ -156,7 +156,8 @@ flowchart LR
 | Layer | Location |
 |-------|----------|
 | Engine | `pinoox/pinroll` |
-| Project config | `.pinoox/pinroll.config.php` (legacy: `pinroll/pinroll.config.php`) |
+| Canonical config | `vendor/pinoox/pinroll/config/pinroll.php` (complete schema) |
+| Project overlay | `.pinoox/pinroll.config.php` (gitignored with `.pinoox/`) — any override, including secrets |
 | PinGate | `{deploy_path}/pingate.php` |
 | Runtime | `storage/pinroll/` |
 | Local build | `apps/{package}/pinx/export/` |
@@ -165,71 +166,56 @@ The host does **not** need Pinroll in `vendor/`. `pingate.php` installs with pin
 
 ### Configuration
 
+There is **one complete config**: `vendor/pinoox/pinroll/config/pinroll.php` inside the Pinroll library (defaults for globals, provision, build, and `hosts.production`).
+
+The project file is an **optional overlay**, not a generated clone:
+
+| File | Git | Role |
+|------|-----|------|
+| Library `config/pinroll.php` | in the package | Canonical schema |
+| `.pinoox/pinroll.config.php` | ignored (whole `.pinoox/`) | Any override, including `gate.site`, `gate.token`, FTP password |
+| `.env` `PINROLL_*` | ignored | Optional CI overlay (last wins) |
+
 ```bash
 php pinoox pinroll:init
+php pinoox pinroll:config    # resolved host (token redacted)
 ```
 
-Creates `.pinoox/pinroll.config.php` and `.env` stubs. Build recipes are auto-detected from `apps/`. Optional custom recipes: `pinroll/bundles/{name}.php` with `--bundle={name}`.
+`pinroll:init` writes a **short overlay stub** (commented examples). Library defaults are enough to run; `pinroll:connect` then patches the overlay.
 
 ```php
 <?php
 
+/**
+ * Pinroll overlay — gitignored with .pinoox/
+ * Canonical schema: vendor/pinoox/pinroll/config/pinroll.php
+ */
 return [
-    'default_host' => 'production',
-
-    'keep' => 2,
-    'store' => 'both',      // local | remote | both
-    'auto_clean' => true,
-
-    'lang' => env('PINROLL_LANG', 'en'),
-
-    'provision' => [
-        'db' => [
-            'host' => env('PINROLL_DB_HOST', 'localhost'),
-            'database' => env('PINROLL_DB_DATABASE', 'pinoox'),
-            'username' => env('PINROLL_DB_USERNAME', ''),
-            'password' => env('PINROLL_DB_PASSWORD', ''),
-            'connection' => env('PINROLL_DB_CONNECTION', 'mysql'),
-            'port' => env('PINROLL_DB_PORT', '3306'),
-            'prefix' => env('PINROLL_DB_PREFIX', 'pin_'),
-            'timezone' => env('PINROLL_DB_TIMEZONE', '+03:30'),
-        ],
-        'user' => [
-            'fname' => env('PINROLL_ADMIN_FNAME', 'support'),
-            'lname' => env('PINROLL_ADMIN_LNAME', 'pinoox'),
-            'email' => env('PINROLL_ADMIN_EMAIL', 'info@pinoox.com'),
-            'username' => env('PINROLL_ADMIN_USERNAME', 'admin'),
-            'password' => env('PINROLL_ADMIN_PASSWORD', '123456'),
-        ],
-    ],
-
-    'build' => [
-        'exclude' => [],
-        'include' => [],
-    ],
-
     'hosts' => [
         'production' => [
-            'deploy_path' => 'public_html',
-            'via' => 'ftp',
-            'apps' => ['com_pinoox_shop'],
             'gate' => [
-                'url' => env('PINROLL_PRODUCTION_URL', ''),
-                'token' => env('PINROLL_PRODUCTION_TOKEN', ''),
+                'site' => 'https://pinoox.com',  // origin only
+                'token' => 'shared-host-token',
             ],
             'ftp' => [
-                'host' => env('PINROLL_PRODUCTION_HOST', ''),
-                'user' => env('PINROLL_PRODUCTION_USER', ''),
-                'password' => env('PINROLL_PRODUCTION_PASSWORD', ''),
-            ],
-            'hooks' => [
-                'before_install' => ['php pinoox migrate --force'],
-                'after_install' => ['php pinoox cache:build'],
+                'password' => '',
             ],
         ],
     ],
 ];
 ```
+
+Store **site origin** (`https://pinoox.com` or `https://pinoox.com/shop`), not `…/pingate.php?route=`. Pinroll appends `/pingate.php?route=` at runtime. Legacy full URLs still work.
+
+#### Shared host token
+
+PinGate stores **one hash** in `pingate.php`. The last `connect` / `gate --rotate` that uploads the file wins; everyone else gets 401.
+
+- **One token per host**, shared like an FTP password (1Password / teammate copy / CI secret).
+- First developer: `pinroll:connect` → uploads `pingate.php` + writes token to **their** overlay.
+- Others: copy the **same token** into their overlay (or `.env`). Do **not** `--rotate` unless you intend to invalidate everyone.
+
+`pinroll:connect` / `pinroll:gate` write site, token, and FTP password into the overlay — not `.env`. `.env` `PINROLL_*` still works for CI.
 
 | Key | Description |
 |-----|-------------|
@@ -237,7 +223,7 @@ return [
 | `deploy_path` | Deploy root relative to FTP/SSH login |
 | `hostname` | Connection address when it differs from transport host |
 | `via` | `ftp`, `ssh`, `pinion`, or `local` |
-| `gate.url` / `gate.token` | PinGate credentials |
+| `gate.site` / `gate.token` | Site origin + shared PinGate token |
 | `ftp` / `ssh` | Connection credentials |
 | `apps` | Default packages for push/install |
 | `hooks` | Shell commands around push / install / rollback |
@@ -245,12 +231,16 @@ return [
 | `provision` | First-time DB + admin (blank host) |
 | `build` | Extra platform zip exclude/include |
 
-Production also reads **unscoped** `.env` keys (`PINROLL_VIA`, `PINROLL_DB_HOST`, …). Other hosts use `PINROLL_{HOST}_*` (example: `PINROLL_STAGING_URL`).
+Production also reads **unscoped** `.env` keys (`PINROLL_VIA`, `PINROLL_DB_HOST`, `PINROLL_SITE`, …). Other hosts use `PINROLL_{HOST}_*` (example: `PINROLL_STAGING_SITE`).
 
 ```env
 PINROLL_VIA=ftp
 PINROLL_PATH=public_html
-PINROLL_URL=https://example.com/pingate.php?route=
+PINROLL_WEB_PATH=
+PINROLL_KEEP=3
+PINROLL_STORE=remote
+PINROLL_AUTO_CLEAN=true
+PINROLL_SITE=https://example.com
 PINROLL_TOKEN=…
 PINROLL_HOST=ftp.example.com
 PINROLL_USER=…
@@ -275,7 +265,7 @@ PINROLL_BUILD_EXCLUDE=docs,tests
 PINROLL_BUILD_INCLUDE=
 ```
 
-`pinroll:connect` / `pinroll:gate` write URL + token into `.env` when needed.
+Load order: **library canonical → project overlay (deep merge) → `PINROLL_*`**. Nested host keys merge too: overlaying only `hosts.production.gate.site` does not wipe library `via` / `ftp` defaults.
 
 Provision merge order: **CLI flags → `.env` → host `provision` → global `provision` → defaults**. Empty values do not override defaults.
 
@@ -375,7 +365,10 @@ php pinoox pinroll:apps --clear
 ```bash
 php pinoox pinroll:connect
 php pinoox pinroll:connect --reset
+php pinoox pinroll:config
 ```
+
+Writes `gate.site` (origin) + token into the overlay. `--rotate` on `pinroll:gate` mints a new hash and **invalidates teammates**.
 
 ### Local modes
 
@@ -506,9 +499,10 @@ Auth: `Authorization: Bearer {token}`. Paths are `pingate.php?route=…`.
 
 | Command | Purpose |
 |---------|---------|
-| `pinroll:init` | Scaffold `.pinoox/pinroll.config.php` |
+| `pinroll:init` | Short overlay stub in `.pinoox/pinroll.config.php` |
 | `pinroll:provision` | Blank-host install (PinGate + platform.zip + setup) |
-| `pinroll:connect` | Setup / verify host (`--reset` to redo) |
+| `pinroll:connect` | Setup / verify host (`--reset` to redo); writes site + token to overlay |
+| `pinroll:config` | Print resolved host (token redacted) |
 | `pinroll:apps` | Set `hosts.*.apps` |
 | `pinroll:vendor` | Production `vendor.zip` (`--push` to host) |
 | `pinroll:gate` | Build / upload PinGate |

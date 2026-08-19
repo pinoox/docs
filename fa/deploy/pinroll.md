@@ -9,7 +9,7 @@ Pinroll (`pinoox/pinroll`) پروژه پینوکس را به هاست می‌ف�
 ```bash
 composer require --dev pinoox/pinroll
 php pinoox pinroll:init
-# کلیدهای PINROLL_* را در .env پر کنید (FTP/SSH + URL سایت)
+# FTP/SSH را در .pinoox/pinroll.config.php یا PINROLL_* در .env پر کنید
 ```
 
 بعد یکی از سناریوها را انتخاب کنید. مرجع کامل در [پیشرفته](#پیشرفته) است.
@@ -72,7 +72,7 @@ php pinoox pinroll:check
 php pinoox pinroll:deploy
 ```
 
-`pinroll:connect` مسیر دیپلوی + URL سایت را می‌پرسد، PinGate را آپلود می‌کند و اتصال را چک می‌کند. اگر هاست از قبل تنظیم شده باشد فقط اتصال را بررسی می‌کند (`--reset` برای تکرار).
+`pinroll:connect` مسیر دیپلوی + origin سایت (مثلاً `https://pinoox.com`) را می‌پرسد، PinGate را آپلود می‌کند و **site + token** را در `.pinoox/pinroll.config.php` می‌نویسد. اگر هاست از قبل تنظیم شده باشد فقط اتصال را بررسی می‌کند (`--reset` برای تکرار).
 
 ### ۳. به‌روزرسانی پلتفرم + همه اپ‌ها
 
@@ -156,7 +156,8 @@ flowchart LR
 | لایه | مسیر |
 |------|------|
 | موتور | `pinoox/pinroll` |
-| کانفیگ پروژه | `.pinoox/pinroll.config.php` (قدیمی: `pinroll/pinroll.config.php`) |
+| کانفیگ canonical | `vendor/pinoox/pinroll/config/pinroll.php` (اسکیمای کامل) |
+| Overlay پروژه | `.pinoox/pinroll.config.php` (همراه `.pinoox/` در gitignore) — هر override از جمله اسرار |
 | PinGate | `{deploy_path}/pingate.php` |
 | Runtime | `storage/pinroll/` |
 | بیلد لوکال | `apps/{package}/pinx/export/` |
@@ -165,71 +166,56 @@ flowchart LR
 
 ### پیکربندی
 
+**یک کانفیگ کامل** وجود دارد: `vendor/pinoox/pinroll/config/pinroll.php` داخل کتابخانه Pinroll (پیش‌فرض‌های سراسری، provision، build و `hosts.production`).
+
+فایل پروژه یک **overlay اختیاری** است، نه کپی تولیدشده:
+
+| فایل | Git | نقش |
+|------|-----|------|
+| `config/pinroll.php` کتابخانه | داخل پکیج | اسکیمای canonical |
+| `.pinoox/pinroll.config.php` | نادیده (کل `.pinoox/`) | هر override از جمله `gate.site`، `gate.token`، رمز FTP |
+| `.env` `PINROLL_*` | نادیده | overlay اختیاری CI (آخرین لایه برنده است) |
+
 ```bash
 php pinoox pinroll:init
+php pinoox pinroll:config    # هاست resolveشده (token سانسور)
 ```
 
-`.pinoox/pinroll.config.php` و استاب `.env` می‌سازد. دستور ساخت از `apps/` خودکار است. دستور سفارشی اختیاری: `pinroll/bundles/{name}.php` با `--bundle={name}`.
+`pinroll:init` یک **استاب کوتاه** می‌نویسد. پیش‌فرض کتابخانه برای اجرا کافی است؛ `pinroll:connect` بعد overlay را پچ می‌کند.
 
 ```php
 <?php
 
+/**
+ * Overlay پینرول — همراه .pinoox/ در gitignore
+ * اسکیمای canonical: vendor/pinoox/pinroll/config/pinroll.php
+ */
 return [
-    'default_host' => 'production',
-
-    'keep' => 2,
-    'store' => 'both',      // local | remote | both
-    'auto_clean' => true,
-
-    'lang' => env('PINROLL_LANG', 'fa'),
-
-    'provision' => [
-        'db' => [
-            'host' => env('PINROLL_DB_HOST', 'localhost'),
-            'database' => env('PINROLL_DB_DATABASE', 'pinoox'),
-            'username' => env('PINROLL_DB_USERNAME', ''),
-            'password' => env('PINROLL_DB_PASSWORD', ''),
-            'connection' => env('PINROLL_DB_CONNECTION', 'mysql'),
-            'port' => env('PINROLL_DB_PORT', '3306'),
-            'prefix' => env('PINROLL_DB_PREFIX', 'pin_'),
-            'timezone' => env('PINROLL_DB_TIMEZONE', '+03:30'),
-        ],
-        'user' => [
-            'fname' => env('PINROLL_ADMIN_FNAME', 'support'),
-            'lname' => env('PINROLL_ADMIN_LNAME', 'pinoox'),
-            'email' => env('PINROLL_ADMIN_EMAIL', 'info@pinoox.com'),
-            'username' => env('PINROLL_ADMIN_USERNAME', 'admin'),
-            'password' => env('PINROLL_ADMIN_PASSWORD', '123456'),
-        ],
-    ],
-
-    'build' => [
-        'exclude' => [],
-        'include' => [],
-    ],
-
     'hosts' => [
         'production' => [
-            'deploy_path' => 'public_html',
-            'via' => 'ftp',
-            'apps' => ['com_pinoox_shop'],
             'gate' => [
-                'url' => env('PINROLL_PRODUCTION_URL', ''),
-                'token' => env('PINROLL_PRODUCTION_TOKEN', ''),
+                'site' => 'https://pinoox.com',  // فقط origin
+                'token' => 'shared-host-token',
             ],
             'ftp' => [
-                'host' => env('PINROLL_PRODUCTION_HOST', ''),
-                'user' => env('PINROLL_PRODUCTION_USER', ''),
-                'password' => env('PINROLL_PRODUCTION_PASSWORD', ''),
-            ],
-            'hooks' => [
-                'before_install' => ['php pinoox migrate --force'],
-                'after_install' => ['php pinoox cache:build'],
+                'password' => '',
             ],
         ],
     ],
 ];
 ```
+
+**origin سایت** را ذخیره کنید (`https://pinoox.com` یا `https://pinoox.com/shop`)، نه `…/pingate.php?route=`. Pinroll در runtime پسوند را اضافه می‌کند. URL کامل قدیمی هنوز کار می‌کند.
+
+#### توکن مشترک هاست
+
+PinGate فقط **یک hash** در `pingate.php` نگه می‌دارد. آخرین `connect` / `gate --rotate` که فایل را آپلود کند برنده است؛ بقیه 401 می‌گیرند.
+
+- **یک توکن برای هر هاست**، مثل رمز FTP (1Password / کپی هم‌تیمی / secret در CI).
+- نفر اول: `pinroll:connect` → آپلود `pingate.php` + نوشتن توکن در overlay خودش.
+- بقیه: **همان توکن** را در overlay (یا `.env`) کپی کنند. `--rotate` نزنید مگر بخواهید بقیه را از کار بیندازید.
+
+`pinroll:connect` / `pinroll:gate` مقدار site، token و رمز FTP را در overlay می‌نویسند — نه در `.env`. `.env` `PINROLL_*` برای CI همچنان کار می‌کند.
 
 | کلید | توضیح |
 |------|--------|
@@ -237,7 +223,7 @@ return [
 | `deploy_path` | ریشه دیپلوی نسبت به لاگین FTP/SSH |
 | `hostname` | آدرس اتصال اگر با host ترنسپورت فرق دارد |
 | `via` | `ftp`، `ssh`، `pinion` یا `local` |
-| `gate.url` / `gate.token` | اعتبار PinGate |
+| `gate.site` / `gate.token` | origin سایت + توکن مشترک PinGate |
 | `ftp` / `ssh` | اطلاعات اتصال |
 | `apps` | پکیج‌های پیش‌فرض push/install |
 | `hooks` | دستورات شل اطراف push / install / rollback |
@@ -245,12 +231,16 @@ return [
 | `provision` | دیتابیس + ادمین نصب اول |
 | `build` | exclude/include اضافه برای zip پلتفرم |
 
-برای production کلیدهای **بدون پیشوند هاست** هم خوانده می‌شوند (`PINROLL_VIA`، `PINROLL_DB_HOST`، …). بقیه هاست‌ها: `PINROLL_{HOST}_*`.
+برای production کلیدهای **بدون پیشوند هاست** هم خوانده می‌شوند (`PINROLL_VIA`، `PINROLL_DB_HOST`، `PINROLL_SITE`، …). بقیه هاست‌ها: `PINROLL_{HOST}_*`.
 
 ```env
 PINROLL_VIA=ftp
 PINROLL_PATH=public_html
-PINROLL_URL=https://example.com/pingate.php?route=
+PINROLL_WEB_PATH=
+PINROLL_KEEP=3
+PINROLL_STORE=remote
+PINROLL_AUTO_CLEAN=true
+PINROLL_SITE=https://example.com
 PINROLL_TOKEN=…
 PINROLL_HOST=ftp.example.com
 PINROLL_USER=…
@@ -275,7 +265,7 @@ PINROLL_BUILD_EXCLUDE=docs,tests
 PINROLL_BUILD_INCLUDE=
 ```
 
-`pinroll:connect` / `pinroll:gate` در صورت نیاز URL و token را در `.env` می‌نویسند.
+ترتیب بارگذاری: **canonical کتابخانه → overlay پروژه → `PINROLL_*`**. کلیدهای تو در توی هاست هم merge می‌شوند: فقط گذاشتن `hosts.production.gate.site` مقدار `via` / `ftp` کتابخانه را پاک نمی‌کند.
 
 ترتیب ادغام provision: **فلگ CLI → `.env` → `provision` هاست → `provision` سراسری → پیش‌فرض**. مقدار خالی پیش‌فرض را پاک نمی‌کند.
 
@@ -375,7 +365,10 @@ php pinoox pinroll:apps --clear
 ```bash
 php pinoox pinroll:connect
 php pinoox pinroll:connect --reset
+php pinoox pinroll:config
 ```
+
+`gate.site` (origin) و token را در overlay می‌نویسد. `--rotate` روی `pinroll:gate` hash جدید می‌سازد و **هم‌تیمی‌ها را از کار می‌اندازد**.
 
 ### حالت‌های local
 
@@ -503,9 +496,10 @@ php pinoox pinroll:check
 
 | دستور | کاربرد |
 |-------|--------|
-| `pinroll:init` | ساخت `.pinoox/pinroll.config.php` |
+| `pinroll:init` | استاب کوتاه overlay در `.pinoox/pinroll.config.php` |
 | `pinroll:provision` | نصب اولیه هاست خالی |
-| `pinroll:connect` | راه‌اندازی / بررسی (`--reset`) |
+| `pinroll:connect` | راه‌اندازی / بررسی (`--reset`)؛ نوشتن site + token در overlay |
+| `pinroll:config` | چاپ هاست resolveشده (token سانسور) |
 | `pinroll:apps` | تنظیم `hosts.*.apps` |
 | `pinroll:vendor` | `vendor.zip` production (`--push`) |
 | `pinroll:gate` | ساخت / آپلود PinGate |
