@@ -206,15 +206,17 @@ Build packages and deploy to configured hosts. Requires `pinoox/pinroll` and pro
 
 | Command | Purpose |
 |---------|---------|
-| `pinroll:init` | Scaffold `pinroll/pinroll.config.php` |
+| `pinroll:init` | Scaffold `.pinoox/pinroll.config.php` |
+| `pinroll:provision` | Blank-host install (PinGate + platform.zip + setup) |
 | `pinroll:connect` | Setup / verify host (`--reset` to redo) |
 | `pinroll:apps` | Set `hosts.*.apps` |
-| `pinroll:vendor` | Export `vendor/` for host install or core update |
+| `pinroll:vendor` | Production `vendor.zip` (`--push` to host) |
 | `pinroll:gate` | Build / upload PinGate |
 | `pinroll:check` | Test host / PinGate |
 | `pinroll:push` | Build and upload only |
+| `pinroll:setup` | Post-deploy migrate + patch (`--seed`, `--config`, `--dry-run`) |
 | `pinroll:install` | Install staged release on host |
-| `pinroll:deploy` | Push + install (go live) |
+| `pinroll:deploy` | Push + install (go live); `--full` = platform + every app |
 | `pinroll:rollback` | Rollback via PinGate or local re-push |
 | `pinroll:cleanup` | Prune old archives (`--local`, `--dry-run`) |
 | `pinroll:build` | Build only |
@@ -224,9 +226,10 @@ Build packages and deploy to configured hosts. Requires `pinoox/pinroll` and pro
 
 ```bash
 php pinoox pinroll:init
-php pinoox pinroll:connect
-php pinoox pinroll:apps --apps=com_pinoox_shop
-php pinoox pinroll:deploy
+php pinoox pinroll:provision          # blank host
+php pinoox pinroll:connect            # existing site
+php pinoox pinroll:deploy --full
+php pinoox pinroll:setup
 ```
 
 See [Pinroll deploy guide](../deploy/pinroll.md).

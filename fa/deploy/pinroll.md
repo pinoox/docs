@@ -2,127 +2,226 @@
 
 [← بازگشت به فهرست](../README.md)
 
-**Pinroll** (`pinoox/pinroll`) موتور رسمی انتشار و rollout پینوکس است. پکیج اپ می‌سازد، به **هاست** می‌فرستد، از طریق **PinGate** نصب می‌کند و rollback، hook و retention دارد.
+Pinroll (`pinoox/pinroll`) پروژه پینوکس را به هاست می‌فرستد: نصب اول، به‌روزرسانی، migrate/patch و rollback.
 
-Pinroll یک **کتابخانه Composer** است — نه یک اپ پینوکس. دستورات CLI با نصب پکیج ثبت می‌شوند.
+آن را روی **ماشین توسعه** نصب کنید. هاست به Pinroll داخل `vendor/` نیاز ندارد.
+
+```bash
+composer require --dev pinoox/pinroll
+php pinoox pinroll:init
+# کلیدهای PINROLL_* را در .env پر کنید (FTP/SSH + URL سایت)
+```
+
+بعد یکی از سناریوها را انتخاب کنید. مرجع کامل در [پیشرفته](#پیشرفته) است.
+
+---
+
+## سناریوها
+
+### ۱. هاست خالی (نصب اول)
+
+پوشه FTP/SFTP خالی — هنوز `index.php` نیست.
+
+```bash
+php pinoox pinroll:init
+# PINROLL_HOST / USER / PASSWORD / URL
+# PINROLL_DB_USERNAME / PINROLL_DB_PASSWORD (و نام دیتابیس اگر pinoox نیست)
+php pinoox pinroll:provision
+```
+
+کارش: آپلود `pingate.php` → استخراج `platform.zip` → اجرای setup نصب‌کننده (دیتابیس + ادمین).
+
+اگر ادمین را ندهید، پیش‌فرض این است:
+
+| فیلد | پیش‌فرض |
+|------|---------|
+| نام | `support` |
+| نام خانوادگی | `pinoox` |
+| ایمیل | `info@pinoox.com` |
+| نام کاربری | `admin` |
+| رمز | `123456` |
+
+در پروداکشن عوضش کنید (`PINROLL_ADMIN_*` یا `--admin-*`).
+
+بعد از setup موفق (مثل نصب‌کننده وب):
+
+- `/` → `com_pinoox_welcome`
+- `/manager` → `com_pinoox_manager`
+- `com_pinoox_installer` **غیرفعال** می‌شود
+
+به‌روزرسانی بعدی `pinroll:deploy` است، نه دوباره provision.
+
+اگر zip استخراج شد ولی setup شکست خورد:
+
+```bash
+php pinoox pinroll:provision --setup-only
+```
+
+`--force` روی `index.php` موجود extract می‌کند و setup را تکرار می‌کند. `--reupload` دوباره `platform.zip` می‌سازد.
+
+میانبر Pinx: `pinx provision`.
+
+### ۲. سایت موجود
+
+سایت از قبل بالا است. یک‌بار connect، بعد دیپلوی.
+
+```bash
+php pinoox pinroll:connect
+php pinoox pinroll:apps
+php pinoox pinroll:check
+php pinoox pinroll:deploy
+```
+
+`pinroll:connect` مسیر دیپلوی + URL سایت را می‌پرسد، PinGate را آپلود می‌کند و اتصال را چک می‌کند. اگر هاست از قبل تنظیم شده باشد فقط اتصال را بررسی می‌کند (`--reset` برای تکرار).
+
+### ۳. به‌روزرسانی پلتفرم + همه اپ‌ها
+
+```bash
+php pinoox pinroll:deploy --full
+```
+
+zip پلتفرم (`pinx:update` روی هاست) و همه اپ‌های کشف‌شده/نصب‌شده. `apps[]` هاست نادیده گرفته می‌شود مگر `--app` / `--apps` بدهید.
+
+### ۴. به‌روزرسانی یک اپ
+
+```bash
+php pinoox pinroll:deploy --app=com_pinoox_shop
+php pinoox pinroll:push --app=com_pinoox_shop     # فقط آپلود
+php pinoox pinroll:install --app=com_pinoox_shop  # نصب staged
+```
+
+### ۵. بعد از رسیدن فایل‌ها — migrate، patch، seed
+
+روی هاست (SSH به ریشه سایت) یا روی همین ماشین:
+
+```bash
+php pinoox pinroll:setup                 # migrate + patch (پلتفرم، بعد اپ‌ها)
+php pinoox pinroll:setup --dry-run
+php pinoox pinroll:setup --migrate --patch --seed
+php pinoox pinroll:setup --app=com_pinoox_shop --migrate
+```
+
+این همان `POST ?route=setup` در PinGate نیست (آن نصب اولیه است). `pinx setup` هم فرق دارد (وابستگی لوکال تک‌اپ).
+
+### ۶. Rollback
+
+```bash
+php pinoox pinroll:rollback
+php pinoox pinroll:rollback --deploy-id=20260710_091021_3f980930
+```
+
+فایل‌های **پکیج قبلی** را برمی‌گرداند. migration دیتابیس را خودکار برنمی‌گرداند.
+
+### ۷. پروژه تک‌اپ (Pinx)
+
+```bash
+composer require --dev pinoox/pinroll
+pinx provision          # هاست خالی
+pinx deploy --full      # به‌روزرسانی بعدی
+```
+
+---
+
+## پیشرفته
+
+معماری، کانفیگ، PinGate، retention و همه فلگ‌ها.
+
+### چیست؟
+
+Pinroll یک **کتابخانه Composer** است، نه یک اپ پینوکس. دستورات با نصب پکیج ثبت می‌شوند.
 
 | مفهوم | معنی |
 |-------|------|
 | **Host** | مقصد دیپلوی (`production`، `staging` — کلید آرایه همان نام است) |
 | **Transport (`via`)** | نحوه ارسال (`ftp`، `ssh`، `pinion`، `local`) |
-| **PinGate** | یک فایل عمومی روی هاست (`pingate.php`) برای install / status / rollback / vendor / نصب اولیه |
+| **PinGate** | یک فایل عمومی روی هاست (`pingate.php?route=`) برای install / status / rollback / vendor / نصب اولیه |
 | **Bundle** | دستور ساخت اختیاری؛ دیپلوی عادی اپ‌ها را خودکار تشخیص می‌دهد |
-
----
-
-## نصب
-
-روی پروژه کامل **platform**، Pinroll را روی **ماشین توسعه** نصب کنید (پیشنهاد: `require-dev`):
-
-```bash
-composer require --dev pinoox/pinroll
-```
-
-هاست به Pinroll داخل `vendor/` نیاز ندارد. `pingate.php` پکیج‌ها را با pincore (`pinx:install` / `pinx:update`) نصب می‌کند. Pinroll را فقط وقتی در `require` بگذارید که بخواهید PinGate روی سرور از کلاس‌های Pinroll استفاده کند.
-
-روی پروژه تک‌اپ (Pinx):
-
-```bash
-composer require --dev pinoox/pinroll
-pinx deploy
-pinx provision   # هاست خالی
-```
-
----
-
-## پروسه راه‌اندازی
 
 ```mermaid
 flowchart LR
-    A[pinroll:init] --> B[پر کردن .env]
-    B --> C{هاست خالی؟}
-    C -->|بله| D[pinroll:provision]
-    C -->|خیر| E[pinroll:connect]
-    E --> F[pinroll:apps]
-    F --> G[pinroll:check]
-    G --> H[pinroll:deploy]
+    subgraph dev [ماشین توسعه]
+        CLI["php pinoox pinroll:*"]
+    end
+    subgraph transport [ترنسپورت]
+        FTP[FTP]
+        SSH[SSH]
+        Pinion[Pinion]
+    end
+    subgraph remote [هاست]
+        Gate[pingate.php]
+    end
+    CLI --> transport --> Gate
 ```
 
-| مرحله | دستور | کار |
-|-------|--------|-----|
-| 1 | `php pinoox pinroll:init` | ساخت `.pinoox/pinroll.config.php` و استاب `.env` |
-| 2 | ویرایش `.env` | `PINROLL_*` برای FTP/SSH و برای هاست خالی `PINROLL_DB_*` / `PINROLL_ADMIN_*` |
-| 3الف | `php pinoox pinroll:provision` | **هاست خالی:** آپلود PinGate + zip پلتفرم، سپس setup نصب‌کننده |
-| 3ب | `php pinoox pinroll:connect` | **سایت موجود:** مسیر دیپلوی، URL، آپلود PinGate |
-| 4 | `php pinoox pinroll:apps` | پکیج‌های پیش‌فرض برای دیپلوی‌های بعدی |
-| 5 | `php pinoox pinroll:check` | بررسی اتصال و PinGate |
-| 6 | `php pinoox pinroll:deploy` | ساخت، آپلود و نصب |
-| 6ب | `php pinoox pinroll:deploy --full` | به‌روزرسانی **پلتفرم + همه اپ‌های نصب‌شده** |
+| لایه | مسیر |
+|------|------|
+| موتور | `pinoox/pinroll` |
+| کانفیگ پروژه | `.pinoox/pinroll.config.php` (قدیمی: `pinroll/pinroll.config.php`) |
+| PinGate | `{deploy_path}/pingate.php` |
+| Runtime | `storage/pinroll/` |
+| بیلد لوکال | `apps/{package}/pinx/export/` |
 
-```bash
-php pinoox pinroll:init
-# پر کردن PINROLL_* در .env
-php pinoox pinroll:provision   # بار اول روی پوشه FTP خالی
-# به‌روزرسانی‌های بعدی:
-php pinoox pinroll:deploy --full
-```
+هاست به Pinroll داخل `vendor/` نیاز ندارد. `pingate.php` با pincore (`pinx:install` / `pinx:update`) نصب می‌کند. Pinroll را فقط وقتی در `require` بگذارید که بخواهید PinGate روی سرور از کلاس‌های Pinroll استفاده کند.
 
----
-
-## راه‌اندازی پروژه
+### پیکربندی
 
 ```bash
 php pinoox pinroll:init
 ```
 
-ساختار:
-
-```
-.pinoox/
-  pinroll.config.php
-```
-
-مسیر قدیمی `pinroll/pinroll.config.php` اگر باشد هنوز خوانده می‌شود.
-
-دستور ساخت از `apps/` خودکار تشخیص داده می‌شود (برای دیپلوی عادی نیازی به `pinroll/bundles/*.php` نیست).
-
----
-
-## پیکربندی
-
-### هاست‌ها (`.pinoox/pinroll.config.php`)
+`.pinoox/pinroll.config.php` و استاب `.env` می‌سازد. دستور ساخت از `apps/` خودکار است. دستور سفارشی اختیاری: `pinroll/bundles/{name}.php` با `--bundle={name}`.
 
 ```php
 <?php
 
 return [
-    // وقتی در CLI نام هاست ننویسید
     'default_host' => 'production',
 
-    // پیش‌فرض سراسری — هر هاست می‌تواند override کند
     'keep' => 2,
     'store' => 'both',      // local | remote | both
-    'auto_clean' => true,   // بعد از install موفق، آرشیوهای قدیمی‌تر از keep پاک شوند
+    'auto_clean' => true,
+
+    'lang' => env('PINROLL_LANG', 'fa'),
+
+    'provision' => [
+        'db' => [
+            'host' => env('PINROLL_DB_HOST', 'localhost'),
+            'database' => env('PINROLL_DB_DATABASE', 'pinoox'),
+            'username' => env('PINROLL_DB_USERNAME', ''),
+            'password' => env('PINROLL_DB_PASSWORD', ''),
+            'connection' => env('PINROLL_DB_CONNECTION', 'mysql'),
+            'port' => env('PINROLL_DB_PORT', '3306'),
+            'prefix' => env('PINROLL_DB_PREFIX', 'pin_'),
+            'timezone' => env('PINROLL_DB_TIMEZONE', '+03:30'),
+        ],
+        'user' => [
+            'fname' => env('PINROLL_ADMIN_FNAME', 'support'),
+            'lname' => env('PINROLL_ADMIN_LNAME', 'pinoox'),
+            'email' => env('PINROLL_ADMIN_EMAIL', 'info@pinoox.com'),
+            'username' => env('PINROLL_ADMIN_USERNAME', 'admin'),
+            'password' => env('PINROLL_ADMIN_PASSWORD', '123456'),
+        ],
+    ],
+
+    'build' => [
+        'exclude' => [],
+        'include' => [],
+    ],
 
     'hosts' => [
         'production' => [
             'deploy_path' => 'public_html',
             'via' => 'ftp',
-
-            // پکیج‌های پیش‌فرض push/install (یا با pinroll:apps)
             'apps' => ['com_pinoox_shop'],
-
             'gate' => [
                 'url' => env('PINROLL_PRODUCTION_URL', ''),
                 'token' => env('PINROLL_PRODUCTION_TOKEN', ''),
             ],
-
             'ftp' => [
                 'host' => env('PINROLL_PRODUCTION_HOST', ''),
                 'user' => env('PINROLL_PRODUCTION_USER', ''),
                 'password' => env('PINROLL_PRODUCTION_PASSWORD', ''),
             ],
-
             'hooks' => [
                 'before_install' => ['php pinoox migrate --force'],
                 'after_install' => ['php pinoox cache:build'],
@@ -134,17 +233,17 @@ return [
 
 | کلید | توضیح |
 |------|--------|
-| `default_host` | هاست پیش‌فرض وقتی آرگومان CLI خالی است |
+| `default_host` | هاست وقتی نام در CLI نیست |
 | `deploy_path` | ریشه دیپلوی نسبت به لاگین FTP/SSH |
-| `hostname` | آدرس اتصال اختیاری اگر با host ترنسپورت فرق دارد |
-| `via` | ترنسپورت پیش‌فرض: `ftp`، `ssh`، `pinion`، `local` |
+| `hostname` | آدرس اتصال اگر با host ترنسپورت فرق دارد |
+| `via` | `ftp`، `ssh`، `pinion` یا `local` |
 | `gate.url` / `gate.token` | اعتبار PinGate |
 | `ftp` / `ssh` | اطلاعات اتصال |
-| `apps` | پکیج‌های پیش‌فرض برای push/install |
+| `apps` | پکیج‌های پیش‌فرض push/install |
 | `hooks` | دستورات شل اطراف push / install / rollback |
-| `keep` / `store` / `auto_clean` | Retention (سراسری یا per-host) |
-
-### کلیدهای `.env`
+| `keep` / `store` / `auto_clean` | Retention |
+| `provision` | دیتابیس + ادمین نصب اول |
+| `build` | exclude/include اضافه برای zip پلتفرم |
 
 برای production کلیدهای **بدون پیشوند هاست** هم خوانده می‌شوند (`PINROLL_VIA`، `PINROLL_DB_HOST`، …). بقیه هاست‌ها: `PINROLL_{HOST}_*`.
 
@@ -162,177 +261,138 @@ PINROLL_DB_HOST=localhost
 PINROLL_DB_DATABASE=pinoox
 PINROLL_DB_USERNAME=…
 PINROLL_DB_PASSWORD=…
-PINROLL_ADMIN_FNAME=آدا
-PINROLL_ADMIN_LNAME=لاولیس
-PINROLL_ADMIN_EMAIL=ada@example.com
+PINROLL_DB_CONNECTION=mysql
+PINROLL_DB_PORT=3306
+PINROLL_DB_PREFIX=pin_
+PINROLL_DB_TIMEZONE=+03:30
+PINROLL_ADMIN_FNAME=support
+PINROLL_ADMIN_LNAME=pinoox
+PINROLL_ADMIN_EMAIL=info@pinoox.com
 PINROLL_ADMIN_USERNAME=admin
-PINROLL_ADMIN_PASSWORD=…
+PINROLL_ADMIN_PASSWORD=123456
+
 PINROLL_BUILD_EXCLUDE=docs,tests
+PINROLL_BUILD_INCLUDE=
 ```
 
-ترتیب ادغام provision: **فلگ CLI → `.env` → `provision` هاست → `provision` سراسری → پیش‌فرض**.
+`pinroll:connect` / `pinroll:gate` در صورت نیاز URL و token را در `.env` می‌نویسند.
 
----
+ترتیب ادغام provision: **فلگ CLI → `.env` → `provision` هاست → `provision` سراسری → پیش‌فرض**. مقدار خالی پیش‌فرض را پاک نمی‌کند.
 
-## هاست خالی — `pinroll:provision`
+#### `deploy_path` و URL سایت
 
-یک‌بار، روی پوشهٔ **خالی** FTP/SFTP (بدون `index.php`). به‌روزرسانی بعدی `pinroll:deploy` است نه provision.
+`deploy_path` پوشه FTP در ریشه اکانت است. URL سایت **همان‌طور که وارد شده** برای PinGate استفاده می‌شود — مسیر و URL قاطی نمی‌شوند.
 
-### روش الف — فقط `.env` (غیرتعاملی)
+| پوشه FTP | URL سایت | Gate URL |
+|----------|----------|----------|
+| `apps` | `https://apps.example.com` | `https://apps.example.com/pingate.php?route=` |
+| `public_html` | `https://example.com` | `https://example.com/pingate.php?route=` |
+| `public_html/shop` | `https://example.com/shop` | `https://example.com/shop/pingate.php?route=` |
+
+مسیریابی فقط `?route=` است. از PATH_INFO (`pingate.php/push/…`) استفاده نکنید.
+
+### جزئیات provision هاست خالی
+
+یک‌بار روی پوشه **خالی**. PHP هاست باید `ZipArchive` و زمان/حافظه کافی داشته باشد (تا ۱۰ دقیقه). دیتابیس باید از **همان هاست** قابل اتصال باشد.
+
+```mermaid
+flowchart TD
+  Dev[pinroll:provision] -->|1 pingate.php| Gate[pingate.php]
+  Dev -->|2 platform.zip| Gate
+  Gate -->|"POST ?route=bootstrap"| Files["index.php vendor/ apps/"]
+  Dev -->|"POST ?route=setup"| Setup[SetupService]
+  Setup --> Done["welcome + manager / نصب‌کننده خاموش"]
+```
+
+روش‌های دادن اطلاعات:
 
 ```bash
-php pinoox pinroll:init
-# PINROLL_HOST / USER / PASSWORD و PINROLL_DB_* / PINROLL_ADMIN_* را پر کنید
+# فقط .env
 php pinoox pinroll:provision --no-interaction
-```
 
-### روش ب — فایل کانفیگ
-
-اسرار در `.env`؛ ساختار در `.pinoox/pinroll.config.php` (`provision` + `hosts`). بعد:
-
-```bash
+# ویزارد (دیتابیس پرسیده می‌شود؛ ادمین اگر خالی باشد پیش‌فرض است)
 php pinoox pinroll:provision
-```
 
-### روش ج — ویزارد تعاملی
-
-فیلدهای DB/مدیر را خالی بگذارید و بدون `--no-interaction` اجرا کنید. همان فیلدهای نصب‌کننده وب پرسیده می‌شود.
-
-### روش د — فلگ CLI
-
-```bash
+# فلگ CLI
 php pinoox pinroll:provision production \
   --db-host=localhost --db-database=pinoox --db-username=root --db-password=secret \
-  --admin-fname=Ada --admin-lname=Lovelace --admin-email=ada@example.com \
   --admin-username=admin --admin-password=secret1 --lang=fa
 ```
 
-### روش هـ — فقط setup بعد از شکست extract
+روتر بعد از نصب از `apps/com_pinoox_installer/config/app.config.php` می‌آید.
 
-اگر zip استخراج شد ولی setup شکست خورد:
+### `--full` در برابر `--all`
 
-```bash
-php pinoox pinroll:provision --setup-only
-```
-
-`--force` روی `index.php` موجود extract می‌کند و setup را بعد از disable شدن نصب‌کننده تکرار می‌کند. `--reupload` دوباره `platform.zip` می‌سازد و آپلود می‌کند.
-
-میانبر Pinx: `pinx provision`.
-
-**محدودیت‌ها:** PHP هاست باید `ZipArchive` و زمان/حافظه کافی داشته باشد (setup تا ۱۰ دقیقه). دیتابیس باید از **همان هاست** قابل اتصال باشد. zip اول بزرگ است.
-
----
-
-## به‌روزرسانی پلتفرم + همه اپ‌ها — `--full`
-
-`--all` یعنی app + vendor + theme.  
-`--full` یعنی **zip پلتفرم (`pinx:update`) به‌علاوه همه اپ‌های کشف‌شده/نصب‌شده**، بدون پرسش.
+| فلگ | معنی |
+|-----|------|
+| (پیش‌فرض) | فقط `.pinx` اپ |
+| `--full` | zip پلتفرم + **همه** اپ‌های نصب‌شده/کشف‌شده |
+| `--all` | اپ + vendor + theme |
+| `--vendor` | همگام FTP درخت خام `vendor/` — بهتر است `pinroll:vendor --push` |
+| `--theme` | بیلد تم (`fe:build`) و بعد dist |
 
 ```bash
 php pinoox pinroll:deploy --full
+php pinoox pinroll:push --full
 pinx deploy --full
 ```
 
-با `--app=` می‌توان `--full` را به یک پکیج محدود کرد.
+`pinx:build platform` فایل `platform/build.config.php` را می‌خواند و بعد `build` داخل `.pinoox/pinroll.config.php` را **ادغام** می‌کند (لیست‌ها جمع می‌شوند). env اختیاری: `PINROLL_BUILD_EXCLUDE` / `PINROLL_BUILD_INCLUDE`.
 
----
+### جزئیات `pinroll:setup`
 
-## include / exclude در zip پلتفرم
+پیش‌فرض (بدون فلگ مرحله): **migrate + patch** برای `platform` و بعد اپ‌ها. اگر فلگ مرحله بدهید **فقط همان‌ها** اجرا می‌شوند. ترتیب: `config` → `migrate` → `seed` → `patch`.
 
-`pinx:build platform` فایل `platform/build.config.php` را می‌خواند و بعد `build` داخل `.pinoox/pinroll.config.php` را **ادغام** می‌کند:
+| فلگ | اثر |
+|-----|-----|
+| (پیش‌فرض) | migrate + patch |
+| `--migrate` | migration دیتابیس |
+| `--patch` | پچ داده |
+| `--seed` | seeder (در پیش‌فرض نیست) |
+| `--config` | بازنویسی `pinroll.config.php` قدیمی (`targets` → `hosts`) |
+| `--dry-run` | پیش‌نمایش بدون اجرا (`seed` رد می‌شود) |
+| `--skip-platform` | فقط اپ‌ها |
+| `--force` | ادامه بعد از خطا / بازنویسی کانفیگ |
+| `--app=` / `--apps=` | انتخاب پکیج |
+| `--class=` | کلاس مشخص seeder یا patch |
 
-```php
-'build' => [
-    'exclude' => ['docs', 'tests'],
-    'include' => [],
-],
-```
+نام‌های قدیمی: `pinroll:migrate-config` → `--config`؛ `pinroll:migrate:dry-run` → `--migrate --dry-run`.
 
-لیست‌ها با هم جمع می‌شوند. env اختیاری: `PINROLL_BUILD_EXCLUDE` / `PINROLL_BUILD_INCLUDE` (جدا با ویرگول).
+### انتخاب اپ‌ها
 
----
-
-## انتخاب اپ‌ها
-
-اگر `hosts.*.apps` خالی باشد و `--app` / `--apps` ندهید، push/deploy به‌صورت تعاملی پکیج می‌پرسد.
-
-تنظیم یک‌باره:
+اگر `hosts.*.apps` خالی باشد و `--app` / `--apps` ندهید، push/deploy تعاملی می‌پرسد.
 
 ```bash
-php pinoox pinroll:apps                         # انتخاب تعاملی
+php pinoox pinroll:apps
 php pinoox pinroll:apps --apps=com_pinoox_shop
 php pinoox pinroll:apps --all
 php pinoox pinroll:apps --list
-php pinoox pinroll:apps --clear                 # حذف apps[] (دوباره prompt)
+php pinoox pinroll:apps --clear
 ```
 
----
-
-## Connect
+### Connect
 
 ```bash
-php pinoox pinroll:connect          # بار اول: مسیر دیپلوی + URL سایت + آپلود PinGate
-php pinoox pinroll:connect          # دفعات بعد: فقط بررسی اتصال (بدون پرسش)
-php pinoox pinroll:connect --reset  # راه‌اندازی مجدد کامل
+php pinoox pinroll:connect
+php pinoox pinroll:connect --reset
 ```
 
-وقتی هاست از قبل پیکربندی شده باشد (`deploy_path` + URL گیت + اعتبار ترنسپورت)، پرسش‌های راه‌اندازی اجرا نمی‌شود و فقط وضعیت اتصال نمایش داده می‌شود.
+### حالت‌های local
 
----
-
-## واژگان CLI
-
-```bash
-# با default_host
-php pinoox pinroll:push
-php pinoox pinroll:install
-php pinoox pinroll:deploy
-
-# اپ / هاست صریح
-php pinoox pinroll:deploy --app=com_pinoox_shop
-php pinoox pinroll:install staging --app=com_pinoox_shop
-```
-
-| دستور | کار |
-|-------|-----|
-| `pinroll:push` | ساخت + آپلود (بدون نصب) |
-| `pinroll:install` | نصب release آماده‌شده روی هاست |
-| `pinroll:deploy` | push + install (رفتن لایو) |
-
----
-
-## حالت‌های local
-
-### الف) `via: local` — ترنسپورت
-
-آرشیو در `storage/pinroll/incoming/` همین ماشین ذخیره می‌شود (بدون FTP/SSH).
+**`via: local`** — آرشیو در `storage/pinroll/incoming/` همین ماشین:
 
 ```bash
 php pinoox pinroll:push --via=local --app=com_pinoox_shop
 ```
 
-### ب) `pinroll:install --local` — نصب روی همین هاست
-
-بعد از SSH به پروداکشن (ریشه سایت):
+**`pinroll:install --local`** — بعد از SSH به پروداکشن (ریشه سایت):
 
 ```bash
 php pinoox pinroll:install --local
 php pinoox pinroll:install --local --list
 ```
 
-### ج) `store: local` / `both` — retention
-
-| `store` | آرشیو کجا نگه داشته می‌شود | بعد از install |
-|---------|---------------------------|----------------|
-| `remote` (پیش‌فرض) | هاست `storage/pinroll/incoming/` | تا `keep` هرس می‌شود |
-| `local` | ماشین توسعه (incoming + pinx export) | فقط لوکال |
-| `both` | ماشین توسعه **و** هاست | هر دو هرس می‌شوند |
-
-با `store: local|both`، هنگام push یک کپی `.pinx` در `storage/pinroll/incoming/` لوکال برای rollback نگه داشته می‌شود.
-
----
-
-## Retention
+### Retention
 
 | کلید | مقادیر | رفتار |
 |------|--------|--------|
@@ -340,28 +400,22 @@ php pinoox pinroll:install --local --list
 | `store` | `local` \| `remote` \| `both` | کدام طرف آرشیو نگه دارد |
 | `auto_clean` | bool | بعد از install موفق، قدیمی‌تر از `keep` پاک شود |
 
-در `pinroll:deploy` چنداپ، پاک‌سازی retention فقط بعد از **آخرین** install اجرا می‌شود تا releaseهای staged هم‌بچ در میانه حذف نشوند.
+| `store` | آرشیو کجا | بعد از install |
+|---------|-----------|----------------|
+| `remote` (پیش‌فرض) | هاست `storage/pinroll/incoming/` | تا `keep` هرس |
+| `local` | incoming + pinx export توسعه | فقط لوکال |
+| `both` | توسعه **و** هاست | هر دو |
 
-**پاک‌سازی لوکال شامل**
-
-- `storage/pinroll/incoming/*.pinx`
-- `apps/{package}/pinx/export/*.pinx` (N تا جدیدترین برای هر اپ)
-- پوشه‌های موقت release/session زیر `storage/`
-
-**پاک‌سازی ریموت شامل**
-
-- `storage/pinroll/incoming/` روی هاست (از طریق PinGate `/cleanup`)
+در دیپلوی چنداپ، پاک‌سازی فقط بعد از **آخرین** install اجرا می‌شود.
 
 ```bash
-php pinoox pinroll:cleanup              # ریموت
-php pinoox pinroll:cleanup --local      # همین ماشین
+php pinoox pinroll:cleanup
+php pinoox pinroll:cleanup --local
 php pinoox pinroll:cleanup --dry-run
 php pinoox pinroll:cleanup -k=2
 ```
 
----
-
-## Hooks
+### Hooks
 
 ```php
 'hooks' => [
@@ -380,158 +434,111 @@ php pinoox pinroll:cleanup -k=2
 | `before_install` / `after_install` | هاست (یا `--local`) | اطراف نصب Pinx |
 | `before_rollback` / `after_rollback` | هاست / پایپلاین لوکال | اطراف rollback |
 
----
+### Rollback و migration
 
-## Rollback و migration
-
-`pinroll:rollback` پکیج **قبلی** را با force دوباره نصب می‌کند (کد). به‌صورت خودکار همه migrationها و patchهای دیتابیس را برنمی‌گرداند.
+`pinroll:rollback` پکیج **قبلی** را با force نصب می‌کند. همه migrationها و patchها را برنمی‌گرداند.
 
 | لایه | در rollback |
 |------|-------------|
-| فایل‌های اپ / پکیج Pinx | از آرشیو قبلی برمی‌گردد |
-| Migration با `down()` | فقط اگر خودتان migrate rollback بزنید (مثلاً در hook) |
-| Patch یک‌طرفه / اصلاح داده | برنمی‌گردد |
+| فایل‌های اپ / پکیج Pinx | از آرشیو قبلی |
+| Migration با `down()` | فقط اگر خودتان rollback بزنید (مثلاً hook) |
+| Patch یک‌طرفه | برنمی‌گردد |
 
-پیشنهاد عملی:
-
-1. برای مشکل اسکیما ترجیحاً **forward-fix** بفرستید.
-2. migrationهای حساس را reversible بنویسید.
-3. `keep >= 2` و ترجیحاً `store: both` تا آرشیو قبلی موجود باشد.
-4. قبل از دیپلوی پرریسک، بکاپ دیتابیس بگیرید.
+برای اسکیما ترجیحاً forward-fix بفرستید. `keep >= 2` و ترجیحاً `store: both`. قبل از دیپلوی پرریسک بکاپ دیتابیس بگیرید.
 
 ```bash
-php pinoox pinroll:rollback
-php pinoox pinroll:rollback --deploy-id=20260710_091021_3f980930
-php pinoox pinroll:migrate:dry-run
+php pinoox pinroll:setup --dry-run
 ```
 
----
+### Vendor هاست
 
-## Vendor هاست
+PinGate به `vendor/` کامل platform روی هاست نیاز دارد (pincore + Pinion). Pinroll می‌تواند `require-dev` روی ماشین توسعه بماند.
 
-PinGate و نصب ریموت به یک `vendor/` کامل platform روی هاست نیاز دارند (شامل `pinoox/pinroll` و `pinoox/pincore`).
-
-`pinroll:vendor` یک `pinroll/vendor.zip` **production** می‌سازد با همان پایپ‌لاین **PlatformComposer** که در `pinx:build platform` استفاده می‌شود:
-
-- `require-dev` را حذف می‌کند (Pest، DevDB، Inspector، …)
-- پکیج‌های production را نگه می‌دارد (از جمله `pinoox/pinroll` وقتی در `require` باشد)
-- repositoryهای path در Composer را به فایل واقعی تبدیل می‌کند
+`pinroll:vendor` یک `pinroll/vendor.zip` production می‌سازد (همان PlatformComposer): `require-dev` حذف، پکیج‌های production نگه، path repo به فایل واقعی.
 
 ```bash
-# فقط ساخت zip
 php pinoox pinroll:vendor
-
-# ساخت، آپلود FTP، استخراج روی هاست با PinGate POST /vendor
 php pinoox pinroll:vendor --push
 ```
 
 | فلگ | اثر |
 |-----|-----|
 | (پیش‌فرض) | نوشتن `pinroll/vendor.zip` |
-| `--push` | آپلود FTP + استخراج PinGate (هاست‌های FTP) |
-| `--prune` | هرس اختیاری tests/docs داخل vendor |
+| `--push` | آپلود FTP + استخراج PinGate |
+| `--prune` | هرس tests/docs داخل vendor |
 | `-o` / `--output=` | مسیر zip سفارشی |
 
-**جریان پیشنهادی اولین بار / به‌روزرسانی هسته**
-
 ```bash
-php pinoox pinroll:gate -n          # آپلود PinGate (شامل مسیر /vendor)
+php pinoox pinroll:gate -n
 php pinoox pinroll:vendor --push -n
 php pinoox pinroll:check
 ```
 
-`POST /vendor` در PinGate فقط `vendor.zip` کنار `pingate.php` را می‌پذیرد، فقط ورودی‌های زیر `vendor/` را استخراج می‌کند (امن در برابر zip-slip)، توکن‌های نامعتبر را rate-limit می‌کند و بعد از موفقیت zip را حذف می‌کند.
+`POST /vendor` فقط `vendor.zip` کنار `pingate.php` را می‌پذیرد و فقط ورودی‌های `vendor/` را استخراج می‌کند.
 
-> ترجیحاً `pinroll:vendor --push` را به‌جای `pinroll:deploy --vendor` استفاده کنید. فلگ `--vendor` روی push/deploy درخت خام `vendor/` لوکال را با FTP همگام می‌کند و فقط وقتی هیچ اپی در همان اجرا دیپلوی نشود.
+ترجیحاً `pinroll:vendor --push` به‌جای `pinroll:deploy --vendor`.
 
----
+### فرانت‌اند اپ (theme dist)
 
-## فرانت‌اند اپ (theme dist)
+دیپلوی اپ قبل از `pinx:build`، `fe:build` را اجرا می‌کند. `.pinx` production شامل `dist/` تم است و `src/` / ابزار Vite را کنار می‌گذارد.
 
-دیپلوی اپ قبل از `pinx:build`، `fe:build` را اجرا می‌کند. پکیج‌های `.pinx` production شامل `dist/` تم هستند و `src/` / ابزار Vite تم را کنار می‌گذارند (حتی اگر `dist/` در gitignore باشد).
+### مسیرهای PinGate
 
----
-
-## جریان سریع (FTP + PinGate)
-
-```bash
-php pinoox pinroll:init
-# پر کردن PINROLL_* در .env
-php pinoox pinroll:connect
-php pinoox pinroll:apps --apps=com_pinoox_shop
-php pinoox pinroll:vendor --push   # vendor هاست (PlatformComposer + استخراج PinGate)
-php pinoox pinroll:check
-php pinoox pinroll:deploy
-```
-
----
-
-## مسیرهای PinGate
+احراز هویت: `Authorization: Bearer {token}`. مسیرها: `pingate.php?route=…`.
 
 | متد | مسیر | کاربرد |
 |-----|------|--------|
 | `GET` | `/status` | سلامت / نسخه |
 | `GET` | `/incoming` | لیست releaseهای staged |
-| `POST` | `/install` | نصب (`/apply` برای سازگاری) |
+| `POST` | `/install` | نصب (`/apply` سازگاری) |
 | `POST` | `/bootstrap` | استخراج `platform.zip` (نصب اول) |
-| `POST` | `/setup` | اجرای SetupService نصب‌کننده (`db` + `user`) |
-| `POST` | `/check-db` | تست اتصال دیتابیس **روی هاست** |
-| `POST` | `/vendor` | استخراج امن `vendor.zip` آپلودشده |
+| `POST` | `/setup` | SetupService نصب‌کننده سپس welcome/manager و غیرفعال کردن installer |
+| `POST` | `/check-db` | تست دیتابیس **روی هاست** |
+| `POST` | `/vendor` | استخراج `vendor.zip` |
 | `POST` | `/rollback` | نصب مجدد نسخه قبلی |
-| `POST` | `/cleanup` | هرس آرشیوهای قدیمی |
-| `GET` | `/history` | تاریخچه rollout |
+| `POST` | `/cleanup` | هرس آرشیو |
+| `GET` | `/history` | تاریخچه |
 
-احراز هویت: `Authorization: Bearer {token}`.
-
----
-
-## مرجع CLI
+### مرجع CLI
 
 | دستور | کاربرد |
 |-------|--------|
 | `pinroll:init` | ساخت `.pinoox/pinroll.config.php` |
-| `pinroll:provision` | نصب اولیه هاست خالی (PinGate + platform.zip + setup) |
-| `pinroll:connect` | راه‌اندازی / بررسی (`--reset` برای تکرار) |
+| `pinroll:provision` | نصب اولیه هاست خالی |
+| `pinroll:connect` | راه‌اندازی / بررسی (`--reset`) |
 | `pinroll:apps` | تنظیم `hosts.*.apps` |
-| `pinroll:vendor` | `vendor.zip` production (`--push` به هاست) |
+| `pinroll:vendor` | `vendor.zip` production (`--push`) |
 | `pinroll:gate` | ساخت / آپلود PinGate |
 | `pinroll:check` | بررسی هاست / PinGate |
 | `pinroll:push` | فقط ساخت و آپلود |
+| `pinroll:setup` | بعد از دیپلوی: migrate + patch |
 | `pinroll:install` | نصب release آماده |
 | `pinroll:deploy` | push + install |
-| `pinroll:rollback` | rollback از PinGate یا آرشیو لوکال |
+| `pinroll:rollback` | rollback |
 | `pinroll:cleanup` | هرس (`--local`، `--dry-run`، `-k`) |
+| `pinroll:build` | فقط build |
+| `pinroll:status` | وضعیت rollout |
+| `pinroll:history` | تاریخچه |
+| `pinroll:pull` | دریافت manifest از release server |
 
-### گزینه‌های push / deploy
+فلگ‌های push / deploy: `--full`، `--all`، `--vendor`، `--theme`، `--app=` / `--apps=`، `--via=`، `--host=`.
 
-| فلگ | اثر |
-|-----|-----|
-| (پیش‌فرض) | فقط `.pinx` اپ |
-| `--full` | zip پلتفرم + همه اپ‌های نصب‌شده |
-| `--all` | اپ + vendor + theme |
-| `--vendor` | همگام‌سازی FTP درخت `vendor/` (بدون اپ در همان اجرا) |
-| `--theme` | همگام‌سازی theme dist |
-| `--app=` / `--apps=` | انتخاب پکیج |
-| `--via=` | override ترنسپورت |
-| `--host=` | override هاست |
-
----
-
-## ترنسپورت‌ها
+### ترنسپورت‌ها
 
 | `via` | کاربرد |
 |-------|--------|
 | `ftp` | هاست اشتراکی — آپلود + نصب PinGate |
-| `ssh` | VPS — آپلود SFTP، نصب SSH |
-| `pinion` | آپلود تکه‌ای HTTP از طریق PinGate |
+| `ssh` | VPS — SFTP + نصب SSH |
+| `pinion` | آپلود تکه‌ای HTTP از PinGate |
 | `local` | همان ماشین / تست |
 
 ---
 
 ## مستندات مرتبط
 
+- [مروری بر Pinroll](../advanced/pinroll.md)
 - [پروتکل Pinion](../advanced/pinion.md)
-- [مستند کامل انگلیسی](../../en/deploy/pinroll.md)
+- [Pinx CLI](../start/pinx-cli.md)
 - [مرجع CLI](../start/cli-reference.md)
 
 ---

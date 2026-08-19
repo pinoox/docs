@@ -93,7 +93,7 @@ Read these in order if you are building a new app.
 
 Platform release and rollout (full Pinoox installations).
 
-- [Pinroll — release & deploy](./deploy/pinroll.md) (blank host, `--full`, config + env)
+- [Pinroll — release & deploy](./deploy/pinroll.md) (scenarios first, then advanced: provision, `--full`, `pinroll:setup`)
 
 ## Walkthroughs
 

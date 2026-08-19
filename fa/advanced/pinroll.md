@@ -2,7 +2,7 @@
 
 [← بازگشت به فهرست](../README.md)
 
-> **راهنمای کامل:** [دیپلوی → Pinroll](../deploy/pinroll.md) (هاست، connect، apps، retention، rollback).
+> **نحوه استفاده:** [دیپلوی → Pinroll](../deploy/pinroll.md) — اول سناریوها، بعد بخش پیشرفته.
 
 **Pinroll** (`pinoox/pinroll`) release می‌سازد، به **هاست** می‌فرستد و از طریق **PinGate** نصب می‌کند. یک کتابخانه Composer است؛ دستورات با نصب ثبت می‌شوند.
 
@@ -24,7 +24,9 @@
 | دیپلوی دستی FTP | push اسکریپتی + نصب PinGate |
 | سایت نیمه‌دیپلوی‌شده | نصب اتمیک + rollback |
 | هاست اشتراکی بدون SSH | آپلود FTP + نصب از راه HTTP |
-| به‌روزرسانی هسته / vendor روی هاست | `pinroll:vendor --push` → zip production + استخراج PinGate |
+| هاست خالی، هنوز سایت نیست | `pinroll:provision` (PinGate + platform.zip + setup نصب‌کننده) |
+| اسکیما بعد از دیپلوی | `pinroll:setup` (migrate + patch؛ اختیاری `--seed`) |
+| به‌روزرسانی هسته / vendor روی هاست | `pinroll:vendor --push` |
 
 ---
 
@@ -35,19 +37,16 @@ flowchart LR
     subgraph dev [ماشین توسعه]
         CLI["php pinoox pinroll:*"]
     end
-
     subgraph transport [ترنسپورت]
         FTP[FTP]
         SSH[SSH]
         Pinion[Pinion]
     end
-
     subgraph remote [هاست]
         Gate[PinGate]
         Vendor[platform vendor]
         Gate --> Vendor
     end
-
     CLI --> transport
     transport --> Gate
 ```
@@ -62,52 +61,24 @@ flowchart LR
 
 ---
 
-## دستورات ضروری
+## دستورات رایج
 
 ```bash
 php pinoox pinroll:init
 php pinoox pinroll:provision           # هاست خالی
 php pinoox pinroll:connect             # سایت موجود
 php pinoox pinroll:deploy --full       # پلتفرم + همه اپ‌ها
-php pinoox pinroll:apps --apps=com_pinoox_shop
-php pinoox pinroll:vendor --push        # vendor.zip production → هاست (PlatformComposer)
-php pinoox pinroll:check
-php pinoox pinroll:push                 # فقط ساخت و آپلود
-php pinoox pinroll:install              # نصب release آماده‌شده روی هاست
-php pinoox pinroll:deploy               # push + install (default_host + apps[])
+php pinoox pinroll:setup               # migrate + patch
 php pinoox pinroll:rollback
-php pinoox pinroll:cleanup --local
-php pinoox pinroll:cleanup --dry-run
-```
-
----
-
-## تنظیمات Pinroll
-
-```php
-'default_host' => 'production',
-'keep' => 2,
-'store' => 'both',
-'auto_clean' => true,
-
-'hosts' => [
-    'production' => [
-        'deploy_path' => 'public_html',
-        'via' => 'ftp',
-        'apps' => ['com_pinoox_shop'],
-        'gate' => [ /* url, token */ ],
-        'ftp' => [ /* host, user, password */ ],
-    ],
-],
 ```
 
 ---
 
 ## مستندات مرتبط
 
-- [راهنمای دیپلوی Pinroll](../deploy/pinroll.md)
+- [راهنمای دیپلوی Pinroll](../deploy/pinroll.md) — سناریوها + مرجع کامل
 - [Pinion](./pinion.md)
-- [نسخه انگلیسی](../../en/advanced/pinroll.md)
+- [مرجع CLI](../start/cli-reference.md)
 
 ---
 

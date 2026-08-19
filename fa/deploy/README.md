@@ -4,7 +4,7 @@
 
 | راهنما | توضیح |
 |--------|--------|
-| [Pinroll](./pinroll.md) | هاست، connect، apps، PinGate، deploy، retention، rollback |
+| [Pinroll](./pinroll.md) | اول سناریوها (هاست خالی، سایت موجود، `--full`، `pinroll:setup`)، بعد مرجع کامل |
 
 ---
 

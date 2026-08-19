@@ -205,15 +205,17 @@ pinx pinion:info {upload_id} --json
 
 | دستور | کاربرد |
 |--------|--------|
-| `pinroll:init` | ساخت `pinroll/pinroll.config.php` |
+| `pinroll:init` | ساخت `.pinoox/pinroll.config.php` |
+| `pinroll:provision` | نصب اولیه هاست خالی (PinGate + platform.zip + setup) |
 | `pinroll:connect` | راه‌اندازی / بررسی هاست (`--reset` برای تکرار) |
 | `pinroll:apps` | تنظیم `hosts.*.apps` |
-| `pinroll:vendor` | خروجی `vendor/` برای نصب هاست یا آپدیت هسته |
+| `pinroll:vendor` | `vendor.zip` production (`--push` به هاست) |
 | `pinroll:gate` | ساخت / آپلود PinGate |
 | `pinroll:check` | بررسی هاست / PinGate |
 | `pinroll:push` | فقط ساخت و آپلود |
+| `pinroll:setup` | بعد از دیپلوی: migrate + patch (`--seed`، `--config`، `--dry-run`) |
 | `pinroll:install` | نصب release آماده‌شده روی هاست |
-| `pinroll:deploy` | push + install (go live) |
+| `pinroll:deploy` | push + install؛ `--full` = پلتفرم + همه اپ‌ها |
 | `pinroll:rollback` | rollback از PinGate یا آرشیو لوکال |
 | `pinroll:cleanup` | هرس آرشیوهای قدیمی (`--local`، `--dry-run`) |
 | `pinroll:build` | فقط build |
@@ -223,9 +225,10 @@ pinx pinion:info {upload_id} --json
 
 ```bash
 php pinoox pinroll:init
-php pinoox pinroll:connect
-php pinoox pinroll:apps --apps=com_pinoox_shop
-php pinoox pinroll:deploy
+php pinoox pinroll:provision          # هاست خالی
+php pinoox pinroll:connect            # سایت موجود
+php pinoox pinroll:deploy --full
+php pinoox pinroll:setup
 ```
 
 مستندات: [راهنمای Pinroll](../deploy/pinroll.md).
