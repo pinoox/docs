@@ -218,7 +218,7 @@ php pinoox pinroll:init
 php pinoox pinroll:config    # هاست resolveشده (token سانسور)
 ```
 
-`pinroll:init` یک **استاب کوتاه** می‌نویسد. پیش‌فرض کتابخانه برای اجرا کافی است؛ `pinroll:connect` بعد overlay را پچ می‌کند.
+`pinroll:init` یک **استاب کوتاه با کامنت نمونه** می‌نویسد. پیش‌فرض کتابخانه برای اجرا کافی است؛ هر نمونه را uncomment کنید تا override شود. `pinroll:connect` بعد site، token و رمز FTP را پچ می‌کند.
 
 ```php
 <?php
@@ -226,17 +226,72 @@ php pinoox pinroll:config    # هاست resolveشده (token سانسور)
 /**
  * Overlay پینرول — همراه .pinoox/ در gitignore
  * اسکیمای canonical: vendor/pinoox/pinroll/config/pinroll.php
+ * نمونه‌های کامنت‌شده را uncomment کنید تا پیش‌فرض کتابخانه عوض شود.
  */
 return [
+    'default_host' => 'production',
+
+    // Optional global overrides
+    // 'keep' => 3,                     // تعداد آرشیوهای جدید؛ 0 = بدون هرس
+    // 'store' => 'remote',             // local | remote | both
+    // 'auto_clean' => true,            // بعد از install موفق هرس شود
+    // 'clean_before_deploy' => true,   // قبل از هر آپلود باقی‌مانده‌ها پاک شود
+    // 'stale_days' => 7,               // آرشیو قدیمی‌تر از N روز هم حذف؛ 0 = فقط keep
+    // 'lang' => 'fa',                  // زبان نصب‌کننده / provision
+    // 'gate_embed_token' => false,     // false = توکن روی هاست، نه داخل pingate.php
+    // 'chunk_size' => 5 * 1024 * 1024, // اندازه تکه آپلود Pinion (بایت)
+
+    // نصب اول هاست خالی (pinroll:provision) — همان فیلدهای نصب‌کننده وب
+    // 'provision' => [
+    //     'db' => [
+    //         'host' => 'localhost',
+    //         'database' => 'pinoox',
+    //         'username' => '',
+    //         'password' => '',
+    //         'connection' => 'mysql',
+    //         'port' => '3306',
+    //         'prefix' => 'pin_',
+    //         'timezone' => '+03:30',
+    //     ],
+    //     'user' => [
+    //         'fname' => 'support',
+    //         'lname' => 'pinoox',
+    //         'email' => 'info@pinoox.com',
+    //         'username' => 'admin',
+    //         'password' => '123456',
+    //     ],
+    // ],
+
+    // قوانین اضافه zip پلتفرم (با platform/build.config.php ادغام می‌شود)
+    // 'build' => [
+    //     'exclude' => ['docs', 'tests'],
+    //     'include' => [],
+    // ],
+
     'hosts' => [
         'production' => [
+            'deploy_path' => 'public_html',  // پوشه FTP/SSH در ریشه اکانت
+            // 'web_path' => '',             // زیرمسیر URL (مثلاً shop)؛ '' = ریشه دامنه/ساب‌دامین
+            'via' => 'ftp',                  // ftp | ssh | pinion | local
+            // 'apps' => ['com_pinoox_account'],
             'gate' => [
                 'site' => 'https://pinoox.com',  // فقط origin
                 'token' => 'shared-host-token',
             ],
-            'ftp' => [
-                'password' => '',
-            ],
+            // 'ftp' => [
+            //     'host' => '',
+            //     'user' => '',
+            //     'password' => '',
+            // ],
+            // 'ssh' => [
+            //     'host' => '',
+            //     'user' => '',
+            //     'key' => '',
+            // ],
+            // 'hooks' => [
+            //     'before_push' => ['npm run build'],
+            //     'after_install' => ['php pinoox cache:build'],
+            // ],
         ],
     ],
 ];
@@ -254,21 +309,40 @@ PinGate فقط **یک hash** در `pingate.php` نگه می‌دارد. آخری
 
 `pinroll:connect` / `pinroll:gate` مقدار site، token و رمز FTP را در overlay می‌نویسند — نه در `.env`. `.env` `PINROLL_*` برای CI همچنان کار می‌کند.
 
+**کلیدهای سراسری** (ریشه overlay؛ به همه هاست‌ها ارث می‌رسد مگر هاست override کند):
+
+| کلید | پیش‌فرض | توضیح |
+|------|---------|--------|
+| `default_host` | `production` | هاست وقتی نام در CLI نیست |
+| `keep` | `3` | N تا آرشیو جدید؛ `0` یعنی بدون هرس شمارشی |
+| `store` | `remote` | آرشیو بعد از install کجا بماند: `local` \| `remote` \| `both` |
+| `auto_clean` | `true` | بعد از install موفق، قدیمی‌تر از `keep` پاک شود |
+| `clean_before_deploy` | `true` | قبل از هر upload/deploy باقی‌مانده‌ها پاک شود |
+| `stale_days` | `7` | آرشیو/zip قدیمی‌تر از N روز هم حذف شود؛ `0` = فقط keep |
+| `lang` | `en` | زبان نصب‌کننده / provision (`en`، `fa`، …) |
+| `gate_embed_token` | `false` | `false`: توکن در `storage/pinroll/tokens/{label}.php` روی هاست است، نه داخل `pingate.php` |
+| `chunk_size` | `5 * 1024 * 1024` | اندازه تکه آپلود HTTP در Pinion (بایت) |
+| `lock_timeout` | `3600` | ثانیه تا lock دیپلوی کهنه نادیده گرفته شود |
+| `gate_path` | `_pinoox/gate` | پیشوند داخلی مسیر PinGate — پیش‌فرض را عوض نکنید (ورودی عمومی `pingate.php?route=` است) |
+| `default_transport` | `pinion` | `via` پیش‌فرض اگر هاست نداشته باشد: `ftp` \| `ssh` \| `pinion` \| `local` |
+| `provision` | پایین | دیتابیس + ادمین نصب اول (`pinroll:provision`) |
+| `build` | `exclude` / `include` `[]` | قوانین اضافه zip پلتفرم، ادغام با `platform/build.config.php` |
+
+**کلیدهای هاست** (`hosts.{name}`):
+
 | کلید | توضیح |
 |------|--------|
-| `default_host` | هاست وقتی نام در CLI نیست |
-| `deploy_path` | ریشه دیپلوی نسبت به لاگین FTP/SSH |
-| `hostname` | آدرس اتصال اگر با host ترنسپورت فرق دارد |
+| `deploy_path` | پوشه FTP/SSH در ریشه اکانت (`public_html`، `apps`، …) |
+| `web_path` | زیرمسیر URL (`shop`)؛ `''` = ریشه دامنه یا ساب‌دامین. اگر نباشد از `deploy_path` با حذف `public_html` / `www` به‌دست می‌آید |
+| `hostname` | آدرس اتصال اگر با `ftp.host` / `ssh.host` فرق دارد |
 | `via` | `ftp`، `ssh`، `pinion` یا `local` |
 | `gate.site` / `gate.token` | origin سایت + توکن مشترک PinGate |
-| `ftp` / `ssh` | اطلاعات اتصال |
+| `ftp` / `ssh` | اطلاعات اتصال (`ssh`: `host`، `user`، `key`) |
 | `apps` | پکیج‌های پیش‌فرض push/install |
 | `hooks` | دستورات شل اطراف push / install / rollback |
-| `keep` / `store` / `auto_clean` | Retention |
-| `clean_before_deploy` | قبل از هر upload/deploy باقی‌مانده‌ها پاک شود (پیش‌فرض `true`) |
-| `stale_days` | آرشیو/zip قدیمی‌تر از N روز هم حذف شود (پیش‌فرض `7`؛ `0` = فقط بر اساس keep) |
-| `provision` | دیتابیس + ادمین نصب اول |
-| `build` | exclude/include اضافه برای zip پلتفرم |
+
+`provision.db`: `host`، `database`، `username`، `password`، `connection`، `port`، `prefix`، `timezone`.  
+`provision.user`: `fname`، `lname`، `email`، `username`، `password` — همان فیلدهای نصب‌کننده وب.
 
 برای production کلیدهای **بدون پیشوند هاست** هم خوانده می‌شوند (`PINROLL_VIA`، `PINROLL_DB_HOST`، `PINROLL_SITE`، …). بقیه هاست‌ها: `PINROLL_{HOST}_*`.
 
@@ -279,6 +353,8 @@ PINROLL_WEB_PATH=
 PINROLL_KEEP=3
 PINROLL_STORE=remote
 PINROLL_AUTO_CLEAN=true
+PINROLL_CLEAN_BEFORE_DEPLOY=true
+PINROLL_STALE_DAYS=7
 PINROLL_SITE=https://example.com
 PINROLL_TOKEN=…
 PINROLL_HOST=ftp.example.com

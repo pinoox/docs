@@ -218,7 +218,7 @@ php pinoox pinroll:init
 php pinoox pinroll:config    # resolved host (token redacted)
 ```
 
-`pinroll:init` writes a **short overlay stub** (commented examples). Library defaults are enough to run; `pinroll:connect` then patches the overlay.
+`pinroll:init` writes a **short overlay stub** with commented samples. Library defaults are enough to run; uncomment a sample to override it. `pinroll:connect` then patches site, token, and FTP password.
 
 ```php
 <?php
@@ -226,17 +226,72 @@ php pinoox pinroll:config    # resolved host (token redacted)
 /**
  * Pinroll overlay — gitignored with .pinoox/
  * Canonical schema: vendor/pinoox/pinroll/config/pinroll.php
+ * Uncomment the samples below to change library defaults.
  */
 return [
+    'default_host' => 'production',
+
+    // Optional global overrides
+    // 'keep' => 3,                     // newest N archives; 0 = no prune
+    // 'store' => 'remote',             // local | remote | both
+    // 'auto_clean' => true,            // prune after successful install
+    // 'clean_before_deploy' => true,   // prune leftovers before each upload
+    // 'stale_days' => 7,               // also delete archives older than N days; 0 = keep-count only
+    // 'lang' => 'en',                  // installer / provision locale
+    // 'gate_embed_token' => false,     // false = token file on host, not inside pingate.php
+    // 'chunk_size' => 5 * 1024 * 1024, // Pinion HTTP upload chunk (bytes)
+
+    // First-time host install (pinroll:provision) — same fields as the web installer
+    // 'provision' => [
+    //     'db' => [
+    //         'host' => 'localhost',
+    //         'database' => 'pinoox',
+    //         'username' => '',
+    //         'password' => '',
+    //         'connection' => 'mysql',
+    //         'port' => '3306',
+    //         'prefix' => 'pin_',
+    //         'timezone' => '+03:30',
+    //     ],
+    //     'user' => [
+    //         'fname' => 'support',
+    //         'lname' => 'pinoox',
+    //         'email' => 'info@pinoox.com',
+    //         'username' => 'admin',
+    //         'password' => '123456',
+    //     ],
+    // ],
+
+    // Extra platform zip rules (merged with platform/build.config.php)
+    // 'build' => [
+    //     'exclude' => ['docs', 'tests'],
+    //     'include' => [],
+    // ],
+
     'hosts' => [
         'production' => [
+            'deploy_path' => 'public_html',  // FTP/SSH folder at account root
+            // 'web_path' => '',             // URL subfolder (e.g. 'shop'); '' = domain/subdomain root
+            'via' => 'ftp',                  // ftp | ssh | pinion | local
+            // 'apps' => ['com_pinoox_account'],
             'gate' => [
                 'site' => 'https://pinoox.com',  // origin only
                 'token' => 'shared-host-token',
             ],
-            'ftp' => [
-                'password' => '',
-            ],
+            // 'ftp' => [
+            //     'host' => '',
+            //     'user' => '',
+            //     'password' => '',
+            // ],
+            // 'ssh' => [
+            //     'host' => '',
+            //     'user' => '',
+            //     'key' => '',
+            // ],
+            // 'hooks' => [
+            //     'before_push' => ['npm run build'],
+            //     'after_install' => ['php pinoox cache:build'],
+            // ],
         ],
     ],
 ];
@@ -254,21 +309,40 @@ PinGate stores **one hash** in `pingate.php`. The last `connect` / `gate --rotat
 
 `pinroll:connect` / `pinroll:gate` write site, token, and FTP password into the overlay — not `.env`. `.env` `PINROLL_*` still works for CI.
 
+**Global keys** (overlay root; inherited by every host unless the host overrides them):
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `default_host` | `production` | Host used when CLI omits the name |
+| `keep` | `3` | Newest N archives to keep; `0` disables count-based prune |
+| `store` | `remote` | Where archives live after install: `local` \| `remote` \| `both` |
+| `auto_clean` | `true` | After a successful install, prune beyond `keep` |
+| `clean_before_deploy` | `true` | Before each upload/deploy, prune leftover archives/tmp/zips |
+| `stale_days` | `7` | Also delete archives/zips older than N days; `0` = keep-count only |
+| `lang` | `en` | Installer / provision locale (`en`, `fa`, …) |
+| `gate_embed_token` | `false` | `false`: token lives in `storage/pinroll/tokens/{label}.php` on the host, not inside `pingate.php` |
+| `chunk_size` | `5 * 1024 * 1024` | Pinion HTTP upload chunk size (bytes) |
+| `lock_timeout` | `3600` | Seconds before a stale deploy lock is ignored |
+| `gate_path` | `_pinoox/gate` | Internal PinGate path prefix — leave default (public entry is `pingate.php?route=`) |
+| `default_transport` | `pinion` | Fallback `via` when a host omits it: `ftp` \| `ssh` \| `pinion` \| `local` |
+| `provision` | see below | First-time DB + admin (`pinroll:provision`) |
+| `build` | `exclude` / `include` `[]` | Extra platform zip rules, merged with `platform/build.config.php` |
+
+**Host keys** (`hosts.{name}`):
+
 | Key | Description |
 |-----|-------------|
-| `default_host` | Host used when CLI omits the name |
-| `deploy_path` | Deploy root relative to FTP/SSH login |
-| `hostname` | Connection address when it differs from transport host |
+| `deploy_path` | FTP/SSH folder at account root (`public_html`, `apps`, …) |
+| `web_path` | URL subfolder (`shop`); `''` = domain or subdomain document root. If omitted, derived from `deploy_path` by stripping `public_html` / `www` |
+| `hostname` | Connection address when it differs from `ftp.host` / `ssh.host` |
 | `via` | `ftp`, `ssh`, `pinion`, or `local` |
 | `gate.site` / `gate.token` | Site origin + shared PinGate token |
-| `ftp` / `ssh` | Connection credentials |
+| `ftp` / `ssh` | Connection credentials (`ssh`: `host`, `user`, `key`) |
 | `apps` | Default packages for push/install |
 | `hooks` | Shell commands around push / install / rollback |
-| `keep` / `store` / `auto_clean` | Retention |
-| `clean_before_deploy` | Prune leftovers before each upload/deploy (default `true`) |
-| `stale_days` | Also delete archives/zips older than N days (default `7`; `0` = count-only) |
-| `provision` | First-time DB + admin (blank host) |
-| `build` | Extra platform zip exclude/include |
+
+`provision.db`: `host`, `database`, `username`, `password`, `connection`, `port`, `prefix`, `timezone`.  
+`provision.user`: `fname`, `lname`, `email`, `username`, `password` — same fields as the web installer.
 
 Production also reads **unscoped** `.env` keys (`PINROLL_VIA`, `PINROLL_DB_HOST`, `PINROLL_SITE`, …). Other hosts use `PINROLL_{HOST}_*` (example: `PINROLL_STAGING_SITE`).
 
@@ -279,6 +353,8 @@ PINROLL_WEB_PATH=
 PINROLL_KEEP=3
 PINROLL_STORE=remote
 PINROLL_AUTO_CLEAN=true
+PINROLL_CLEAN_BEFORE_DEPLOY=true
+PINROLL_STALE_DAYS=7
 PINROLL_SITE=https://example.com
 PINROLL_TOKEN=…
 PINROLL_HOST=ftp.example.com
