@@ -129,6 +129,8 @@ php pinoox pinroll:config
 | Migrate after deploy | `php pinoox pinroll:setup` |
 | Roll back files | `php pinoox pinroll:rollback` |
 | Test connection | `php pinoox pinroll:check` |
+| Update pincore only | `php pinoox pinroll:pincore` |
+| Sync any folder | `php pinoox pinroll:sync --from=./path --to=remote/path` |
 | Refresh pingate manually | `php pinoox pinroll:gate` |
 
 ---

@@ -521,6 +521,8 @@ php pinoox pinroll:check
 | `pinroll:config` | چاپ هاست resolveشده (token سانسور) |
 | `pinroll:apps` | تنظیم `hosts.*.apps` |
 | `pinroll:vendor` | `vendor.zip` production (`--push`) |
+| `pinroll:pincore` | sync فقط `vendor/pinoox/pincore` با FTP |
+| `pinroll:sync` | sync FTP هر پوشه لوکال (`--from`, `--to`) |
 | `pinroll:gate` | ساخت / آپلود PinGate |
 | `pinroll:check` | بررسی هاست / PinGate |
 | `pinroll:push` | فقط ساخت و آپلود |

@@ -524,6 +524,8 @@ Auth: `Authorization: Bearer {token}`. Paths are `pingate.php?route=…`.
 | `pinroll:config` | Print resolved host (token redacted) |
 | `pinroll:apps` | Set `hosts.*.apps` |
 | `pinroll:vendor` | Production `vendor.zip` (`--push` to host) |
+| `pinroll:pincore` | Sync only `vendor/pinoox/pincore` via FTP |
+| `pinroll:sync` | FTP-sync any local folder (`--from`, `--to`) |
 | `pinroll:gate` | Build / upload PinGate |
 | `pinroll:check` | Verify host / PinGate |
 | `pinroll:push` | Build & upload only |

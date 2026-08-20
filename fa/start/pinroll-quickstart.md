@@ -129,6 +129,8 @@ php pinoox pinroll:config
 | migrate بعد از دیپلوی | `php pinoox pinroll:setup` |
 | برگشت به نسخه قبل | `php pinoox pinroll:rollback` |
 | بررسی اتصال | `php pinoox pinroll:check` |
+| آپدیت فقط pincore | `php pinoox pinroll:pincore` |
+| sync پوشه دلخواه | `php pinoox pinroll:sync --from=./path --to=remote/path` |
 | آپدیت دستی pingate | `php pinoox pinroll:gate` |
 
 ---
