@@ -80,9 +80,10 @@ php pinoox pinroll:deploy
 
 1. Build — ساخت `.pinx`
 2. Connect FTP
-3. **Ensure PinGate** — سلامت `pingate.php`؛ در صورت خرابی یا قدیمی بودن، خودکار آپلود می‌شود
-4. Upload `.pinx`
-5. Install via PinGate
+3. **Ensure PinGate** — سلامت `pingate.php`؛ در صورت خرابی خودکار آپلود
+4. **Cleanup leftovers** — هرس آرشیو/tmp/zip قدیمی یا ناقص
+5. Upload `.pinx`
+6. Install via PinGate
 
 فقط آپلود: `pinroll:push`. فقط نصب فایل آماده: `pinroll:install`.
 
@@ -240,6 +241,8 @@ PinGate فقط **یک hash** در `pingate.php` نگه می‌دارد. آخری
 | `apps` | پکیج‌های پیش‌فرض push/install |
 | `hooks` | دستورات شل اطراف push / install / rollback |
 | `keep` / `store` / `auto_clean` | Retention |
+| `clean_before_deploy` | قبل از هر upload/deploy باقی‌مانده‌ها پاک شود (پیش‌فرض `true`) |
+| `stale_days` | آرشیو/zip قدیمی‌تر از N روز هم حذف شود (پیش‌فرض `7`؛ `0` = فقط بر اساس keep) |
 | `provision` | دیتابیس + ادمین نصب اول |
 | `build` | exclude/include اضافه برای zip پلتفرم |
 
@@ -404,6 +407,8 @@ php pinoox pinroll:install --local --list
 | `keep` | `0`…`N` | N تا جدیدترین؛ `0` یعنی بدون هرس |
 | `store` | `local` \| `remote` \| `both` | کدام طرف آرشیو نگه دارد |
 | `auto_clean` | bool | بعد از install موفق، قدیمی‌تر از `keep` پاک شود |
+| `clean_before_deploy` | bool | قبل از upload/deploy باقی‌مانده‌ها پاک شود (پیش‌فرض `true`) |
+| `stale_days` | int | آرشیو/zip قدیمی‌تر از N روز هم حذف شود (پیش‌فرض `7`؛ `0` = فقط keep) |
 
 | `store` | آرشیو کجا | بعد از install |
 |---------|-----------|----------------|

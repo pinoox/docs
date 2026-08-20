@@ -82,9 +82,10 @@ When you run `pinroll:deploy` (with remote install), you usually see:
 
 1. **Build** — create the `.pinx` package
 2. **Connect FTP** — connect to the host
-3. **Ensure PinGate** — check `pingate.php`; upload a fresh copy if it is broken or outdated
-4. **Upload** — send the `.pinx` to the host
-5. **Install** — install via PinGate
+3. **Ensure PinGate** — verify `pingate.php`
+4. **Cleanup leftovers** — remove old/partial files (archives, tmp, leftover zips)
+5. **Upload** — send the `.pinx` to the host
+6. **Install** — install via PinGate
 
 Upload only (no install):
 

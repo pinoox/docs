@@ -82,9 +82,10 @@ php pinoox pinroll:deploy
 
 1. **Build** — ساخت پکیج `.pinx`
 2. **Connect FTP** — اتصال به هاست
-3. **Ensure PinGate** — بررسی سلامت `pingate.php`؛ اگر خراب یا قدیمی باشد، خودش آپلود می‌کند
-4. **Upload** — فرستادن `.pinx` به هاست
-5. **Install** — نصب از طریق PinGate
+3. **Ensure PinGate** — بررسی سلامت `pingate.php`
+4. **Cleanup leftovers** — پاک‌سازی فایل‌های قدیمی/ناقص (آرشیو، tmp، zip باقی‌مانده)
+5. **Upload** — فرستادن `.pinx` به هاست
+6. **Install** — نصب از طریق PinGate
 
 فقط آپلود بدون نصب:
 

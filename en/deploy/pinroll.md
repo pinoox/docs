@@ -81,8 +81,9 @@ php pinoox pinroll:deploy
 1. Build — create `.pinx`
 2. Connect FTP
 3. **Ensure PinGate** — verify `pingate.php`; auto-upload if broken or outdated
-4. Upload `.pinx`
-5. Install via PinGate
+4. **Cleanup leftovers** — prune old/stale archives, tmp, and leftover deploy zips
+5. Upload `.pinx`
+6. Install via PinGate
 
 Upload only: `pinroll:push`. Install staged file only: `pinroll:install`.
 
@@ -240,6 +241,8 @@ PinGate stores **one hash** in `pingate.php`. The last `connect` / `gate --rotat
 | `apps` | Default packages for push/install |
 | `hooks` | Shell commands around push / install / rollback |
 | `keep` / `store` / `auto_clean` | Retention |
+| `clean_before_deploy` | Prune leftovers before each upload/deploy (default `true`) |
+| `stale_days` | Also delete archives/zips older than N days (default `7`; `0` = count-only) |
 | `provision` | First-time DB + admin (blank host) |
 | `build` | Extra platform zip exclude/include |
 
@@ -404,6 +407,8 @@ php pinoox pinroll:install --local --list
 | `keep` | `0`…`N` | Newest N kept; `0` disables trimming |
 | `store` | `local` \| `remote` \| `both` | Which side(s) keep archives |
 | `auto_clean` | bool | After successful install, prune beyond `keep` |
+| `clean_before_deploy` | bool | Before upload/deploy, prune leftovers (default `true`) |
+| `stale_days` | int | Also delete archives/zips older than N days (default `7`; `0` = keep-count only) |
 
 | `store` | Archives kept on | After install |
 |---------|------------------|---------------|
