@@ -80,11 +80,11 @@ php pinoox pinroll:deploy
 
 وقتی `pinroll:deploy` می‌زنید (با نصب روی سرور)، معمولاً این مراحل را می‌بینید:
 
-1. **Build** — ساخت پکیج `.pinx`
+1. **Build** — ساخت پکیج `.pinx` (نوار پیشرفت مراحل بیلد)
 2. **Connect FTP** — اتصال به هاست
 3. **Ensure PinGate** — بررسی سلامت `pingate.php`
-4. **Cleanup leftovers** — پاک‌سازی فایل‌های قدیمی/ناقص (آرشیو، tmp، zip باقی‌مانده)
-5. **Upload** — فرستادن `.pinx` به هاست
+4. **Cleanup leftovers** — پاک‌سازی فایل‌های قدیمی/ناقص
+5. **Upload** — فرستادن `.pinx` با نوار درصد
 6. **Install** — نصب از طریق PinGate
 
 فقط آپلود بدون نصب:
