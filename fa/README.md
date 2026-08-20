@@ -88,7 +88,8 @@
 
 ### دیپلوی (Deploy)
 
-#### [Pinroll — انتشار و دیپلوی](./deploy/pinroll.md) (اول سناریوها، بعد پیشرفته: provision، `--full`، `pinroll:setup`)
+#### [Pinroll — راهنمای سریع](./start/pinroll-quickstart.md) (شروع اینجا)
+#### [Pinroll — انتشار و دیپلوی](./deploy/pinroll.md) (مرجع کامل: provision، `--full`، `pinroll:setup`)
 
 ### کار با دیتابیس
 

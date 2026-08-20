@@ -87,6 +87,12 @@ Read these in order if you are building a new app.
 - [Transport and shared resources](./en/advanced/transport.md)
 - [Kernel and boot pipeline](./en/advanced/kernel.md)
 - [boot.php and events](./en/advanced/boot-and-events.md)
+- [Pinroll overview](./en/advanced/pinroll.md)
+
+## Deploy
+
+- [Pinroll — quick start](./en/start/pinroll-quickstart.md)
+- [Pinroll — release & deploy](./en/deploy/pinroll.md)
 
 ## Walkthroughs
 

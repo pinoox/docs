@@ -161,6 +161,29 @@ Details: [Getting started with testing](../test/getting-started.md)
 
 ---
 
+## Pinroll
+
+**Symptoms:** `401` from PinGate, `503`, `PinGate request failed`, `Package install failed`, or `Cannot redeclare pinroll_pingate_run`.
+
+**Fix (in order):**
+
+1. Inspect config: `php pinoox pinroll:config`
+2. Test connection: `php pinoox pinroll:check`
+3. If pingate is broken or outdated: `php pinoox pinroll:gate`
+4. Deploy again — the **Ensure PinGate** step auto-checks and re-uploads pingate when needed
+
+| Error | Plain meaning |
+|-------|----------------|
+| `401` | Token in `.pinoox/pinroll.config.php` does not match the host |
+| `503` / HTML | Host overload or broken `pingate.php` |
+| HTTPS on Windows/MAMP | Pinroll 1.5.2+ usually handles this automatically |
+
+PinGate request logs: `storage/pinroll/gate/` on the dev machine.
+
+Simple guide: [Pinroll quick start](../start/pinroll-quickstart.md)
+
+---
+
 ## Related docs
 
 - [Installing Pinoox](../start/installing-pinoox.md)
@@ -170,6 +193,8 @@ Details: [Getting started with testing](../test/getting-started.md)
 - [Pinoox Baker (Pinker)](../advanced/pinker.md)
 - [Pinoox ID](../advanced/pinoox-id.md)
 - [Database getting started](../database/getting-started.md)
+- [Pinroll quick start](../start/pinroll-quickstart.md)
+- [Pinroll deploy](../deploy/pinroll.md)
 - [Contact support](./contact-support.md)
 
 ---

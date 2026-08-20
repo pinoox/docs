@@ -2,6 +2,8 @@
 
 [← بازگشت به فهرست](../README.md)
 
+> **تازه‌کار؟** [راهنمای سریع Pinroll](../start/pinroll-quickstart.md) — نصب، connect و deploy به زبان ساده.
+
 Pinroll (`pinoox/pinroll`) پروژه پینوکس را به هاست می‌فرستد: نصب اول، به‌روزرسانی، migrate/patch و rollback.
 
 آن را روی **ماشین توسعه** نصب کنید. هاست به Pinroll داخل `vendor/` نیاز ندارد.
@@ -73,6 +75,16 @@ php pinoox pinroll:deploy
 ```
 
 `pinroll:connect` مسیر دیپلوی + origin سایت (مثلاً `https://pinoox.com`) را می‌پرسد، PinGate را آپلود می‌کند و **site + token** را در `.pinoox/pinroll.config.php` می‌نویسد. اگر هاست از قبل تنظیم شده باشد فقط اتصال را بررسی می‌کند (`--reset` برای تکرار).
+
+**مراحل `pinroll:deploy` (با نصب روی هاست):**
+
+1. Build — ساخت `.pinx`
+2. Connect FTP
+3. **Ensure PinGate** — سلامت `pingate.php`؛ در صورت خرابی یا قدیمی بودن، خودکار آپلود می‌شود
+4. Upload `.pinx`
+5. Install via PinGate
+
+فقط آپلود: `pinroll:push`. فقط نصب فایل آماده: `pinroll:install`.
 
 ### ۳. به‌روزرسانی پلتفرم + همه اپ‌ها
 
@@ -479,6 +491,8 @@ php pinoox pinroll:check
 
 احراز هویت: `Authorization: Bearer {token}`. مسیرها: `pingate.php?route=…`.
 
+**امنیت:** بدون توکن، همه routeها `401 JSON` برمی‌گردانند. `/status` سبک است (boot سنگین پلتفرم نمی‌زند).
+
 | متد | مسیر | کاربرد |
 |-----|------|--------|
 | `GET` | `/status` | سلامت / نسخه |
@@ -526,10 +540,28 @@ php pinoox pinroll:check
 | `pinion` | آپلود تکه‌ای HTTP از PinGate |
 | `local` | همان ماشین / تست |
 
+### عیب‌یابی
+
+| علامت | احتمال / کار |
+|-------|----------------|
+| `401` / Missing bearer token | توکن overlay با hash داخل `pingate.php` یکی نیست — از هم‌تیمی بپرسید یا `pinroll:connect` / `pinroll:gate` |
+| `503` یا HTML به‌جای JSON | هاست overload یا `pingate.php` قدیمی/خراب — `pinroll:gate` یا deploy جدید (مرحله Ensure PinGate) |
+| PinGate request failed (HTTPS) | روی ویندوز/MAMP: Pinroll 1.5.2+ CA واقعی استفاده می‌کند؛ `pinroll:check` دوباره بزنید |
+| Cannot redeclare `pinroll_pingate_run` | `pingate.php` روی هاست خراب است — `php pinoox pinroll:gate` |
+| Package install failed | لاگ PinGate: `storage/pinroll/gate/YYYYMMDD.log` روی ماشین توسعه |
+| cleanup بعد از install warning | معمولاً روی نصب اثر ندارد؛ `/cleanup` سبک‌تر در نسخه‌های بعد |
+
+```bash
+php pinoox pinroll:check
+php pinoox pinroll:gate -n
+php pinoox pinroll:config
+```
+
 ---
 
 ## مستندات مرتبط
 
+- [راهنمای سریع Pinroll](../start/pinroll-quickstart.md)
 - [مروری بر Pinroll](../advanced/pinroll.md)
 - [پروتکل Pinion](../advanced/pinion.md)
 - [Pinx CLI](../start/pinx-cli.md)

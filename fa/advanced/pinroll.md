@@ -2,7 +2,7 @@
 
 [← بازگشت به فهرست](../README.md)
 
-> **نحوه استفاده:** [دیپلوی → Pinroll](../deploy/pinroll.md) — اول سناریوها، بعد بخش پیشرفته.
+> **نحوه استفاده:** [راهنمای سریع](../start/pinroll-quickstart.md) · [دیپلوی → Pinroll](../deploy/pinroll.md)
 
 **Pinroll** (`pinoox/pinroll`) release می‌سازد، به **هاست** می‌فرستد و از طریق **PinGate** نصب می‌کند. یک کتابخانه Composer است؛ دستورات با نصب ثبت می‌شوند.
 
@@ -78,6 +78,7 @@ php pinoox pinroll:rollback
 
 ## مستندات مرتبط
 
+- [راهنمای سریع Pinroll](../start/pinroll-quickstart.md)
 - [راهنمای دیپلوی Pinroll](../deploy/pinroll.md) — سناریوها + مرجع کامل
 - [Pinion](./pinion.md)
 - [مرجع CLI](../start/cli-reference.md)

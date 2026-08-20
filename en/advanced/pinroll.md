@@ -2,7 +2,7 @@
 
 [← Back to index](../README.md)
 
-> **How to use it:** [Deploy → Pinroll](../deploy/pinroll.md) — start with the scenarios, then the advanced section.
+> **How to use it:** [Quick start](../start/pinroll-quickstart.md) · [Deploy → Pinroll](../deploy/pinroll.md)
 
 **Pinroll** (`pinoox/pinroll`) builds releases, ships them to **hosts**, and installs them via **PinGate**. It is a Composer library; commands register on install.
 
@@ -78,6 +78,7 @@ php pinoox pinroll:rollback
 
 ## Related docs
 
+- [Pinroll quick start](../start/pinroll-quickstart.md)
 - [Pinroll deploy guide](../deploy/pinroll.md) — scenarios + full reference
 - [Pinion](./pinion.md) — chunked HTTP upload
 - [CLI reference](../start/cli-reference.md)

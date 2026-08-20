@@ -93,7 +93,8 @@ Read these in order if you are building a new app.
 
 Platform release and rollout (full Pinoox installations).
 
-- [Pinroll — release & deploy](./deploy/pinroll.md) (scenarios first, then advanced: provision, `--full`, `pinroll:setup`)
+- [Pinroll — quick start](./start/pinroll-quickstart.md) (start here)
+- [Pinroll — release & deploy](./deploy/pinroll.md) (full reference: provision, `--full`, `pinroll:setup`)
 
 ## Walkthroughs
 

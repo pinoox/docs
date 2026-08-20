@@ -161,6 +161,29 @@ php pinoox test com_my_shop
 
 ---
 
+## Pinroll
+
+**علائم:** `401` روی PinGate، `503`، `PinGate request failed`، `Package install failed`، یا `Cannot redeclare pinroll_pingate_run`.
+
+**راه‌حل (به ترتیب):**
+
+1. کانفیگ را ببینید: `php pinoox pinroll:config`
+2. اتصال را تست کنید: `php pinoox pinroll:check`
+3. اگر pingate خراب یا قدیمی است: `php pinoox pinroll:gate`
+4. دوباره deploy بزنید — مرحله **Ensure PinGate** خودش pingate را چک و در صورت نیاز آپلود می‌کند
+
+| خطا | معنی ساده |
+|-----|-----------|
+| `401` | توکن در `.pinoox/pinroll.config.php` با هاست یکی نیست |
+| `503` / HTML | سرور overload یا `pingate.php` مشکل دارد |
+| HTTPS روی ویندوز/MAMP | Pinroll 1.5.2+ معمولاً خودش حل می‌کند |
+
+لاگ درخواست‌های PinGate: `storage/pinroll/gate/` روی ماشین توسعه.
+
+راهنمای ساده: [Pinroll — راهنمای سریع](../start/pinroll-quickstart.md)
+
+---
+
 ## مستندات مرتبط
 
 - [نصب و راه‌اندازی](../start/installing-pinoox.md)
@@ -170,6 +193,8 @@ php pinoox test com_my_shop
 - [Pinker — بیلد Pinoox](../advanced/pinker.md)
 - [Pinoox ID](../advanced/pinoox-id.md)
 - [شروع دیتابیس](../database/getting-started.md)
+- [Pinroll — راهنمای سریع](../start/pinroll-quickstart.md)
+- [Pinroll — دیپلوی](../deploy/pinroll.md)
 - [تماس با پشتیبانی](./contact-support.md)
 
 ---

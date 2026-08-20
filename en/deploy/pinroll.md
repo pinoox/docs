@@ -2,6 +2,8 @@
 
 [← Back to index](../README.md)
 
+> **New here?** [Pinroll quick start](../start/pinroll-quickstart.md) — install, connect, and deploy in plain language.
+
 Pinroll (`pinoox/pinroll`) ships a Pinoox project to a remote host: first install, updates, migrate/patch, and rollback.
 
 Install it on the **dev machine**. The host does **not** need Pinroll in `vendor/`.
@@ -73,6 +75,16 @@ php pinoox pinroll:deploy
 ```
 
 `pinroll:connect` asks for deploy path + site origin (e.g. `https://pinoox.com`), uploads PinGate, and writes **site + token** into `.pinoox/pinroll.config.php`. If the host is already configured, it only checks connectivity (`--reset` to redo).
+
+**`pinroll:deploy` steps (with remote install):**
+
+1. Build — create `.pinx`
+2. Connect FTP
+3. **Ensure PinGate** — verify `pingate.php`; auto-upload if broken or outdated
+4. Upload `.pinx`
+5. Install via PinGate
+
+Upload only: `pinroll:push`. Install staged file only: `pinroll:install`.
 
 ### 3. Update platform + every app
 
@@ -482,6 +494,8 @@ App deploys run `fe:build` before `pinx:build`. Production `.pinx` packages incl
 
 Auth: `Authorization: Bearer {token}`. Paths are `pingate.php?route=…`.
 
+**Security:** Without a token, every route returns `401 JSON`. `/status` is lightweight (no heavy platform boot).
+
 | Method | Path | Purpose |
 |--------|------|---------|
 | `GET` | `/status` | Health / version |
@@ -537,10 +551,28 @@ Push / deploy flags: `--full`, `--all`, `--vendor`, `--theme`, `--app=` / `--app
 | `pinion` | Chunked HTTP upload through PinGate |
 | `local` | Same machine / smoke tests |
 
+### Troubleshooting
+
+| Symptom | Likely cause / fix |
+|---------|---------------------|
+| `401` / Missing bearer token | Overlay token does not match hash in `pingate.php` — ask a teammate or run `pinroll:connect` / `pinroll:gate` |
+| `503` or HTML instead of JSON | Host overload or broken/outdated `pingate.php` — `pinroll:gate` or a new deploy (Ensure PinGate step) |
+| PinGate request failed (HTTPS) | On Windows/MAMP: Pinroll 1.5.2+ uses a real CA bundle; run `pinroll:check` again |
+| Cannot redeclare `pinroll_pingate_run` | Corrupt `pingate.php` on the host — `php pinoox pinroll:gate` |
+| Package install failed | PinGate log: `storage/pinroll/gate/YYYYMMDD.log` on the dev machine |
+| cleanup warning after install | Usually non-blocking; lighter `/cleanup` may come in a later release |
+
+```bash
+php pinoox pinroll:check
+php pinoox pinroll:gate -n
+php pinoox pinroll:config
+```
+
 ---
 
 ## Related docs
 
+- [Pinroll quick start](../start/pinroll-quickstart.md)
 - [Pinroll overview](../advanced/pinroll.md)
 - [Pinion protocol](../advanced/pinion.md)
 - [Pinx CLI](../start/pinx-cli.md)
