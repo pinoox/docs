@@ -23,10 +23,11 @@
 |------|--------|
 | دیپلوی دستی FTP | push اسکریپتی + نصب PinGate |
 | سایت نیمه‌دیپلوی‌شده | نصب اتمیک + rollback |
-| هاست اشتراکی بدون SSH | آپلود FTP + نصب از راه HTTP |
+| هاست اشتراکی بدون SSH | آپلود FTP + نصب از راه HTTP، یا **zip kit** بدون FTP |
 | هاست خالی، هنوز سایت نیست | `pinroll:provision` (PinGate + platform.zip + setup نصب‌کننده) |
 | اسکیما بعد از دیپلوی | `pinroll:setup` (migrate + patch؛ اختیاری `--seed`) |
-| به‌روزرسانی هسته / vendor روی هاست | `pinroll:vendor --push` |
+| به‌روزرسانی هسته / vendor روی هاست | `pinroll:vendor --push` یا `pinroll:pincore` (zip + sync) |
+| راه‌اندازی بدون FTP | `pinroll:kit` → extract در `public_html` → `via=pinion` |
 
 ---
 
@@ -66,10 +67,12 @@ flowchart LR
 
 ```bash
 php pinoox pinroll:init
+php pinoox pinroll:kit                 # بدون FTP
 php pinoox pinroll:provision           # هاست خالی
-php pinoox pinroll:connect             # سایت موجود
+php pinoox pinroll:connect             # سایت موجود (منوی روش‌ها)
 php pinoox pinroll:config              # هاست resolveشده (token سانسور)
 php pinoox pinroll:deploy --full       # پلتفرم + همه اپ‌ها
+php pinoox pinroll:pincore             # آپدیت هسته (zip + sync)
 php pinoox pinroll:setup               # migrate + patch
 php pinoox pinroll:rollback
 ```

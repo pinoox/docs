@@ -88,8 +88,8 @@
 
 ### دیپلوی (Deploy)
 
-#### [Pinroll — راهنمای سریع](./start/pinroll-quickstart.md) (شروع اینجا)
-#### [Pinroll — انتشار و دیپلوی](./deploy/pinroll.md) (مرجع کامل: provision، `--full`، `pinroll:setup`)
+#### [Pinroll — راهنمای سریع](./start/pinroll-quickstart.md) (شروع اینجا — kit بدون FTP، connect، deploy)
+#### [Pinroll — انتشار و دیپلوی](./deploy/pinroll.md) (مرجع کامل: kit، provision، sync/pincore، `--full`، `pinroll:setup`)
 
 ### کار با دیتابیس
 

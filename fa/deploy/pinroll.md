@@ -11,7 +11,7 @@ Pinroll (`pinoox/pinroll`) پروژه پینوکس را به هاست می‌ف�
 ```bash
 composer require --dev pinoox/pinroll
 php pinoox pinroll:init
-# FTP/SSH را در .pinoox/pinroll.config.php یا PINROLL_* در .env پر کنید
+# روش اتصال: kit / FTP / SSH — یا PINROLL_* در .env
 ```
 
 بعد یکی از سناریوها را انتخاب کنید. مرجع کامل در [پیشرفته](#پیشرفته) است.
@@ -65,7 +65,31 @@ php pinoox pinroll:provision --setup-only
 
 ### ۲. سایت موجود
 
-سایت از قبل بالا است. یک‌بار connect، بعد دیپلوی.
+سایت از قبل بالا است. یک‌بار PinGate را آماده کنید، بعد دیپلوی.
+
+#### روش‌های اتصال
+
+| روش | کی | دستور |
+|-----|-----|--------|
+| **Zip kit** | بدون FTP — فقط File Manager | `php pinoox pinroll:kit` |
+| **FTP** | هاست اشتراکی | `php pinoox pinroll:connect --via=ftp` |
+| **SSH** | VPS | `php pinoox pinroll:connect --via=ssh` |
+| **FTP یک‌بار → Pinion** | اول gate با FTP، بعد آپلود HTTP | `php pinoox pinroll:connect --bootstrap-ftp` |
+| **انتخاب تعاملی** | نمی‌دانید کدام | `php pinoox pinroll:connect` |
+
+**Zip kit (بدون FTP):**
+
+```bash
+php pinoox pinroll:kit
+# → storage/pinroll/pinroll-kit-production.zip
+# داخل public_html استخراج کنید (pingate.php + storage/pinroll/tokens/…)
+php pinoox pinroll:check
+php pinoox pinroll:deploy
+```
+
+`pinroll:gate --kit` همان zip را می‌سازد. بعد از kit، `via` معمولاً `pinion` است.
+
+**با connect (FTP/SSH یا picker):**
 
 ```bash
 php pinoox pinroll:connect
@@ -74,12 +98,12 @@ php pinoox pinroll:check
 php pinoox pinroll:deploy
 ```
 
-`pinroll:connect` مسیر دیپلوی + origin سایت (مثلاً `https://pinoox.com`) را می‌پرسد، PinGate را آپلود می‌کند و **site + token** را در `.pinoox/pinroll.config.php` می‌نویسد. اگر هاست از قبل تنظیم شده باشد فقط اتصال را بررسی می‌کند (`--reset` برای تکرار).
+`pinroll:connect` مسیر دیپلوی + origin سایت را می‌پرسد، PinGate را آماده می‌کند (آپلود یا kit) و **site + token** را در `.pinoox/pinroll.config.php` می‌نویسد. اگر هاست از قبل تنظیم شده باشد فقط اتصال را بررسی می‌کند (`--reset` برای تکرار).
 
 **مراحل `pinroll:deploy` (با نصب روی هاست):**
 
 1. Build — ساخت `.pinx`
-2. Connect FTP
+2. Connect — ترنسپورت هاست (`ftp` / `ssh` / `pinion`)
 3. **Ensure PinGate** — سلامت `pingate.php`؛ در صورت خرابی خودکار آپلود
 4. **Cleanup leftovers** — هرس آرشیو/tmp/zip قدیمی یا ناقص
 5. Upload `.pinx`
@@ -146,8 +170,8 @@ Pinroll یک **کتابخانه Composer** است، نه یک اپ پینوکس.
 | مفهوم | معنی |
 |-------|------|
 | **Host** | مقصد دیپلوی (`production`، `staging` — کلید آرایه همان نام است) |
-| **Transport (`via`)** | نحوه ارسال (`ftp`، `ssh`، `pinion`، `local`) |
-| **PinGate** | یک فایل عمومی روی هاست (`pingate.php?route=`) برای install / status / rollback / vendor / نصب اولیه |
+| **Transport (`via`)** | نحوه ارسال (`ftp`، `ssh`، `pinion`، `local`) — kit برای راه‌اندازی بدون FTP |
+| **PinGate** | یک فایل عمومی روی هاست (`pingate.php?route=`) برای install / status / rollback / vendor / sync / نصب اولیه |
 | **Bundle** | دستور ساخت اختیاری؛ دیپلوی عادی اپ‌ها را خودکار تشخیص می‌دهد |
 
 ```mermaid
@@ -375,15 +399,33 @@ php pinoox pinroll:apps --list
 php pinoox pinroll:apps --clear
 ```
 
-### Connect
+### Connect و kit
 
 ```bash
-php pinoox pinroll:connect
+php pinoox pinroll:kit                    # zip برای File Manager
+php pinoox pinroll:connect                # منوی روش‌ها
+php pinoox pinroll:connect --via=pinion
+php pinoox pinroll:connect --via=ftp
+php pinoox pinroll:connect --via=ssh
+php pinoox pinroll:connect --bootstrap-ftp
 php pinoox pinroll:connect --reset
+php pinoox pinroll:gate --kit             # همان zip kit
 php pinoox pinroll:config
 ```
 
 `gate.site` (origin) و token را در overlay می‌نویسد. `--rotate` روی `pinroll:gate` hash جدید می‌سازد و **هم‌تیمی‌ها را از کار می‌اندازد**.
+
+### Sync پوشه و pincore
+
+`pinroll:sync` و `pinroll:pincore` پوشه را **zip** می‌کنند، با `via` هاست آپلود می‌کنند و روی سرور با PinGate (`POST ?route=sync`) استخراج می‌کنند — برای `ftp`، `ssh` و `pinion`.
+
+```bash
+php pinoox pinroll:pincore
+php pinoox pinroll:sync --from=./pincore --to=vendor/pinoox/pincore
+php pinoox pinroll:sync --from=./path --to=remote/path --via=pinion
+```
+
+هاست باید `pingate.php` به‌روز داشته باشد (با `route=sync`). اگر قدیمی است: `php pinoox pinroll:gate`.
 
 ### حالت‌های local
 
@@ -507,23 +549,27 @@ php pinoox pinroll:check
 | `POST` | `/setup` | SetupService نصب‌کننده سپس welcome/manager و غیرفعال کردن installer |
 | `POST` | `/check-db` | تست دیتابیس **روی هاست** |
 | `POST` | `/vendor` | استخراج `vendor.zip` |
+| `POST` | `/sync` | استخراج zip sync مسیر (بدون boot کامل پلتفرم؛ امن برای جایگزینی pincore) |
 | `POST` | `/rollback` | نصب مجدد نسخه قبلی |
 | `POST` | `/cleanup` | هرس آرشیو |
 | `GET` | `/history` | تاریخچه |
+
+`/sync` زود در bootstrap PinGate اجرا می‌شود تا بتوان `vendor/pinoox/pincore` را جایگزین کرد بدون اینکه هستهٔ در حال اجرا قفل شود.
 
 ### مرجع CLI
 
 | دستور | کاربرد |
 |-------|--------|
 | `pinroll:init` | استاب کوتاه overlay در `.pinoox/pinroll.config.php` |
+| `pinroll:kit` | zip استخراج برای File Manager (`pingate` + token + README) |
 | `pinroll:provision` | نصب اولیه هاست خالی |
-| `pinroll:connect` | راه‌اندازی / بررسی (`--reset`)؛ نوشتن site + token در overlay |
+| `pinroll:connect` | راه‌اندازی / بررسی (`--via=`، `--bootstrap-ftp`، `--reset`)؛ نوشتن site + token |
 | `pinroll:config` | چاپ هاست resolveشده (token سانسور) |
 | `pinroll:apps` | تنظیم `hosts.*.apps` |
 | `pinroll:vendor` | `vendor.zip` production (`--push`) |
-| `pinroll:pincore` | sync فقط `vendor/pinoox/pincore` با FTP |
-| `pinroll:sync` | sync FTP هر پوشه لوکال (`--from`, `--to`) |
-| `pinroll:gate` | ساخت / آپلود PinGate |
+| `pinroll:pincore` | zip + آپلود `vendor/pinoox/pincore` + استخراج PinGate (`ftp`/`ssh`/`pinion`) |
+| `pinroll:sync` | zip هر پوشه لوکال (`--from`, `--to`) + آپلود + استخراج PinGate |
+| `pinroll:gate` | ساخت / آپلود PinGate (`--kit` برای zip) |
 | `pinroll:check` | بررسی هاست / PinGate |
 | `pinroll:push` | فقط ساخت و آپلود |
 | `pinroll:setup` | بعد از دیپلوی: migrate + patch |
@@ -544,17 +590,21 @@ php pinoox pinroll:check
 |-------|--------|
 | `ftp` | هاست اشتراکی — آپلود + نصب PinGate |
 | `ssh` | VPS — SFTP + نصب SSH |
-| `pinion` | آپلود تکه‌ای HTTP از PinGate |
+| `pinion` | آپلود تکه‌ای HTTP از PinGate (بعد از kit یا bootstrap-ftp) |
 | `local` | همان ماشین / تست |
+
+راه‌اندازی بدون FTP: `pinroll:kit` → extract در `public_html` → بعد `via=pinion`.
 
 ### عیب‌یابی
 
 | علامت | احتمال / کار |
 |-------|----------------|
-| `401` / Missing bearer token | توکن overlay با hash داخل `pingate.php` یکی نیست — از هم‌تیمی بپرسید یا `pinroll:connect` / `pinroll:gate` |
+| `401` / Missing bearer token | توکن overlay با hash داخل `pingate.php` یکی نیست — از هم‌تیمی بپرسید یا `pinroll:connect` / `kit` / `pinroll:gate` |
 | `503` یا HTML به‌جای JSON | هاست overload یا `pingate.php` قدیمی/خراب — `pinroll:gate` یا deploy جدید (مرحله Ensure PinGate) |
 | PinGate request failed (HTTPS) | روی ویندوز/MAMP: Pinroll 1.5.2+ CA واقعی استفاده می‌کند؛ `pinroll:check` دوباره بزنید |
 | Cannot redeclare `pinroll_pingate_run` | `pingate.php` روی هاست خراب است — `php pinoox pinroll:gate` |
+| `Action "…" is already registered` | pingate را به‌روز کنید؛ نصب با skip_cache و rebuild کش داخل‌پردازشی |
+| `route=sync` موجود نیست / sync شکست | `pingate.php` قدیمی است — `php pinoox pinroll:gate` یا دوباره kit |
 | Package install failed | لاگ PinGate: `storage/pinroll/gate/YYYYMMDD.log` روی ماشین توسعه |
 | cleanup بعد از install warning | معمولاً روی نصب اثر ندارد؛ `/cleanup` سبک‌تر در نسخه‌های بعد |
 

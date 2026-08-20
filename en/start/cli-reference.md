@@ -207,11 +207,14 @@ Build packages and deploy to configured hosts. Requires `pinoox/pinroll` and pro
 | Command | Purpose |
 |---------|---------|
 | `pinroll:init` | Scaffold `.pinoox/pinroll.config.php` |
+| `pinroll:kit` | Extract zip for File Manager (`pingate` + token) |
 | `pinroll:provision` | Blank-host install (PinGate + platform.zip + setup) |
-| `pinroll:connect` | Setup / verify host (`--reset` to redo) |
+| `pinroll:connect` | Setup / verify (`--via=`, `--bootstrap-ftp`, `--reset`) |
 | `pinroll:apps` | Set `hosts.*.apps` |
 | `pinroll:vendor` | Production `vendor.zip` (`--push` to host) |
-| `pinroll:gate` | Build / upload PinGate |
+| `pinroll:pincore` | Zip + upload pincore + PinGate extract |
+| `pinroll:sync` | Zip any folder (`--from`, `--to`) + PinGate extract |
+| `pinroll:gate` | Build / upload PinGate (`--kit` for zip) |
 | `pinroll:check` | Test host / PinGate |
 | `pinroll:push` | Build and upload only |
 | `pinroll:setup` | Post-deploy migrate + patch (`--seed`, `--config`, `--dry-run`) |
@@ -226,6 +229,7 @@ Build packages and deploy to configured hosts. Requires `pinoox/pinroll` and pro
 
 ```bash
 php pinoox pinroll:init
+php pinoox pinroll:kit                # no FTP
 php pinoox pinroll:provision          # blank host
 php pinoox pinroll:connect            # existing site
 php pinoox pinroll:deploy --full

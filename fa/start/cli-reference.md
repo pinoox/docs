@@ -206,11 +206,14 @@ pinx pinion:info {upload_id} --json
 | دستور | کاربرد |
 |--------|--------|
 | `pinroll:init` | ساخت `.pinoox/pinroll.config.php` |
+| `pinroll:kit` | zip استخراج برای File Manager (`pingate` + token) |
 | `pinroll:provision` | نصب اولیه هاست خالی (PinGate + platform.zip + setup) |
-| `pinroll:connect` | راه‌اندازی / بررسی هاست (`--reset` برای تکرار) |
+| `pinroll:connect` | راه‌اندازی / بررسی (`--via=`، `--bootstrap-ftp`، `--reset`) |
 | `pinroll:apps` | تنظیم `hosts.*.apps` |
 | `pinroll:vendor` | `vendor.zip` production (`--push` به هاست) |
-| `pinroll:gate` | ساخت / آپلود PinGate |
+| `pinroll:pincore` | zip + آپلود pincore + استخراج PinGate |
+| `pinroll:sync` | zip پوشه دلخواه (`--from`, `--to`) + استخراج PinGate |
+| `pinroll:gate` | ساخت / آپلود PinGate (`--kit` برای zip) |
 | `pinroll:check` | بررسی هاست / PinGate |
 | `pinroll:push` | فقط ساخت و آپلود |
 | `pinroll:setup` | بعد از دیپلوی: migrate + patch (`--seed`، `--config`، `--dry-run`) |
@@ -225,6 +228,7 @@ pinx pinion:info {upload_id} --json
 
 ```bash
 php pinoox pinroll:init
+php pinoox pinroll:kit                # بدون FTP
 php pinoox pinroll:provision          # هاست خالی
 php pinoox pinroll:connect            # سایت موجود
 php pinoox pinroll:deploy --full

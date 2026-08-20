@@ -23,10 +23,11 @@ Install as **dev** (`composer require --dev pinoox/pinroll`). The host does not 
 |---------|----------|
 | Manual FTP deploys | Scripted push + PinGate install |
 | Half-deployed sites | Atomic install + rollback |
-| Shared hosting without SSH | FTP upload + remote install over HTTP |
+| Shared hosting without SSH | FTP upload + remote install over HTTP, or **zip kit** without FTP |
 | Empty host, no site yet | `pinroll:provision` (PinGate + platform.zip + installer setup) |
 | Schema after deploy | `pinroll:setup` (migrate + patch; optional `--seed`) |
-| Core / vendor updates on host | `pinroll:vendor --push` |
+| Core / vendor updates on host | `pinroll:vendor --push` or `pinroll:pincore` (zip + sync) |
+| Setup without FTP | `pinroll:kit` → extract into `public_html` → `via=pinion` |
 
 ---
 
@@ -66,10 +67,12 @@ flowchart LR
 
 ```bash
 php pinoox pinroll:init
+php pinoox pinroll:kit                 # no FTP
 php pinoox pinroll:provision           # blank host
-php pinoox pinroll:connect             # existing site
+php pinoox pinroll:connect             # existing site (method picker)
 php pinoox pinroll:config              # resolved host (token redacted)
 php pinoox pinroll:deploy --full       # platform + every app
+php pinoox pinroll:pincore             # core update (zip + sync)
 php pinoox pinroll:setup               # migrate + patch
 php pinoox pinroll:rollback
 ```

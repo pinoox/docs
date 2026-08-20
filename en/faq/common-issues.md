@@ -163,13 +163,13 @@ Details: [Getting started with testing](../test/getting-started.md)
 
 ## Pinroll
 
-**Symptoms:** `401` from PinGate, `503`, `PinGate request failed`, `Package install failed`, or `Cannot redeclare pinroll_pingate_run`.
+**Symptoms:** `401` from PinGate, `503`, `PinGate request failed`, `Package install failed`, `Cannot redeclare pinroll_pingate_run`, or `Action "…" is already registered`.
 
 **Fix (in order):**
 
 1. Inspect config: `php pinoox pinroll:config`
 2. Test connection: `php pinoox pinroll:check`
-3. If pingate is broken or outdated: `php pinoox pinroll:gate`
+3. If pingate is broken or outdated: `php pinoox pinroll:gate` (or rebuild `pinroll:kit`)
 4. Deploy again — the **Ensure PinGate** step auto-checks and re-uploads pingate when needed
 
 | Error | Plain meaning |
@@ -177,6 +177,10 @@ Details: [Getting started with testing](../test/getting-started.md)
 | `401` | Token in `.pinoox/pinroll.config.php` does not match the host |
 | `503` / HTML | Host overload or broken `pingate.php` |
 | HTTPS on Windows/MAMP | Pinroll 1.5.2+ usually handles this automatically |
+| `Action already registered` | Refresh pingate; install uses skip_cache |
+| sync / `route=sync` | Outdated `pingate.php` — `pinroll:gate` |
+
+No FTP: `php pinoox pinroll:kit` → extract into `public_html` → `check` → `deploy`.
 
 PinGate request logs: `storage/pinroll/gate/` on the dev machine.
 

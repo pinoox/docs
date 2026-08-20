@@ -11,7 +11,7 @@ Install it on the **dev machine**. The host does **not** need Pinroll in `vendor
 ```bash
 composer require --dev pinoox/pinroll
 php pinoox pinroll:init
-# fill FTP/SSH in .pinoox/pinroll.config.php or PINROLL_* in .env
+# setup method: kit / FTP / SSH — or PINROLL_* in .env
 ```
 
 Then pick a scenario. Full reference is in [Advanced](#advanced).
@@ -65,7 +65,31 @@ Pinx shortcut: `pinx provision`.
 
 ### 2. Existing site
 
-The site is already running. Connect once, then deploy.
+The site is already running. Prepare PinGate once, then deploy.
+
+#### Setup methods
+
+| Method | When | Command |
+|--------|------|---------|
+| **Zip kit** | No FTP — File Manager only | `php pinoox pinroll:kit` |
+| **FTP** | Shared hosting | `php pinoox pinroll:connect --via=ftp` |
+| **SSH** | VPS | `php pinoox pinroll:connect --via=ssh` |
+| **FTP once → Pinion** | Bootstrap gate via FTP, then HTTP uploads | `php pinoox pinroll:connect --bootstrap-ftp` |
+| **Interactive** | Not sure | `php pinoox pinroll:connect` |
+
+**Zip kit (no FTP):**
+
+```bash
+php pinoox pinroll:kit
+# → storage/pinroll/pinroll-kit-production.zip
+# Extract into public_html (pingate.php + storage/pinroll/tokens/…)
+php pinoox pinroll:check
+php pinoox pinroll:deploy
+```
+
+`pinroll:gate --kit` builds the same zip. After kit, `via` is usually `pinion`.
+
+**With connect (FTP/SSH or picker):**
 
 ```bash
 php pinoox pinroll:connect
@@ -74,12 +98,12 @@ php pinoox pinroll:check
 php pinoox pinroll:deploy
 ```
 
-`pinroll:connect` asks for deploy path + site origin (e.g. `https://pinoox.com`), uploads PinGate, and writes **site + token** into `.pinoox/pinroll.config.php`. If the host is already configured, it only checks connectivity (`--reset` to redo).
+`pinroll:connect` asks for deploy path + site origin, prepares PinGate (upload or kit), and writes **site + token** into `.pinoox/pinroll.config.php`. If the host is already configured, it only checks connectivity (`--reset` to redo).
 
 **`pinroll:deploy` steps (with remote install):**
 
 1. Build — create `.pinx`
-2. Connect FTP
+2. Connect — host transport (`ftp` / `ssh` / `pinion`)
 3. **Ensure PinGate** — verify `pingate.php`; auto-upload if broken or outdated
 4. **Cleanup leftovers** — prune old/stale archives, tmp, and leftover deploy zips
 5. Upload `.pinx`
@@ -146,8 +170,8 @@ Pinroll is a **Composer library**, not a Pinoox app. Commands register when the 
 | Concept | Meaning |
 |---------|---------|
 | **Host** | Where to deploy (`production`, `staging`, …) — the config key is the name |
-| **Transport (`via`)** | How to send files (`ftp`, `ssh`, `pinion`, `local`) |
-| **PinGate** | One public file on the host (`pingate.php?route=`) for install / status / rollback / vendor / first-time provision |
+| **Transport (`via`)** | How to send files (`ftp`, `ssh`, `pinion`, `local`) — kit for setup without FTP |
+| **PinGate** | One public file on the host (`pingate.php?route=`) for install / status / rollback / vendor / sync / first-time provision |
 | **Bundle** | Optional build recipe (`--bundle=…`); normal deploys auto-detect apps |
 
 ```mermaid
@@ -375,15 +399,33 @@ php pinoox pinroll:apps --list
 php pinoox pinroll:apps --clear
 ```
 
-### Connect
+### Connect and kit
 
 ```bash
-php pinoox pinroll:connect
+php pinoox pinroll:kit                    # zip for File Manager
+php pinoox pinroll:connect                # method picker
+php pinoox pinroll:connect --via=pinion
+php pinoox pinroll:connect --via=ftp
+php pinoox pinroll:connect --via=ssh
+php pinoox pinroll:connect --bootstrap-ftp
 php pinoox pinroll:connect --reset
+php pinoox pinroll:gate --kit             # same kit zip
 php pinoox pinroll:config
 ```
 
 Writes `gate.site` (origin) + token into the overlay. `--rotate` on `pinroll:gate` mints a new hash and **invalidates teammates**.
+
+### Folder sync and pincore
+
+`pinroll:sync` and `pinroll:pincore` **zip** the folder, upload with the host’s `via`, and extract on the server via PinGate (`POST ?route=sync`) — works for `ftp`, `ssh`, and `pinion`.
+
+```bash
+php pinoox pinroll:pincore
+php pinoox pinroll:sync --from=./pincore --to=vendor/pinoox/pincore
+php pinoox pinroll:sync --from=./path --to=remote/path --via=pinion
+```
+
+The host needs an up-to-date `pingate.php` (with `route=sync`). If outdated: `php pinoox pinroll:gate`.
 
 ### Local modes
 
@@ -510,23 +552,27 @@ Auth: `Authorization: Bearer {token}`. Paths are `pingate.php?route=…`.
 | `POST` | `/setup` | Installer SetupService (`db` + `user`) then welcome/manager + disable installer |
 | `POST` | `/check-db` | Test DB connection **on the host** |
 | `POST` | `/vendor` | Extract uploaded `vendor.zip` |
+| `POST` | `/sync` | Extract a path-sync zip (early bootstrap; safe for replacing pincore) |
 | `POST` | `/rollback` | Re-install previous release |
 | `POST` | `/cleanup` | Prune old archives |
 | `GET` | `/history` | Rollout history |
+
+`/sync` runs early in the PinGate bootstrap so `vendor/pinoox/pincore` can be replaced without locking the running core.
 
 ### CLI reference
 
 | Command | Purpose |
 |---------|---------|
 | `pinroll:init` | Short overlay stub in `.pinoox/pinroll.config.php` |
+| `pinroll:kit` | Extract zip for File Manager (`pingate` + token + README) |
 | `pinroll:provision` | Blank-host install (PinGate + platform.zip + setup) |
-| `pinroll:connect` | Setup / verify host (`--reset` to redo); writes site + token to overlay |
+| `pinroll:connect` | Setup / verify (`--via=`, `--bootstrap-ftp`, `--reset`); writes site + token |
 | `pinroll:config` | Print resolved host (token redacted) |
 | `pinroll:apps` | Set `hosts.*.apps` |
 | `pinroll:vendor` | Production `vendor.zip` (`--push` to host) |
-| `pinroll:pincore` | Sync only `vendor/pinoox/pincore` via FTP |
-| `pinroll:sync` | FTP-sync any local folder (`--from`, `--to`) |
-| `pinroll:gate` | Build / upload PinGate |
+| `pinroll:pincore` | Zip + upload `vendor/pinoox/pincore` + PinGate extract (`ftp`/`ssh`/`pinion`) |
+| `pinroll:sync` | Zip any local folder (`--from`, `--to`) + upload + PinGate extract |
+| `pinroll:gate` | Build / upload PinGate (`--kit` for zip) |
 | `pinroll:check` | Verify host / PinGate |
 | `pinroll:push` | Build & upload only |
 | `pinroll:setup` | Post-deploy migrate + patch (`--seed`, `--config`, `--dry-run`) |
@@ -555,17 +601,21 @@ Push / deploy flags: `--full`, `--all`, `--vendor`, `--theme`, `--app=` / `--app
 |-------|----------|
 | `ftp` | Shared hosting — upload + PinGate install |
 | `ssh` | VPS — SFTP upload, SSH install |
-| `pinion` | Chunked HTTP upload through PinGate |
+| `pinion` | Chunked HTTP upload through PinGate (after kit or bootstrap-ftp) |
 | `local` | Same machine / smoke tests |
+
+Setup without FTP: `pinroll:kit` → extract into `public_html` → then `via=pinion`.
 
 ### Troubleshooting
 
 | Symptom | Likely cause / fix |
 |---------|---------------------|
-| `401` / Missing bearer token | Overlay token does not match hash in `pingate.php` — ask a teammate or run `pinroll:connect` / `pinroll:gate` |
+| `401` / Missing bearer token | Overlay token does not match hash in `pingate.php` — ask a teammate or run `pinroll:connect` / `kit` / `pinroll:gate` |
 | `503` or HTML instead of JSON | Host overload or broken/outdated `pingate.php` — `pinroll:gate` or a new deploy (Ensure PinGate step) |
 | PinGate request failed (HTTPS) | On Windows/MAMP: Pinroll 1.5.2+ uses a real CA bundle; run `pinroll:check` again |
 | Cannot redeclare `pinroll_pingate_run` | Corrupt `pingate.php` on the host — `php pinoox pinroll:gate` |
+| `Action "…" is already registered` | Refresh pingate; install uses skip_cache and in-process cache rebuild |
+| Missing `route=sync` / sync failed | Outdated `pingate.php` — `php pinoox pinroll:gate` or rebuild kit |
 | Package install failed | PinGate log: `storage/pinroll/gate/YYYYMMDD.log` on the dev machine |
 | cleanup warning after install | Usually non-blocking; lighter `/cleanup` may come in a later release |
 
