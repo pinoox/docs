@@ -39,6 +39,39 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | `databases` | `db:list` |
 | `pinion` | `pinion:list` |
 | `make:permission` | `permission:create` |
+| `platform:install` | `install-platform` |
+
+---
+
+## Install platform
+
+First-time multi-app setup without the browser installer. Runs the same `SetupService` as the GUI: save DB credentials, migrate core + apps, run patches, create the admin user, apply language, route `/` to Welcome and `/manager` to Manager, then disable the installer app.
+
+```bash
+php pinoox install-platform init
+# edit .pinoox/install-platform.php
+php pinoox install-platform check
+php pinoox install-platform run
+```
+
+| Action | Purpose |
+|--------|---------|
+| `init` | Write `.pinoox/install-platform.php` (pre-filled from `.env` `DB_*` when set) |
+| `check` | Validate the config and test the database connection |
+| `run` | Install |
+
+| Option | Purpose |
+|--------|---------|
+| `--file=` | Config path (default: `.pinoox/install-platform.php`) |
+| `--force` / `-f` | Overwrite the stub (`init`) or re-run if already installed (`run`) |
+| `--dry-run` | Validate without installing (`run`) |
+| `--remove` / `-r` / `--delete` / `-d` | Delete the config after a successful install |
+
+The config file lives under `.pinoox/` (gitignored) and contains the admin password. Pass `-r` after a successful install, or delete it yourself.
+
+If the installer app is already disabled, `run` refuses unless you pass `--force`.
+
+See [Installing Pinoox](./installing-pinoox.md#cli-installer).
 
 ---
 
@@ -344,6 +377,7 @@ Installs and updates Composer (platform + per-app) and npm (theme) targets. Scop
 
 ## Related docs
 
+- [Installing Pinoox](./installing-pinoox.md)
 - [Frontend & Vite](../basic/frontend-vite.md)
 - [Your first app](./your-first-app.md)
 - [Migrations](../database/migrations.md)

@@ -39,6 +39,39 @@ php pinoox help migrate
 | `databases` | `db:list` |
 | `pinion` | `pinion:list` |
 | `make:permission` | `permission:create` |
+| `platform:install` | `install-platform` |
+
+---
+
+## نصب پلتفرم
+
+نصب اولیه چنداپ بدون مرورگر. همان `SetupService` نصب گرافیکی را اجرا می‌کند: ذخیره دیتابیس، migrate هسته و اپ‌ها، patch، ساخت کاربر مدیر، اعمال زبان، نگاشت `/` به Welcome و `/manager` به Manager، سپس غیرفعال کردن اپ installer.
+
+```bash
+php pinoox install-platform init
+# فایل .pinoox/install-platform.php را ویرایش کنید
+php pinoox install-platform check
+php pinoox install-platform run
+```
+
+| action | کاربرد |
+|--------|--------|
+| `init` | ساخت `.pinoox/install-platform.php` (در صورت وجود، از `.env` کلیدهای `DB_*`) |
+| `check` | اعتبارسنجی کانفیگ و تست اتصال دیتابیس |
+| `run` | نصب |
+
+| گزینه | کاربرد |
+|--------|--------|
+| `--file=` | مسیر فایل کانفیگ (پیش‌فرض: `.pinoox/install-platform.php`) |
+| `--force` / `-f` | بازنویسی stub در `init`، یا نصب مجدد اگر از قبل نصب شده (`run`) |
+| `--dry-run` | فقط اعتبارسنجی بدون نصب (`run`) |
+| `--remove` / `-r` / `--delete` / `-d` | حذف فایل کانفیگ بعد از نصب موفق |
+
+فایل کانفیگ زیر `.pinoox/` است (gitignore) و رمز مدیر را دارد. بعد از نصب `-r` بزنید یا خودتان حذف کنید.
+
+اگر اپ installer از قبل غیرفعال باشد، `run` بدون `--force` متوقف می‌شود.
+
+جزئیات نصب: [نصب و راه‌اندازی پینوکس](./installing-pinoox.md#نصب-از-cli).
 
 ---
 
@@ -343,6 +376,7 @@ Composer (پلتفرم + هر اپ) و npm (تم) را نصب/به‌روز می
 
 ## مستندات مرتبط
 
+- [نصب و راه‌اندازی پینوکس](./installing-pinoox.md)
 - [فرانت‌اند و Vite](../basic/frontend-vite.md)
 - [ساخت اولین اپ](./your-first-app.md)
 - [Migration — مهاجرت](../database/migrations.md)
