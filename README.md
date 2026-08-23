@@ -91,6 +91,7 @@ Read these in order if you are building a new app.
 
 ## Deploy
 
+- [Deploy a Pinx app (package only)](./en/deploy/pinx.md)
 - [Pinroll — quick start](./en/start/pinroll-quickstart.md)
 - [Pinroll — release & deploy](./en/deploy/pinroll.md)
 

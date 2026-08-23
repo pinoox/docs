@@ -91,9 +91,8 @@ Read these in order if you are building a new app.
 
 ## Deploy
 
-Platform release and rollout (full Pinoox installations).
-
-- [Pinroll — quick start](./start/pinroll-quickstart.md) (start here — kit without FTP, connect, deploy)
+- [Deploy a Pinx app (package only)](./deploy/pinx.md) — `pinx deploy` ships this app’s `.pinx`, not the whole project
+- [Pinroll — quick start](./start/pinroll-quickstart.md) (kit without FTP, connect, deploy)
 - [Pinroll — release & deploy](./deploy/pinroll.md) (full reference: kit, provision, sync/pincore, `--full`, `pinroll:setup`)
 
 ## Walkthroughs

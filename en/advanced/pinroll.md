@@ -71,7 +71,8 @@ php pinoox pinroll:kit                 # no FTP
 php pinoox pinroll:provision           # blank host
 php pinoox pinroll:connect             # existing site (method picker)
 php pinoox pinroll:config              # resolved host (token redacted)
-php pinoox pinroll:deploy --full       # platform + every app
+php pinoox pinroll:deploy           # app .pinx only
+php pinoox pinroll:deploy --full    # platform + every app
 php pinoox pinroll:pincore             # core update (zip + sync)
 php pinoox pinroll:setup               # migrate + patch
 php pinoox pinroll:rollback
@@ -82,6 +83,7 @@ php pinoox pinroll:rollback
 ## Related docs
 
 - [Pinroll quick start](../start/pinroll-quickstart.md)
+- [Deploy a Pinx app](../deploy/pinx.md)
 - [Pinroll deploy guide](../deploy/pinroll.md) — scenarios + full reference
 - [Pinion](./pinion.md) — chunked HTTP upload
 - [CLI reference](../start/cli-reference.md)

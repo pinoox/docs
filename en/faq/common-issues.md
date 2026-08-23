@@ -198,6 +198,7 @@ Simple guide: [Pinroll quick start](../start/pinroll-quickstart.md)
 - [Pinoox ID](../advanced/pinoox-id.md)
 - [Database getting started](../database/getting-started.md)
 - [Pinroll quick start](../start/pinroll-quickstart.md)
+- [Deploy a Pinx app](../deploy/pinx.md)
 - [Pinroll deploy](../deploy/pinroll.md)
 - [Contact support](./contact-support.md)
 

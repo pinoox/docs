@@ -83,6 +83,14 @@ php pinoox pinroll:deploy
 
 ### ج) فقط یک اپ را آپدیت کنید
 
+**تک‌اپ Pinx** (پیشنهادی): [دیپلوی اپ Pinx](../deploy/pinx.md)
+
+```bash
+pinx deploy                 # فقط .pinx همین پروژه
+```
+
+**پلتفرم چنداپه:**
+
 ```bash
 php pinoox pinroll:deploy --app=com_pinoox_manager
 ```
@@ -171,6 +179,7 @@ php pinoox pinroll:setup
 
 ## مستندات بیشتر
 
+- [دیپلوی اپ Pinx](../deploy/pinx.md)
 - [Pinroll — انتشار و دیپلوی (کامل)](../deploy/pinroll.md)
 - [مروری بر Pinroll](../advanced/pinroll.md)
 - [مشکلات رایج — Pinroll](../faq/common-issues.md#pinroll)

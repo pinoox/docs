@@ -88,7 +88,8 @@
 
 ### دیپلوی (Deploy)
 
-#### [Pinroll — راهنمای سریع](./start/pinroll-quickstart.md) (شروع اینجا — kit بدون FTP، connect، deploy)
+#### [دیپلوی اپ Pinx (فقط پکیج)](./deploy/pinx.md) — `pinx deploy` فقط `.pinx` همین اپ را می‌فرستد، نه کل پروژه
+#### [Pinroll — راهنمای سریع](./start/pinroll-quickstart.md) (kit بدون FTP، connect، deploy)
 #### [Pinroll — انتشار و دیپلوی](./deploy/pinroll.md) (مرجع کامل: kit، provision، sync/pincore، `--full`، `pinroll:setup`)
 
 ### کار با دیتابیس

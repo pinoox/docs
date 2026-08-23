@@ -120,9 +120,15 @@ Keep private signing keys out of Git and `.pinx` packages.
 
 ## Install On A Platform
 
-Upload the `.pinx` package to a Pinoox platform manager or install it through the platform CLI.
+**Pinroll (recommended for Pinx):** [Deploy a Pinx app](../deploy/pinx.md) — `pinx deploy` builds this `.pinx`, uploads it, and installs or updates `apps/{package}/`. It does not send the whole project.
 
-For automated FTP deploy to a remote host, see [Pinroll quick start](./pinroll-quickstart.md).
+```bash
+pinx deploy
+```
+
+Or upload the `.pinx` in Manager → Applications, or install through the platform CLI.
+
+For host setup (kit, FTP, provision): [Pinroll quick start](./pinroll-quickstart.md).
 
 After installation on the target server:
 
@@ -138,6 +144,7 @@ Use the package name from your `app.php`.
 
 ## Related
 
+- [Deploy a Pinx app](../deploy/pinx.md)
 - [Pinroll quick start](./pinroll-quickstart.md)
 - [Pinx CLI](./pinx-cli.md)
 - [app.php manifest](./app-manifest.md)

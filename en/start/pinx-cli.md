@@ -174,10 +174,23 @@ pinx inspector
 
 ## Ship to production
 
-Build a `.pinx` package for installation on a full Pinoox platform (Manager → Applications):
+Build a `.pinx` package, then install it on a **Pinoox platform** host.
+
+**Manual:** `pinx build` → upload via Manager → Applications.
+
+**Pinroll (recommended):** ships **only this app’s `.pinx`** — not the whole project. See [Deploy a Pinx app](../deploy/pinx.md).
 
 ```bash
-pinx build                  # → export/*.pinx
+composer require --dev pinoox/pinroll
+pinx pinroll:init
+pinx connect --via=ftp      # or: pinx kit
+pinx deploy                 # fe:build + pinx:build → upload → install/update apps/{package}/
+```
+
+Do **not** use `pinx deploy --full` for day-to-day app updates (that also ships a platform zip).
+
+```bash
+pinx build                  # → export/*.pinx (local only)
 pinx build -o /tmp/shop.pinx
 pinx release --bump=patch   # bump version in app.php + build
 pinx release --sign         # sign when key is configured in app.php → pinx.sign
@@ -269,6 +282,12 @@ Run `pinx list` for a sectioned overview. Shorthand aliases appear in brackets.
 |---------|---------|-------------|
 | `build` | `bld` | Build `.pinx` package |
 | `release` | `rel` | Version bump + build (`--bump`, `--sign`) |
+| `pinroll:init` | — | Scaffold `.pinoox/pinroll.config.php` |
+| `connect` | `pinroll:connect` | Connect host / PinGate |
+| `kit` | `pinroll:kit` | PinGate zip for File Manager |
+| `pinroll:check` | `deploy:check` | Verify host + PinGate |
+| `deploy` | `pinroll:deploy` | Build this app’s `.pinx`, upload, install/update |
+| `provision` | `pinroll:provision` | Blank-host platform install (once) |
 
 ### Scaffolding
 
@@ -390,6 +409,8 @@ Override the detected package with environment variables:
 
 ## Related docs
 
+- [Deploy a Pinx app](../deploy/pinx.md)
+- [Pinroll — release & deploy](../deploy/pinroll.md)
 - [Frontend & Vite](../basic/frontend-vite.md)
 - [@pinooxhq/vite-plugin](../basic/vite-plugin.md)
 - [Installing Pinoox](./installing-pinoox.md)

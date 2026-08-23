@@ -149,10 +149,23 @@ pinx pinker:df              # تفاوت‌ها
 
 ## انتشار برای production
 
-ساخت پکیج `.pinx` برای نصب روی پلتفرم کامل پینوکس (Manager ← Applications):
+پکیج `.pinx` بسازید و روی هاست **پلتفرم پینوکس** نصب کنید.
+
+**دستی:** `pinx build` → آپلود در Manager → Applications.
+
+**Pinroll (پیشنهادی):** فقط `.pinx` **همین اپ** می‌رود — نه کل پروژه. ببینید: [دیپلوی اپ Pinx](../deploy/pinx.md).
 
 ```bash
-pinx build                  # → export/*.pinx
+composer require --dev pinoox/pinroll
+pinx pinroll:init
+pinx connect --via=ftp      # یا: pinx kit
+pinx deploy                 # fe:build + pinx:build → آپلود → نصب/آپدیت apps/{package}/
+```
+
+برای آپدیت روزمره اپ از `pinx deploy --full` استفاده **نکنید** (zip پلتفرم هم می‌فرستد).
+
+```bash
+pinx build                  # → export/*.pinx (فقط لوکال)
 pinx build -o /tmp/shop.pinx
 pinx release --bump=patch   # افزایش نسخه در app.php + بیلد
 pinx release --sign         # امضا وقتی کلید در app.php → pinx.sign تنظیم شده باشد
@@ -244,6 +257,12 @@ pinx doctor --no-fixes      # عدم نمایش دستورهای پیشنهاد�
 |-------|-------|-------|
 | `build` | `bld` | ساخت پکیج `.pinx` |
 | `release` | `rel` | افزایش نسخه + بیلد (`--bump`، `--sign`) |
+| `pinroll:init` | — | استاب `.pinoox/pinroll.config.php` |
+| `connect` | `pinroll:connect` | اتصال هاست / PinGate |
+| `kit` | `pinroll:kit` | zip PinGate برای File Manager |
+| `pinroll:check` | `deploy:check` | بررسی هاست + PinGate |
+| `deploy` | `pinroll:deploy` | ساخت `.pinx` همین اپ، آپلود، نصب/آپدیت |
+| `provision` | `pinroll:provision` | نصب پلتفرم روی هاست خالی (یک‌بار) |
 
 ### اسکلت‌سازی
 
@@ -346,6 +365,8 @@ Pinx از پوشه جاری به سمت بالا حرکت می‌کند تا ی�
 
 ## مستندات مرتبط
 
+- [دیپلوی اپ Pinx](../deploy/pinx.md)
+- [Pinroll — انتشار و دیپلوی](../deploy/pinroll.md)
 - [فرانت‌اند و Vite](../basic/frontend-vite.md)
 - [@pinooxhq/vite-plugin](../basic/vite-plugin.md)
 - [نصب و راه‌اندازی](./installing-pinoox.md)

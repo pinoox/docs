@@ -198,6 +198,7 @@ php pinoox test com_my_shop
 - [Pinoox ID](../advanced/pinoox-id.md)
 - [شروع دیتابیس](../database/getting-started.md)
 - [Pinroll — راهنمای سریع](../start/pinroll-quickstart.md)
+- [دیپلوی اپ Pinx](../deploy/pinx.md)
 - [Pinroll — دیپلوی](../deploy/pinroll.md)
 - [تماس با پشتیبانی](./contact-support.md)
 

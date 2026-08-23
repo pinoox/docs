@@ -71,6 +71,7 @@ php pinoox pinroll:kit                 # بدون FTP
 php pinoox pinroll:provision           # هاست خالی
 php pinoox pinroll:connect             # سایت موجود (منوی روش‌ها)
 php pinoox pinroll:config              # هاست resolveشده (token سانسور)
+php pinoox pinroll:deploy              # فقط .pinx اپ
 php pinoox pinroll:deploy --full       # پلتفرم + همه اپ‌ها
 php pinoox pinroll:pincore             # آپدیت هسته (zip + sync)
 php pinoox pinroll:setup               # migrate + patch
@@ -82,6 +83,7 @@ php pinoox pinroll:rollback
 ## مستندات مرتبط
 
 - [راهنمای سریع Pinroll](../start/pinroll-quickstart.md)
+- [دیپلوی اپ Pinx](../deploy/pinx.md)
 - [راهنمای دیپلوی Pinroll](../deploy/pinroll.md) — سناریوها + مرجع کامل
 - [Pinion](./pinion.md)
 - [مرجع CLI](../start/cli-reference.md)

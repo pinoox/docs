@@ -149,13 +149,28 @@ php pinoox pinroll:rollback --deploy-id=20260710_091021_3f980930
 
 Restores the previous **package files**. It does not automatically reverse database migrations.
 
-### 7. Single-app (Pinx)
+### 7. Single-app (Pinx) — package only
+
+Dedicated guide: [Deploy a Pinx app](./pinx.md).
+
+From a Pinx project (`app.php` at the root), **default deploy ships only this app’s `.pinx`**. It does not upload the project tree, `vendor/`, or a platform zip.
 
 ```bash
 composer require --dev pinoox/pinroll
-pinx provision          # blank host
-pinx deploy --full      # later updates
+pinx pinroll:init
+pinx connect --via=ftp          # or: pinx kit
+pinx deploy                     # fe:build + pinx:build → upload .pinx → pinx:install
 ```
+
+`pinx deploy` sets `--app=` to this project’s package automatically. Host `apps[]` is ignored so a leftover multi-app list cannot hijack the release.
+
+| Command | Ships |
+|---------|--------|
+| `pinx deploy` | This package `.pinx` only (install or update on the host) |
+| `pinx deploy --full` | Platform zip **plus** apps — only when you intend to update the host kernel |
+| `pinx provision` | Blank host (once): platform.zip + installer, not an app update |
+
+The host must already be a Pinoox platform (`pinx provision` or an existing install). The `.pinx` lands in `apps/{package}/`.
 
 ---
 
@@ -465,7 +480,9 @@ Deprecated: `pinroll:migrate-config` → `--config`; `pinroll:migrate:dry-run` �
 
 ### Apps selection
 
-If `hosts.*.apps` is empty and you omit `--app` / `--apps`, push/deploy prompts interactively.
+**Pinx single-app** (`app.php` at project root): deploy uses that package automatically. Host `apps[]` is ignored unless you pass `--app` / `--apps`.
+
+On a multi-app platform, if `hosts.*.apps` is empty and you omit `--app` / `--apps`, push/deploy prompts interactively.
 
 ```bash
 php pinoox pinroll:apps                         # picker
@@ -706,6 +723,7 @@ php pinoox pinroll:config
 ## Related docs
 
 - [Pinroll quick start](../start/pinroll-quickstart.md)
+- [Deploy a Pinx app](./pinx.md)
 - [Pinroll overview](../advanced/pinroll.md)
 - [Pinion protocol](../advanced/pinion.md)
 - [Pinx CLI](../start/pinx-cli.md)

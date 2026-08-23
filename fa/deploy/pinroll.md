@@ -149,13 +149,28 @@ php pinoox pinroll:rollback --deploy-id=20260710_091021_3f980930
 
 فایل‌های **پکیج قبلی** را برمی‌گرداند. migration دیتابیس را خودکار برنمی‌گرداند.
 
-### ۷. پروژه تک‌اپ (Pinx)
+### ۷. پروژه تک‌اپ (Pinx) — فقط پکیج
+
+راهنمای اختصاصی: [دیپلوی اپ Pinx](./pinx.md).
+
+از یک پروژه Pinx (`app.php` در ریشه)، **دیپلوی پیش‌فرض فقط `.pinx` همین اپ را می‌فرستد**. درخت پروژه، `vendor/` یا zip پلتفرم آپلود نمی‌شود.
 
 ```bash
 composer require --dev pinoox/pinroll
-pinx provision          # هاست خالی
-pinx deploy --full      # به‌روزرسانی بعدی
+pinx pinroll:init
+pinx connect --via=ftp          # یا: pinx kit
+pinx deploy                     # fe:build + pinx:build → آپلود .pinx → pinx:install
 ```
+
+`pinx deploy` مقدار `--app=` را از پکیج همین پروژه می‌گذارد. `apps[]` هاست نادیده گرفته می‌شود تا لیست چنداپه باقی‌مانده رلیز را عوض نکند.
+
+| دستور | چه چیزی می‌رود |
+|-------|----------------|
+| `pinx deploy` | فقط `.pinx` همین پکیج (نصب یا آپدیت روی هاست) |
+| `pinx deploy --full` | zip پلتفرم **به‌علاوه** اپ‌ها — فقط وقتی هسته هاست را هم می‌خواهید آپدیت کنید |
+| `pinx provision` | هاست خالی (یک‌بار): platform.zip + نصب‌کننده، نه آپدیت اپ |
+
+هاست باید از قبل پلتفرم پینوکس باشد (`pinx provision` یا نصب موجود). `.pinx` در `apps/{package}/` می‌نشیند.
 
 ---
 
@@ -465,7 +480,9 @@ pinx deploy --full
 
 ### انتخاب اپ‌ها
 
-اگر `hosts.*.apps` خالی باشد و `--app` / `--apps` ندهید، push/deploy تعاملی می‌پرسد.
+**تک‌اپ Pinx** (`app.php` در ریشه): دیپلوی همان پکیج را خودکار می‌گیرد. `apps[]` هاست نادیده است مگر `--app` / `--apps` بدهید.
+
+روی پلتفرم چنداپه، اگر `hosts.*.apps` خالی باشد و `--app` / `--apps` ندهید، push/deploy تعاملی می‌پرسد.
 
 ```bash
 php pinoox pinroll:apps
@@ -695,6 +712,7 @@ php pinoox pinroll:config
 ## مستندات مرتبط
 
 - [راهنمای سریع Pinroll](../start/pinroll-quickstart.md)
+- [دیپلوی اپ Pinx](./pinx.md)
 - [مروری بر Pinroll](../advanced/pinroll.md)
 - [پروتکل Pinion](../advanced/pinion.md)
 - [Pinx CLI](../start/pinx-cli.md)

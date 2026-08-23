@@ -83,6 +83,14 @@ php pinoox pinroll:deploy
 
 ### C) Update one app only
 
+**Pinx single-app** (recommended): [Deploy a Pinx app](../deploy/pinx.md)
+
+```bash
+pinx deploy                 # this project's .pinx only
+```
+
+**Platform (multi-app):**
+
 ```bash
 php pinoox pinroll:deploy --app=com_pinoox_manager
 ```
@@ -171,6 +179,7 @@ php pinoox pinroll:setup
 
 ## More docs
 
+- [Deploy a Pinx app](../deploy/pinx.md)
 - [Pinroll — release & deploy (full)](../deploy/pinroll.md)
 - [Pinroll overview](../advanced/pinroll.md)
 - [Common issues — Pinroll](../faq/common-issues.md#pinroll)
