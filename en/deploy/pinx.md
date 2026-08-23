@@ -67,7 +67,26 @@ pinx connect --via=ftp
 pinx pinroll:check
 ```
 
-Config (gitignored): `.pinoox/pinroll.config.php` and optional `PINROLL_*` in `.env`.
+Config (gitignored): `.pinoox/pinroll.config.php`. Optional `PINROLL_*` in `.env` — **Env wins**. Pinroll does not auto-insert or rewrite `.env`.
+
+### Connect with Env only
+
+`PINROLL_TOKEN` may be the plaintext from `pinroll:token`, **or** the `hash` field in `storage/pinroll/tokens/{label}.php` on the host:
+
+```dotenv
+PINROLL_TOKEN=b16f0a9d…   # hash from yoose.php is accepted
+PINROLL_LABEL=yoose
+PINROLL_SITE=https://pinoox.com
+PINROLL_VIA=pinion
+PINROLL_PATH=public_html
+```
+
+If the host PinGate is older and rejects the hash, extract `pinx kit` over `pingate.php` once, then `pinx pinroll:check`.
+
+```bash
+pinx pinroll:check
+pinx deploy
+```
 
 ---
 

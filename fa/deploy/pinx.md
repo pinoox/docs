@@ -67,7 +67,26 @@ pinx connect --via=ftp
 pinx pinroll:check
 ```
 
-کانفیگ (gitignore): `.pinoox/pinroll.config.php` و اختیاری `PINROLL_*` در `.env`.
+کانفیگ (gitignore): `.pinoox/pinroll.config.php`. اختیاری: `PINROLL_*` در `.env` — **اولویت با Env است**. Pinroll فایل `.env` را خودکار پر یا بازنویسی نمی‌کند.
+
+### اتصال فقط با Env
+
+`PINROLL_TOKEN` می‌تواند plaintext هنگام ساخت توکن باشد، یا همان **`hash`** داخل `storage/pinroll/tokens/{label}.php` روی هاست:
+
+```dotenv
+PINROLL_TOKEN=b16f0a9d…   # hash از فایل yoose.php هم قبول است
+PINROLL_LABEL=yoose
+PINROLL_SITE=https://pinoox.com
+PINROLL_VIA=pinion
+PINROLL_PATH=public_html
+```
+
+اگر PinGate روی هاست قدیمی باشد و hash را رد کند، یک‌بار `pinx kit` بزنید و `pingate.php` را جایگزین کنید؛ بعد `pinx pinroll:check`.
+
+```bash
+pinx pinroll:check
+pinx deploy
+```
 
 ---
 
