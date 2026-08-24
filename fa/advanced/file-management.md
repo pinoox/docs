@@ -25,11 +25,12 @@ storage/                         ← ریشه storage پروژه (از وب deny
 | فراخوانی | دیسک | `file_access` داخلی | URL معمول |
 |------|------|------------------------|-------------|
 | `->public()` | `public` | `public` | `/storage/public/{package}/…` |
-| `->private()` | `local` (یا `filesystem.disk` اپ) | `private` | `/file/{hash}` |
-| `->disk('s3')` | `s3` | `private` | `/file/{hash}` (یا URL ریموت) |
-| `->disk('contracts')` | سفارشی | مگر دیسک `public` باشد → private | `/file/{hash}` (اگر lock باشد) |
+| `->private()` | `local` (یا `filesystem.disk` اپ) | `private` | `{app}/file/{hash}` |
+| `->disk('s3')` | `s3` | `private` | `{app}/file/{hash}` (یا URL ریموت) |
+| `->disk('media')` | سفارشی، `protect:unlock` | `public` | `/storage/media/{package}/…` |
+| `->disk('contracts')` | سفارشی، `protect:lock` | `private` | `{app}/file/{hash}` |
 
-بدون `public()` / `private()`، حالت فقط از **`filesystem.disk`** می‌آید: نام دیسک `public` ⇒ آپلود عمومی؛ هر چیز دیگر ⇒ خصوصی.
+بدون `public()` / `private()`، حالت از **`filesystem.disk`** می‌آید: دیسک باز/عمومی ⇒ آپلود عمومی؛ هر چیز دیگر ⇒ خصوصی.
 
 ترجیح با `disk()` / `public()` / `private()`. `access()` فقط برای موارد خاص (مثلاً لینک اشتراکی روی دیسک خصوصی).
 
@@ -46,11 +47,54 @@ use Pinoox\Portal\Storage;
 |------|-----|
 | آپلود + DB + URL | `File::upload(...)->save()` |
 | پیدا کردن / حذف / URL | `File::find()`, `File::url()`, `File::remove()` |
-| URL موقت امضاشده | `File::temporaryUrl($file, 1800)` |
+| لینک دانلود (تشخیص خودکار دیسک) | `file_url($file)`، `url()->file($file)`، `Url::file($file)` |
+| لینک بندانگشتی | `file_thumb($file)`، `url()->fileThumb($file)` |
+| URL موقت امضاشده | `File::temporaryUrl($file, 1800)`، `file_temporary_url($file, 1800)` |
 | دیسک scoped به پکیج | `Storage::app($package, 'local')` |
 | I/O خام دیسک | `File::storage('public')->put(...)` یا `Storage::disk('local')` |
 
 اگر رکورد DB، `hash_id` و URL یکدست می‌خواهید، برای آپلود کاربر فقط از `Storage::` استفاده نکنید — از `File::` استفاده کنید.
+
+---
+
+## لینک دانلود (تشخیص خودکار)
+
+موقع ساخت لینک لازم نیست public یا private بودن را خودتان انتخاب کنید. `file_id`، `hash_id` یا `FileModel` را بدهید — پینوکس دیسک را از روی کانفیگ تشخیص می‌دهد:
+
+| دیسک | تشخیص | URL |
+|------|--------|-----|
+| `public` داخلی | نام دیسک | `/storage/public/{package}/…` |
+| سفارشی باز (`protect: unlock`) | کانفیگ دیسک | `/storage/{disk}/{package}/…` |
+| ریموت عمومی (`visibility: public` + `url`) | کانفیگ دیسک | URL ریموت / CDN |
+| قفل‌شده (`local`، `temp`، …) | بقیه موارد | دیسپچر اپ مالک `{app}/file/{hash}` |
+
+```php
+use Pinoox\Portal\File;
+use Pinoox\Portal\Url;
+
+// همه همین resolver هستند — هر سبکی راحت‌تر است
+File::url($fileId);
+file_url($fileId);
+url()->file($fileId);
+Url::file($fileId);
+
+File::thumb($fileId);
+file_thumb($fileId);
+url()->fileThumb($fileId);
+
+File::temporaryUrl($fileId, 1800);
+file_temporary_url($fileId, 1800);
+url()->temporaryFile($fileId, 1800);
+```
+
+Twig:
+
+```twig
+<a href="{{ url().file(post.cover_id) }}">دانلود</a>
+<img src="{{ file_thumb(post.cover_id) }}" alt="">
+```
+
+`$result->url` بعد از `File::upload(...)->save()` همین resolver است.
 
 ---
 
@@ -380,7 +424,7 @@ php pinoox file:show a1b2c3d4
 
 - قبل از آپلود در FormRequest اعتبارسنجی کنید.
 - بعد از افزودن دیسک، `storage:setup` را اجرا کنید.
-- URL عمومی `/storage/public/{package}/…` است (یکی با پوشه دیسک).
+- از `file_url($id)` / `url()->file($id)` استفاده کنید — دیسک عمومی `/storage/{disk}/{package}/…`؛ دیسک قفل‌شده `{app}/file/{hash}`.
 - نام دیسک سفارشی را با پوشه‌اش هم‌نام کنید (`contracts` → `storage/contracts`).
 
 ---

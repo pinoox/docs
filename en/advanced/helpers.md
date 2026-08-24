@@ -14,6 +14,9 @@ Pinoox 3.x loads global helpers from `pincore/functions/`. For day-to-day app de
 | `response()` | HTTP response | `return response()->json($data);` |
 | `redirect()` | Redirect | `return redirect(url('login'));` |
 | `url()` | App/site URL | `url('products')` |
+| `file_url()` | Stored-file download URL (auto disk) | `file_url($fileId)` |
+| `file_thumb()` | Stored-file thumbnail URL | `file_thumb($fileId)` |
+| `file_temporary_url()` | Signed temporary file URL | `file_temporary_url($fileId, 1800)` |
 | `path()` | File path on disk | `path('storage/logs/app.log')` |
 | `assets()` | Theme file URL | `assets('dist/app.css')` |
 | `config()` | Read/write config | `config('app.name')` |
@@ -118,9 +121,13 @@ $label = t('product.title');
 
 ```php
 $link = url('api/v1/orders');
+$download = file_url($fileId);     // public disk or {app}/file/{hash}
+$thumb = file_thumb($fileId);
 $file = path('storage/export.csv');
 $css = assets('dist/panel.css');
 ```
+
+Same resolver via Url: `url()->file($fileId)`, `Url::file($fileId)`. See [File Management](./file-management.md) and [URL and link building](../basic/url.md).
 
 ---
 

@@ -38,6 +38,30 @@ echo Url::link('^config/app.php');
 
 ---
 
+## لینک دانلود فایل ذخیره‌شده
+
+`url()->file()` / `Url::file()` / `file_url()` لینک یک فایل ذخیره‌شده را می‌سازند (`file_id`، `hash_id` یا `FileModel`). دیسک به‌صورت خودکار تشخیص داده می‌شود: دیسک باز/عمومی → URL مستقیم `/storage/…` (یا ریموت)؛ دیسک قفل‌شده → دیسپچر اپ مالک `{app}/file/{hash}`.
+
+```php
+echo url()->file($fileId);
+echo Url::file($fileId);
+echo file_url($fileId);            // همان File::url()
+
+echo url()->fileThumb($fileId);
+echo file_thumb($fileId);
+
+echo url()->temporaryFile($fileId, 1800);
+echo file_temporary_url($fileId, 1800);
+```
+
+```twig
+<a href="{{ url().file(invoice.file_id) }}">دانلود</a>
+```
+
+جزئیات دیسک و سیاست‌ها: [مدیریت فایل](../advanced/file-management.md).
+
+---
+
 ## Twig — accessor `url()`
 
 ```twig
@@ -58,6 +82,8 @@ const PINOOX = {
 | `url().site` | origin + مسیر پروژه |
 | `url().app` | origin + segment اپ |
 | `url().api` | پیشوند API (پیش‌فرض `api/v1/`) |
+| `url().file($id)` | لینک دانلود فایل ذخیره‌شده (تشخیص خودکار دیسک) |
+| `url().fileThumb($id)` | لینک بندانگشتی فایل |
 | `url().resource('resources/logo.png')` | فایل استاتیک داخل `apps/{package}/` |
 | `url('profile')` | لینک route داخل اپ |
 
@@ -126,6 +152,7 @@ Url::referer();
 ## مستندات مرتبط
 
 - [مسیر فایل (Path)](path.md)
+- [مدیریت فایل](../advanced/file-management.md)
 - [View — ویو](views.md)
 - [قالب Twig](templates.md)
 - [روتر](routers.md)

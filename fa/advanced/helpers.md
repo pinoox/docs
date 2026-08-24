@@ -14,6 +14,9 @@
 | `response()` | پاسخ HTTP | `return response()->json($data);` |
 | `redirect()` | ریدایرکت | `return redirect(url('login'));` |
 | `url()` | URL اپ/سایت | `url('products')` |
+| `file_url()` | لینک دانلود فایل (تشخیص خودکار دیسک) | `file_url($fileId)` |
+| `file_thumb()` | لینک بندانگشتی فایل | `file_thumb($fileId)` |
+| `file_temporary_url()` | لینک موقت امضاشده | `file_temporary_url($fileId, 1800)` |
 | `path()` | مسیر فایل روی دیسک | `path('storage/logs/app.log')` |
 | `assets()` | URL فایل theme | `assets('dist/app.css')` |
 | `config()` | خواندن/نوشتن config | `config('app.name')` |
@@ -115,9 +118,13 @@ $label = t('product.title');
 
 ```php
 $link = url('api/v1/orders');
+$download = file_url($fileId);     // دیسک عمومی یا {app}/file/{hash}
+$thumb = file_thumb($fileId);
 $file = path('storage/export.csv');
 $css = assets('dist/panel.css');
 ```
+
+همان resolver از طریق Url: `url()->file($fileId)`، `Url::file($fileId)`. ببینید [مدیریت فایل](./file-management.md) و [URL و لینک‌سازی](../basic/url.md).
 
 ---
 

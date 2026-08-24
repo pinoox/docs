@@ -25,11 +25,12 @@ storage/                         ← project storage root (always web-denied)
 | Call | Disk | Internal `file_access` | Typical URL |
 |------|------|------------------------|-------------|
 | `->public()` | `public` | `public` | `/storage/public/{package}/…` |
-| `->private()` | `local` (or app `filesystem.disk`) | `private` | `/file/{hash}` |
-| `->disk('s3')` | `s3` | `private` | `/file/{hash}` (or remote URL) |
-| `->disk('contracts')` | custom | `private` unless disk is `public` | `/file/{hash}` (if locked) |
+| `->private()` | `local` (or app `filesystem.disk`) | `private` | `{app}/file/{hash}` |
+| `->disk('s3')` | `s3` | `private` | `{app}/file/{hash}` (or remote URL) |
+| `->disk('media')` | custom, `protect:unlock` | `public` | `/storage/media/{package}/…` |
+| `->disk('contracts')` | custom, `protect:lock` | `private` | `{app}/file/{hash}` |
 
-Without `public()` / `private()`, mode follows **`filesystem.disk` only**: disk name `public` ⇒ public uploads; anything else ⇒ private.
+Without `public()` / `private()`, mode follows **`filesystem.disk`**: an unlocked/public web disk ⇒ public uploads; anything else ⇒ private.
 
 Prefer `disk()` / `public()` / `private()`. Use `access()` only for edge cases (e.g. a shared link while the file stays on a private disk).
 
@@ -46,11 +47,54 @@ use Pinoox\Portal\Storage;
 |------|-----|
 | Upload + DB + URL | `File::upload(...)->save()` |
 | Find / delete / URL | `File::find()`, `File::url()`, `File::remove()` |
-| Temporary signed URL | `File::temporaryUrl($file, 1800)` |
+| Download URL (auto disk) | `file_url($file)`, `url()->file($file)`, `Url::file($file)` |
+| Thumbnail URL | `file_thumb($file)`, `url()->fileThumb($file)` |
+| Temporary signed URL | `File::temporaryUrl($file, 1800)`, `file_temporary_url($file, 1800)` |
 | Package-scoped disk | `Storage::app($package, 'local')` |
 | Raw disk I/O | `File::storage('public')->put(...)` or `Storage::disk('local')` |
 
 Do not use `Storage::` alone for user uploads if you need DB records, `hash_id`, and consistent URLs — use `File::`.
+
+---
+
+## Download URL (auto)
+
+You do not choose public vs private when building the link. Pass a `file_id`, `hash_id`, or `FileModel` — Pinoox inspects the disk:
+
+| Disk | How it is detected | URL |
+|------|--------------------|-----|
+| Built-in `public` | disk name | `/storage/public/{package}/…` |
+| Custom unlocked (`protect: unlock`) | disk config | `/storage/{disk}/{package}/…` |
+| Public remote (`visibility: public` + `url`) | disk config | remote / CDN URL |
+| Locked (`local`, `temp`, …) | everything else | owning app dispatcher `{app}/file/{hash}` |
+
+```php
+use Pinoox\Portal\File;
+use Pinoox\Portal\Url;
+
+// Same resolver — pick whichever style you prefer
+File::url($fileId);
+file_url($fileId);
+url()->file($fileId);
+Url::file($fileId);
+
+File::thumb($fileId);
+file_thumb($fileId);
+url()->fileThumb($fileId);
+
+File::temporaryUrl($fileId, 1800);
+file_temporary_url($fileId, 1800);
+url()->temporaryFile($fileId, 1800);
+```
+
+Twig:
+
+```twig
+<a href="{{ url().file(post.cover_id) }}">Download</a>
+<img src="{{ file_thumb(post.cover_id) }}" alt="">
+```
+
+`$result->url` from `File::upload(...)->save()` is this same resolver.
 
 ---
 
@@ -362,7 +406,7 @@ $result = File::upload($request->file('pdf'))
     ->save();
 
 // Share link for the owner / logged-in users:
-$url = File::url($result->id);                 // /file/{hash}
+$url = File::url($result->id);                 // {app}/file/{hash}
 $temp = File::temporaryUrl($result->id, 3600); // signed, expires in 1h
 ```
 
@@ -391,7 +435,7 @@ $result = File::upload('cover')
 
 // Later
 $post->cover_id;                 // file_id
-File::url($post->cover_id);      // /file/{hash}
+File::url($post->cover_id);      // {app}/file/{hash}
 ```
 
 ### Example E — Disk only (no DB row)
@@ -532,7 +576,7 @@ protected function pinionDefaults(): array
 - `user_id` is filled from `Auth::id()`.
 - `transport.file_storage => platform` shares the file table across platform apps.
 - Run `php pinoox storage:setup` after adding disks or deploying.
-- Public URLs are `/storage/public/{package}/…` (1:1 with the disk folder).
+- Use `file_url($id)` / `url()->file($id)` — public disks get `/storage/{disk}/{package}/…`; locked disks get `{app}/file/{hash}`.
 - Name custom disks after their folder when possible (`contracts` → `storage/contracts`).
 
 ---
