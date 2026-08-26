@@ -32,7 +32,7 @@ use function Pinoox\Router\{
 };
 ```
 
-از **`collection()`** برای mount کردن فایل یا callback تو در تو زیر یک prefix (با flow مشترک اختیاری) استفاده کنید.
+از **`collection()`** برای mount کردن فایل یا callback تو در تو زیر یک prefix (با flow مشترک اختیاری) استفاده کنید. در اپ‌های چندتم، پارامتر اختیاری `context:` مسیر و فلو `theme.*` را از `theme-contexts` می‌گیرد — [کانتکست تم](./theme-contexts.md) (برای اپ تک‌تم لازم نیست).
 
 ### Route facade (جایگزین)
 
