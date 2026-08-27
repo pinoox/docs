@@ -70,12 +70,15 @@ const PINOOX = {
     URL: {
         APP: '{{ url().app }}',
         BASE: '{{ url().appPath }}',
+        AREA: '{{ url().app }}', {# URL مطلق محیط فعال؛ bootstrap ممکن است path کانتکست را اضافه کند #}
         API: '{{ url().api }}',
         SITE: '{{ url().site }}',
         THEME: '{{ assets() }}',
     },
 };
 ```
+
+`window.__PINOOX__.url` از `pinoox_bootstrap()` همیشه **`AREA`** دارد: URL مطلق محیط UI فعال. با `path` کانتکست تم (مثلاً `panel`)، مقدار `AREA` می‌شود `APP` + آن path (`https://domain.com/panel`) و `BASE` فقط path می‌ماند (`/panel`). [کانتکست تم](./theme-contexts.md) را ببینید.
 
 | متد accessor | کاربرد |
 |--------------|--------|

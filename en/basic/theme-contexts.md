@@ -16,7 +16,7 @@ This is different from **theme inheritance** (`extends` in `theme.php` / `theme-
 |--------------------------|-----------------|
 | Site and panel share one app but need different themes | The app has a single UI |
 | Panel lives under a prefix (`/panel`) with its own login URL | You only need template inheritance (`extends`) |
-| Client bootstrap must expose different `loginUrl` / `url.BASE` per area | Routes are JSON API only (no HTML theme) |
+| Client bootstrap must expose different `loginUrl` / `url.BASE` / `url.AREA` per area | Routes are JSON API only (no HTML theme) |
 
 ---
 
@@ -115,14 +115,24 @@ You can mix styles: pass an explicit non-empty `path` to override the context pa
 
 ---
 
-## Guide: path, BASE, and loginUrl
+## Guide: path, BASE, AREA, and loginUrl
 
 These keys are **optional** per context. Use them when the panel (or another area) must not share the site’s auth redirects or client base URL.
 
 | Key | Effect |
 |-----|--------|
-| `path` | Prefix for `collection(context: …)`. At render time, non-empty path joins onto `window.__PINOOX__.url.BASE` (path-only, e.g. `/myapp/panel`). |
+| `path` | Prefix for `collection(context: …)`. At render time, non-empty path joins onto `window.__PINOOX__.url.BASE` (path-only, e.g. `/myapp/panel`) and `url.AREA` (absolute, e.g. `https://domain.com/myapp/panel`). |
 | `auth.client` | Overlays app-level `auth.client` for `__PINOOX__.auth` (e.g. `loginUrl`). App `auth.client => false` still hides auth from the client. |
+
+Bootstrap URL keys for the active area:
+
+| Key | Example (app at `/`, panel path `panel`) | Meaning |
+|-----|------------------------------------------|---------|
+| `url.APP` | `https://domain.com` | Absolute app URL (router segment only) |
+| `url.BASE` | `/panel` | Path-only base of the **active area** |
+| `url.AREA` | `https://domain.com/panel` | Absolute URL of the **active area** (`APP` + context `path`) |
+
+Without a context path (or on the site context with `path: ''`), `AREA` equals `APP` and `BASE` stays the normal app path.
 
 Example mental model:
 
@@ -131,10 +141,11 @@ Request /panel/dashboard
   → collection context "panel"
   → flow theme.panel activates ThemeContext
   → Twig/Vite use admin theme
-  → pinoox_bootstrap(): BASE ends with /panel, auth.loginUrl = /panel/auth/login
+  → pinoox_bootstrap():
+       BASE = /panel
+       AREA = https://domain.com/panel
+       auth.loginUrl = /panel/auth/login
 ```
-
-Site root context with `'path' => ''` leaves `BASE` as the normal app path and can still set `loginUrl` to `/login`.
 
 ---
 
@@ -145,7 +156,7 @@ Site root context with `'path' => ''` leaves `BASE` as the normal app path and c
 | `theme` | Recommended | Theme folder under `theme/` |
 | `extends` / `theme-extends` | No | Parent theme(s) for inheritance |
 | `path-theme` | No | Theme root path (default `theme`) |
-| `path` | No | URL prefix for collections + client `url.BASE` |
+| `path` | No | URL prefix for collections + client `url.BASE` / `url.AREA` |
 | `auth` | No | Per-context auth overlay (`client.loginUrl`, …) |
 | `frontend` | No | Per-context Vite/stack settings |
 

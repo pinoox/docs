@@ -70,12 +70,15 @@ const PINOOX = {
     URL: {
         APP: '{{ url().app }}',
         BASE: '{{ url().appPath }}',
+        AREA: '{{ url().app }}', {# absolute active area; bootstrap may append theme-context path #}
         API: '{{ url().api }}',
         SITE: '{{ url().site }}',
         THEME: '{{ assets() }}',
     },
 };
 ```
+
+`window.__PINOOX__.url` from `pinoox_bootstrap()` always includes **`AREA`**: absolute URL of the active UI area. With a theme-context `path` (e.g. `panel`), `AREA` becomes `APP` + that path (`https://domain.com/panel`) while `BASE` stays path-only (`/panel`). See [Theme contexts](./theme-contexts.md).
 
 | Accessor method | Purpose |
 |-----------------|---------|

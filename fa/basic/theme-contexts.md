@@ -16,7 +16,7 @@
 |--------------------------|----------------|
 | سایت و پنل یک اپ هستند ولی تم جدا می‌خواهند | اپ فقط یک UI دارد |
 | پنل زیر پیشوند (`/panel`) است و loginUrl خودش را می‌خواهد | فقط ارث‌بری قالب (`extends`) کافی است |
-| bootstrap کلاینت باید `loginUrl` / `url.BASE` جدا per محیط بدهد | مسیرها فقط JSON API هستند (بدون تم HTML) |
+| Client bootstrap باید `loginUrl` / `url.BASE` / `url.AREA` جدا per محیط بدهد | مسیرها فقط JSON API هستند (بدون تم HTML) |
 
 ---
 
@@ -115,14 +115,24 @@ collection(path: '/panel', routes: __DIR__ . '/panel.php', flows: ['auth', 'them
 
 ---
 
-## راهنما: path، BASE و loginUrl
+## راهنما: path، BASE، AREA و loginUrl
 
 این کلیدها **به‌ازای هر کانتکست اختیاری**اند. وقتی پنل (یا محیط دیگر) نباید ریدایرکت احراز هویت یا base کلاینت سایت را به اشتراک بگذارد از آن‌ها استفاده کنید.
 
 | کلید | اثر |
 |------|-----|
-| `path` | پیشوند برای `collection(context: …)`. در زمان رندر، path غیرخالی به `window.__PINOOX__.url.BASE` وصل می‌شود (فقط path، مثلاً `/myapp/panel`). |
+| `path` | پیشوند برای `collection(context: …)`. در زمان رندر، path غیرخالی به `window.__PINOOX__.url.BASE` وصل می‌شود (فقط path، مثلاً `/myapp/panel`) و `url.AREA` مطلق می‌شود (مثلاً `https://domain.com/myapp/panel`). |
 | `auth.client` | روی `auth.client` سطح اپ برای `__PINOOX__.auth` overlay می‌شود (مثلاً `loginUrl`). اگر اپ `auth.client => false` باشد، auth از کلاینت حذف می‌ماند. |
+
+کلیدهای URL بوت‌استرپ برای محیط فعال:
+
+| کلید | مثال (اپ در `/`، path پنل `panel`) | معنی |
+|------|-------------------------------------|------|
+| `url.APP` | `https://domain.com` | URL مطلق اپ (فقط segment روتر) |
+| `url.BASE` | `/panel` | base فقط‌مسیرِ **محیط فعال** |
+| `url.AREA` | `https://domain.com/panel` | URL مطلقِ **محیط فعال** (`APP` + `path` کانتکست) |
+
+بدون path کانتکست (یا سایت با `path: ''`)، مقدار `AREA` برابر `APP` است و `BASE` همان path عادی اپ می‌ماند.
 
 مدل ذهنی:
 
@@ -131,10 +141,11 @@ collection(path: '/panel', routes: __DIR__ . '/panel.php', flows: ['auth', 'them
   → collection با context "panel"
   → فلو theme.panel → ThemeContext فعال می‌شود
   → Twig/Vite تم admin را می‌گیرند
-  → pinoox_bootstrap(): BASE به /panel ختم می‌شود، auth.loginUrl = /panel/auth/login
+  → pinoox_bootstrap():
+       BASE = /panel
+       AREA = https://domain.com/panel
+       auth.loginUrl = /panel/auth/login
 ```
-
-کانتکست ریشه با `'path' => ''` مقدار `BASE` را همان path عادی اپ می‌گذارد و در عین حال می‌تواند `loginUrl` را `/login` تنظیم کند.
 
 ---
 
@@ -145,7 +156,7 @@ collection(path: '/panel', routes: __DIR__ . '/panel.php', flows: ['auth', 'them
 | `theme` | توصیه‌شده | نام پوشه تم زیر `theme/` |
 | `extends` / `theme-extends` | خیر | تم(های) والد برای ارث‌بری |
 | `path-theme` | خیر | مسیر ریشه تم (پیش‌فرض `theme`) |
-| `path` | خیر | پیشوند URL برای collection و `url.BASE` کلاینت |
+| `path` | خیر | پیشوند URL برای collection و `url.BASE` / `url.AREA` کلاینت |
 | `auth` | خیر | overlay احراز هویت (`client.loginUrl` و …) |
 | `frontend` | خیر | تنظیمات Vite/stack مخصوص این کانتکست |
 
