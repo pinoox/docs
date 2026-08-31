@@ -126,6 +126,8 @@ pinx fe:sc --stack=vue      # scaffold starter files
 
 Open the **PHP URL** printed by `pinx dev` or `pinx fe:d` — not the Vite port. See [Frontend & Vite](../basic/frontend-vite.md) and [@pinooxhq/vite-plugin](../basic/vite-plugin.md).
 
+Use **bun** instead of npm for Vite HMR: set `PINOOX_JS_PACKAGE_MANAGER=bun` in project `.env` (see [package manager](../basic/frontend-vite.md)).
+
 **Dependencies:**
 
 ```bash

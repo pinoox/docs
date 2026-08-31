@@ -139,8 +139,9 @@ php pinoox deps status all
 ## Behaviour notes
 
 - **Composer binary** — uses `COMPOSER_BIN`, project `composer.phar`, or `composer` from `PATH` (same resolution as `pinx:build`).
-- **npm on Windows** — runs `npm.cmd` automatically.
-- **npm ci** — used when `package-lock.json` exists (unless `--no-ci`). Falls back to `npm install` if `ci` fails.
+- **JS package manager** — npm targets use `PINOOX_JS_PACKAGE_MANAGER` from project `.env` (`npm`, `bun`, `pnpm`, `yarn`; auto-detect from theme lockfiles when unset). See [Frontend & Vite — package manager](../basic/frontend-vite.md).
+- **npm on Windows** — runs `npm.cmd` automatically (when manager is `npm`).
+- **npm ci** — used when `package-lock.json` exists (unless `--no-ci`). Falls back to `npm install` if `ci` fails. With **bun**, uses `bun install --frozen-lockfile` when `bun.lock` exists.
 - **Failure** — stops on first failed step unless `--continue-on-error` is set.
 - **Timeouts** — each target allows up to 15 minutes.
 
@@ -161,7 +162,7 @@ php pinoox deps status all
 | Problem | What to try |
 |---------|-------------|
 | `composer` not found | Install Composer globally or place `composer.phar` in project root |
-| `npm` not found | Install Node.js LTS and ensure `npm` is on `PATH` |
+| `npm` not found | Install Node.js LTS and ensure `npm` is on `PATH`, or set `PINOOX_JS_PACKAGE_MANAGER=bun` and install [Bun](https://bun.sh) |
 | Step fails with no useful output | Re-run with `-vv` or check the **Run summary** tail |
 | Windows path issues | Use `php pinoox` from project root; paths are normalized automatically |
 

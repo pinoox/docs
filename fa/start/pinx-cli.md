@@ -126,6 +126,8 @@ pinx fe:sc --stack=vue      # ساخت فایل‌های شروع
 
 **URL PHP** چاپ‌شده توسط `pinx dev` یا `pinx fe:d` را باز کنید — نه port Vite. [فرانت‌اند و Vite](../basic/frontend-vite.md) و [@pinooxhq/vite-plugin](../basic/vite-plugin.md) را ببینید.
 
+برای اجرای Vite HMR با **bun** به‌جای npm: `PINOOX_JS_PACKAGE_MANAGER=bun` را در `.env` پروژه بگذارید ([package manager](../basic/frontend-vite.md)).
+
 **وابستگی‌ها:**
 
 ```bash

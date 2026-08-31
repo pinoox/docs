@@ -139,8 +139,9 @@ php pinoox deps status all
 ## نکات رفتار
 
 - **باینری Composer** — از `COMPOSER_BIN`، `composer.phar` پروژه، یا `composer` در `PATH` (همان منطق `pinx:build`).
-- **npm در ویندوز** — به‌صورت خودکار `npm.cmd`.
-- **npm ci** — وقتی `package-lock.json` هست (مگر `--no-ci`). اگر `ci` شکست بخورد به `npm install` برمی‌گردد.
+- **package manager JS** — اهداف npm از `PINOOX_JS_PACKAGE_MANAGER` در `.env` پروژه استفاده می‌کنند (`npm`، `bun`، `pnpm`، `yarn`؛ وقتی unset باشد از lockfile تم تشخیص می‌دهد). [فرانت‌اند و Vite — package manager](../basic/frontend-vite.md).
+- **npm در ویندوز** — وقتی manager برابر `npm` باشد، به‌صورت خودکار `npm.cmd`.
+- **npm ci** — وقتی `package-lock.json` هست (مگر `--no-ci`). اگر `ci` شکست بخورد به `npm install` برمی‌گردد. با **bun**، وقتی `bun.lock` وجود دارد از `bun install --frozen-lockfile` استفاده می‌شود.
 - **شکست** — روی اولین مرحله ناموفق متوقف می‌شود مگر `--continue-on-error`.
 - **Timeout** — هر هدف تا ۱۵ دقیقه.
 
@@ -161,7 +162,7 @@ php pinoox deps status all
 | مشکل | چه کار کنید |
 |------|-------------|
 | `composer` پیدا نشد | Composer سراسری نصب کنید یا `composer.phar` در ریشه پروژه بگذارید |
-| `npm` پیدا نشد | Node.js LTS نصب کنید و `npm` را در `PATH` داشته باشید |
+| `npm` پیدا نشد | Node.js LTS نصب کنید و `npm` را در `PATH` داشته باشید، یا `PINOOX_JS_PACKAGE_MANAGER=bun` بگذارید و [Bun](https://bun.sh) را نصب کنید |
 | مرحله بدون خروجی مفید شکست خورد | با `-vv` دوباره اجرا کنید یا انتهای **Run summary** را ببینید |
 | مشکل مسیر ویندوز | از ریشه پروژه `php pinoox` بزنید؛ مسیرها خودکار نرمال می‌شوند |
 

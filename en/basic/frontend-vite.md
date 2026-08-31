@@ -94,7 +94,7 @@ php pinoox dev platform              # full platform router (not single-app moun
 | Action | Command | Purpose |
 |--------|---------|---------|
 | `info` | `php pinoox fe spark info` | Stack, manifest, dev state, Vite wiring |
-| `install` | `php pinoox fe spark install` | `npm install` / `npm ci` in the theme |
+| `install` | `php pinoox fe spark install` | Install theme JS dependencies (`npm` / `bun` / … — see below) |
 | `dev` | `php pinoox fe spark dev` | PHP `serve` + Vite HMR (waits until Vite is ready) |
 | `dev` | `php pinoox dev spark` | Same as `fe spark dev` (shortcut) |
 | `dev:apps` | `php pinoox fe dev:apps` | One PHP `serve` + Vite for **multiple** apps |
@@ -132,8 +132,8 @@ Omit `--theme` to pick from an interactive list. Apps with multiple Vite context
 | `--verbose-vite` | Show full Vite startup URLs |
 | `--fix-vite` | Auto-wire `@pinooxhq/vite-plugin` in `vite.config.js` |
 | `--env-file` | Theme env file name (default `.env`) |
-| `--no-install` | Skip npm install |
-| `--install` | Force npm install |
+| `--no-install` | Skip JS dependency install |
+| `--install` | Force JS dependency install |
 
 ### `fe dev:apps` — multiple apps
 
@@ -203,9 +203,37 @@ When `APP_ENV=production`, Pinoox always uses the manifest regardless of `.pinoo
 
 ## Environment variables
 
+### Project package manager (npm / bun / pnpm / yarn)
+
+By default, theme frontend commands run **`npm run dev`**, **`npm install`**, and **`npm ci`** (when a lockfile exists). Set this in the **project root** `.env` to use another JS package manager:
+
+```env
+PINOOX_JS_PACKAGE_MANAGER=bun
+```
+
+Supported values: `npm` (default), `bun`, `pnpm`, `yarn`.
+
+| Command | With `bun` |
+|---------|------------|
+| `php pinoox dev` / `pinx dev` | `bun run dev` (Vite HMR) |
+| `php pinoox fe install` | `bun install` |
+| `php pinoox fe build` | `bun run build` |
+| `php pinoox deps install` (npm targets) | `bun install --frozen-lockfile` when `bun.lock` exists |
+
+When the env var is **unset**, Pinoox auto-detects from lockfiles in the theme folder:
+
+| Lockfile | Manager |
+|----------|---------|
+| `bun.lock` / `bun.lockb` | bun |
+| `pnpm-lock.yaml` | pnpm |
+| `yarn.lock` | yarn |
+| (none) | npm |
+
+**Bun setup:** install [Bun](https://bun.sh), run `bun install` once in the theme folder, then `php pinoox dev {theme}` or `pinx dev`. Theme `package.json` scripts stay the same — only the runner changes.
+
 ### Runtime (default)
 
-On `fe dev`, Pinoox resolves dev URLs from the **app router** (mount path, proxy prefixes) and injects missing `VITE_*` values into the npm process. **The theme `.env` file is not modified on disk** unless you opt in with `ENV_SERVER_SYNC=true` (below). If `.env` is missing but `.env.example` exists, the CLI copies the example once.
+On `fe dev`, Pinoox resolves dev URLs from the **app router** (mount path, proxy prefixes) and injects missing `VITE_*` values into the JS package-manager process (npm, bun, …). **The theme `.env` file is not modified on disk** unless you opt in with `ENV_SERVER_SYNC=true` (below). If `.env` is missing but `.env.example` exists, the CLI copies the example once.
 
 Existing values in theme `.env` always win. Auto-resolved values fill only empty keys at runtime.
 
