@@ -68,7 +68,7 @@ Voir [Flows](../basic/flows.md), [Gestion des utilisateurs](../advanced/user-man
 | `database` | Surcharge de la connexion à la base de données |
 | `table.prefix` | Préfixe des tables |
 | `transport.user` / `file_storage` / `access` | Préréglages ou clés granulaires |
-| `filesystem` | disk, thumbs, access |
+| `filesystem` | disk, hash_length, dispatcher, file_policy, groups, thumbs |
 
 ---
 

@@ -21,7 +21,7 @@ php pinoox help migrate
 | alias | دستور |
 |-------|--------|
 | `mg` | `migrate` |
-| `mg:create` | `migrate:create` |
+| `mg:create` / `mg:make` / `make:migration` | `migrate:create` |
 | `patch` | `patch:run` |
 | `seed` | `seeder:run` |
 | `cb` | `cache:build` |
@@ -39,6 +39,39 @@ php pinoox help migrate
 | `databases` | `db:list` |
 | `pinion` | `pinion:list` |
 | `make:permission` | `permission:create` |
+| `platform:install` | `install-platform` |
+
+---
+
+## نصب پلتفرم
+
+نصب اولیه چنداپ بدون مرورگر. همان `SetupService` نصب گرافیکی را اجرا می‌کند: ذخیره دیتابیس، migrate هسته و اپ‌ها، patch، ساخت کاربر مدیر، اعمال زبان، نگاشت `/` به Welcome و `/manager` به Manager، سپس غیرفعال کردن اپ installer.
+
+```bash
+php pinoox install-platform init
+# فایل .pinoox/install-platform.php را ویرایش کنید
+php pinoox install-platform check
+php pinoox install-platform run
+```
+
+| action | کاربرد |
+|--------|--------|
+| `init` | ساخت `.pinoox/install-platform.php` (در صورت وجود، از `.env` کلیدهای `DB_*`) |
+| `check` | اعتبارسنجی کانفیگ و تست اتصال دیتابیس |
+| `run` | نصب |
+
+| گزینه | کاربرد |
+|--------|--------|
+| `--file=` | مسیر فایل کانفیگ (پیش‌فرض: `.pinoox/install-platform.php`) |
+| `--force` / `-f` | بازنویسی stub در `init`، یا نصب مجدد اگر از قبل نصب شده (`run`) |
+| `--dry-run` | فقط اعتبارسنجی بدون نصب (`run`) |
+| `--remove` / `-r` / `--delete` / `-d` | حذف فایل کانفیگ بعد از نصب موفق |
+
+فایل کانفیگ زیر `.pinoox/` است (gitignore) و رمز مدیر را دارد. بعد از نصب `-r` بزنید یا خودتان حذف کنید.
+
+اگر اپ installer از قبل غیرفعال باشد، `run` بدون `--force` متوقف می‌شود.
+
+جزئیات نصب: [نصب و راه‌اندازی پینوکس](./installing-pinoox.md#نصب-از-cli).
 
 ---
 
@@ -49,6 +82,7 @@ php pinoox help migrate
 | `app:create {package}` | ساخت اپ (`--simple`, `--stack`, `--profile`) |
 | `app:list` | لیست اپ‌ها |
 | `app:delete` | حذف اپ |
+| `app:reset {package}` | ریست دیتای اپ (فولدر می‌ماند)، سپس migrate + patch + lifecycle نصب |
 | `app:router set /path {package}` | نگاشت URL |
 | `app:domain` | تنظیم host → اپ |
 | `app:resolve` | debug: کدام اپ handle می‌کند |
@@ -67,6 +101,7 @@ php pinoox help migrate
 | `form-request:create` | FormRequest class |
 | `seeder:create` | `database/seeders/` |
 | `test:create` | فایل Pest |
+| `lifecycle:create` | `lifecycle.php` (نصب/آپدیت/حذف/ریست) |
 | `theme:frontend` | Frontend tooling (Vue/React/Vite) — see [Frontend & Vite](../basic/frontend-vite.md) |
 
 ---
@@ -75,8 +110,9 @@ php pinoox help migrate
 
 | دستور | کاربرد |
 |--------|--------|
-| `migrate {package}` | migration (اپ، `platform`, `pincore`) |
-| `migrate:create` | فایل migration |
+| `migrate {package}` | اجرای migration (اپ یا `platform`) |
+| `migrate:create` | فایل migration (`--create`، `--table`) |
+| `migrate:drop` | حذف سخت جداول پکیج و پاک کردن تاریخچه |
 | `migrate:status` / `migrate:rollback` | وضعیت / برگشت |
 | `seeder:run` | اجرای seeder (`-c` نام فایل) |
 | `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patch](../advanced/patches.md) |
@@ -204,15 +240,20 @@ pinx pinion:info {upload_id} --json
 
 | دستور | کاربرد |
 |--------|--------|
-| `pinroll:init` | ساخت `pinroll/pinroll.config.php` |
-| `pinroll:connect` | راه‌اندازی / بررسی هاست (`--reset` برای تکرار) |
+| `pinroll:init` | ساخت `.pinoox/pinroll.config.php` |
+| `pinroll:kit` | zip استخراج برای File Manager (`pingate` + token) |
+| `pinroll:provision` | نصب اولیه هاست خالی (PinGate + platform.zip + setup) |
+| `pinroll:connect` | راه‌اندازی / بررسی (`--via=`، `--bootstrap-ftp`، `--reset`) |
 | `pinroll:apps` | تنظیم `hosts.*.apps` |
-| `pinroll:vendor` | خروجی `vendor/` برای نصب هاست یا آپدیت هسته |
-| `pinroll:gate` | ساخت / آپلود PinGate |
+| `pinroll:vendor` | `vendor.zip` production (`--push` به هاست) |
+| `pinroll:pincore` | zip + آپلود pincore + استخراج PinGate |
+| `pinroll:sync` | zip پوشه دلخواه (`--from`, `--to`) + استخراج PinGate |
+| `pinroll:gate` | ساخت / آپلود PinGate (`--kit` برای zip) |
 | `pinroll:check` | بررسی هاست / PinGate |
 | `pinroll:push` | فقط ساخت و آپلود |
+| `pinroll:setup` | بعد از دیپلوی: migrate + patch (`--seed`، `--config`، `--dry-run`) |
 | `pinroll:install` | نصب release آماده‌شده روی هاست |
-| `pinroll:deploy` | push + install (go live) |
+| `pinroll:deploy` | push + install؛ `--full` = پلتفرم + همه اپ‌ها |
 | `pinroll:rollback` | rollback از PinGate یا آرشیو لوکال |
 | `pinroll:cleanup` | هرس آرشیوهای قدیمی (`--local`، `--dry-run`) |
 | `pinroll:build` | فقط build |
@@ -222,9 +263,11 @@ pinx pinion:info {upload_id} --json
 
 ```bash
 php pinoox pinroll:init
-php pinoox pinroll:connect
-php pinoox pinroll:apps --apps=com_pinoox_shop
-php pinoox pinroll:deploy
+php pinoox pinroll:kit                # بدون FTP
+php pinoox pinroll:provision          # هاست خالی
+php pinoox pinroll:connect            # سایت موجود
+php pinoox pinroll:deploy --full
+php pinoox pinroll:setup
 ```
 
 مستندات: [راهنمای Pinroll](../deploy/pinroll.md).
@@ -265,7 +308,8 @@ php pinoox pinroll:deploy
 | دستور | کاربرد |
 |--------|--------|
 | `pinx:build` | ساخت `.pinx` |
-| `pinx:install` | نصب package |
+| `pinx:install` | نصب package (`--skip-lifecycle` برای رد `lifecycle.php`) |
+| `pinx:uninstall` | حذف اپ/تم (`--skip-lifecycle`) |
 | `pinx:info` | metadata |
 | `wizard:list` / `wizard:install` | wizard نصب |
 
@@ -334,6 +378,7 @@ Composer (پلتفرم + هر اپ) و npm (تم) را نصب/به‌روز می
 
 ## مستندات مرتبط
 
+- [نصب و راه‌اندازی پینوکس](./installing-pinoox.md)
 - [فرانت‌اند و Vite](../basic/frontend-vite.md)
 - [ساخت اولین اپ](./your-first-app.md)
 - [Migration — مهاجرت](../database/migrations.md)

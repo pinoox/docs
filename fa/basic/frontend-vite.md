@@ -94,7 +94,7 @@ php pinoox dev platform              # روتر کامل پلتفرم (نه moun
 | Action | Command | Purpose |
 |--------|---------|---------|
 | `info` | `php pinoox fe spark info` | stack، manifest، dev state، wiring Vite |
-| `install` | `php pinoox fe spark install` | `npm install` / `npm ci` در تم |
+| `install` | `php pinoox fe spark install` | نصب وابستگی JS تم (`npm` / `bun` / … — پایین) |
 | `dev` | `php pinoox fe spark dev` | PHP `serve` + Vite HMR (تا آماده شدن Vite صبر می‌کند) |
 | `dev` | `php pinoox dev spark` | همان `fe spark dev` (میانبر) |
 | `dev:apps` | `php pinoox fe dev:apps` | یک `serve` PHP + Vite برای **چند** اپ |
@@ -132,8 +132,8 @@ php pinoox fe com_my_shop install --theme=all  # npm install در هر تم cont
 | `--verbose-vite` | نمایش URLهای کامل راه‌اندازی Vite |
 | `--fix-vite` | اتصال خودکار `@pinooxhq/vite-plugin` در `vite.config.js` |
 | `--env-file` | نام فایل env تم (پیش‌فرض `.env`) |
-| `--no-install` | رد کردن npm install |
-| `--install` | اجبار npm install |
+| `--no-install` | رد کردن نصب وابستگی JS |
+| `--install` | اجبار نصب وابستگی JS |
 
 ### `fe dev:apps` — چند اپ همزمان
 
@@ -203,9 +203,37 @@ PHP با `PINOOX_VITE_HMR` و بررسی runtime بین HMR و manifest تولی
 
 ## متغیرهای محیطی
 
+### package manager پروژه (npm / bun / pnpm / yarn)
+
+به‌صورت پیش‌فرض، دستورات فرانت تم **`npm run dev`**، **`npm install`** و **`npm ci`** (وقتی lockfile وجود دارد) را اجرا می‌کنند. در **`.env` ریشه پروژه** این را بگذارید تا package manager دیگری استفاده شود:
+
+```env
+PINOOX_JS_PACKAGE_MANAGER=bun
+```
+
+مقادیر پشتیبانی‌شده: `npm` (پیش‌فرض)، `bun`، `pnpm`، `yarn`.
+
+| دستور | با `bun` |
+|-------|----------|
+| `php pinoox dev` / `pinx dev` | `bun run dev` (Vite HMR) |
+| `php pinoox fe install` | `bun install` |
+| `php pinoox fe build` | `bun run build` |
+| `php pinoox deps install` (اهداف npm) | `bun install --frozen-lockfile` وقتی `bun.lock` وجود دارد |
+
+وقتی env **تنظیم نشده** باشد، پینوکس از lockfileهای پوشه تم تشخیص می‌دهد:
+
+| Lockfile | Manager |
+|----------|---------|
+| `bun.lock` / `bun.lockb` | bun |
+| `pnpm-lock.yaml` | pnpm |
+| `yarn.lock` | yarn |
+| (هیچ‌کدام) | npm |
+
+**راه‌اندازی bun:** [Bun](https://bun.sh) را نصب کنید، یک‌بار `bun install` در پوشه تم بزنید، سپس `php pinoox dev {theme}` یا `pinx dev`. اسکریپت‌های `package.json` تم همان می‌مانند — فقط runner عوض می‌شود.
+
 ### زمان اجرا (پیش‌فرض)
 
-در `fe dev`، پینوکس URLهای dev را از **روتر اپ** (mount path، پیشوندهای proxy) resolve می‌کند و مقادیر خالی `VITE_*` را به پروسه npm inject می‌کند. **فایل `.env` تم روی دیسک تغییر نمی‌کند** مگر با `ENV_SERVER_SYNC=true` opt-in کنید (پایین). اگر `.env` نباشد ولی `.env.example` باشد، CLI یک‌بار example را کپی می‌کند.
+در `fe dev`، پینوکس URLهای dev را از **روتر اپ** (mount path، پیشوندهای proxy) resolve می‌کند و مقادیر خالی `VITE_*` را به پروسه package manager JS (npm، bun، …) inject می‌کند. **فایل `.env` تم روی دیسک تغییر نمی‌کند** مگر با `ENV_SERVER_SYNC=true` opt-in کنید (پایین). اگر `.env` نباشد ولی `.env.example` باشد، CLI یک‌بار example را کپی می‌کند.
 
 مقادیر موجود در `.env` تم همیشه برنده‌اند. مقادیر resolve‌شده خودکار فقط کلیدهای خالی را در runtime پر می‌کنند.
 

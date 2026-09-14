@@ -14,6 +14,9 @@ Pinoox 3.x loads global helpers from `pincore/functions/`. For day-to-day app de
 | `response()` | HTTP response | `return response()->json($data);` |
 | `redirect()` | Redirect | `return redirect(url('login'));` |
 | `url()` | App/site URL | `url('products')` |
+| `file_url()` | Stored-file download URL (auto disk) | `file_url($fileId)` |
+| `file_thumb()` | Stored-file thumbnail URL | `file_thumb($fileId)` |
+| `file_temporary_url()` | Signed temporary file URL | `file_temporary_url($fileId, 1800)` |
 | `path()` | File path on disk | `path('storage/logs/app.log')` |
 | `assets()` | Theme file URL | `assets('dist/app.css')` |
 | `config()` | Read/write config | `config('app.name')` |
@@ -28,6 +31,8 @@ Pinoox 3.x loads global helpers from `pincore/functions/`. For day-to-day app de
 | `_env()` | Environment variable | `_env('APP_DEBUG', false)` |
 | `alias()` | Flow/class alias | `alias('auth')` |
 | `jalali()`, `gregorian()`, `date_display()` | Date / calendar | `date_display($time, 'datetime')` |
+| `event()`, `event_listen()`, `event_has()`, `event_fake()` | Dispatch / listen / test events | `event('order.register', ['id' => 12])` |
+| `pinoox_id()` | Stable per-install Pinoox ID | `pinoox_id()` |
 
 For HTML in controllers use **`View::render()`** (same as system apps). The `view()` helper exists but prefer the Portal in controllers.
 
@@ -116,9 +121,46 @@ $label = t('product.title');
 
 ```php
 $link = url('api/v1/orders');
+$download = file_url($fileId);     // public disk or {app}/file/{hash}
+$thumb = file_thumb($fileId);
 $file = path('storage/export.csv');
 $css = assets('dist/panel.css');
 ```
+
+Same resolver via Url: `url()->file($fileId)`, `Url::file($fileId)`. See [File Management](./file-management.md) and [URL and link building](../basic/url.md).
+
+---
+
+## Events
+
+```php
+event('order.register', ['id' => 12, 'user_id' => 4]);
+event_listen('order.register', function ($event) {
+    $id = $event->get('id');
+});
+
+OrderPlaced::dispatch($orderId, $email);
+event_listen(function (OrderPlaced $event) {
+    // type-hint is enough
+});
+```
+
+Full guide: [Events](./events.md).
+
+---
+
+## Pinoox ID
+
+Stable identifier for this install — created on first boot:
+
+```php
+use Pinoox\Portal\Identity;
+
+$id = pinoox_id();
+$id = Identity::id();
+```
+
+Full guide: [Pinoox ID](./pinoox-id.md).
 
 ---
 
@@ -184,6 +226,8 @@ In addition to PHP helpers, these are available in Twig:
 - [URL](../basic/url.md)
 - [Path](../basic/path.md)
 - [Language](../basic/language.md)
+- [Events](./events.md)
+- [Pinoox ID](./pinoox-id.md)
 - [Services](./services.md)
 
 ---

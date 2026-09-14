@@ -68,7 +68,7 @@ Consulta [Flows](../basic/flows.md), [Gestión de usuarios](../advanced/user-man
 | `database` | Sobrescritura de la conexión a la BD |
 | `table.prefix` | Prefijo de tablas |
 | `transport.user` / `file_storage` / `access` | Presets o claves granulares |
-| `filesystem` | disk, miniaturas, acceso |
+| `filesystem` | disk, hash_length, dispatcher, file_policy, groups, thumbs |
 
 ---
 

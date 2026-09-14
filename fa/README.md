@@ -62,10 +62,12 @@
 ### مفاهیم پیشرفته
 
 #### [Pinker و Cache](./advanced/pinker.md)
+#### [Pinoox ID (هویت نصب)](./advanced/pinoox-id.md)
 #### [Patch (به‌روزرسانی داده)](./advanced/patches.md)
 
 #### [سرویس‌های اپ (Component + Portal)](./advanced/services.md)
 #### [توابع کمکی سراسری (Helpers)](./advanced/helpers.md)
+#### [رویدادها (Events)](./advanced/events.md)
 #### [ارسال ایمیل](./advanced/mail.md)
 #### [HTTP Client](./advanced/http-client.md)
 #### [Rate Limiter](./advanced/rate-limiter.md)
@@ -86,7 +88,9 @@
 
 ### دیپلوی (Deploy)
 
-#### [Pinroll — انتشار و دیپلوی](./deploy/pinroll.md)
+#### [دیپلوی اپ Pinx (فقط پکیج)](./deploy/pinx.md) — `pinx deploy` فقط `.pinx` همین اپ را می‌فرستد، نه کل پروژه
+#### [Pinroll — راهنمای سریع](./start/pinroll-quickstart.md) (kit بدون FTP، connect، deploy)
+#### [Pinroll — انتشار و دیپلوی](./deploy/pinroll.md) (مرجع کامل: kit، provision، sync/pincore، `--full`، `pinroll:setup`)
 
 ### کار با دیتابیس
 

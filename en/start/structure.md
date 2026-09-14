@@ -18,6 +18,8 @@ my-shop/
 ├── index.php
 ├── bin/pinx
 ├── Controller/
+├── Event/
+├── Listener/
 ├── Model/
 ├── routes/
 │   ├── web.php
@@ -43,6 +45,8 @@ my-shop/
 | `app.php` | app identity, version, theme, build, signing, frontend settings |
 | `.env` | local environment; minimal by default |
 | `Controller/` | HTTP controllers |
+| `Event/` | Domain event classes (auto-loaded) |
+| `Listener/` | Event listeners (auto-discovered) |
 | `Model/` | Eloquent-style models |
 | `routes/` | web/API/action routes |
 | `database/migrations/` | schema changes |
@@ -66,6 +70,8 @@ Pinx maps your project app code to the `App\` namespace.
 | File | Namespace |
 | --- | --- |
 | `Controller/PostController.php` | `App\Controller` |
+| `Event/OrderPlaced.php` | `App\Event` |
+| `Listener/SendOrderEmail.php` | `App\Listener` |
 | `Model/Post.php` | `App\Model` |
 | `Flow/AuthFlow.php` | `App\Flow` |
 | `database/factories/PostFactory.php` | `App\database\factories` |
@@ -135,5 +141,7 @@ The full platform still supports multiple apps under `apps/{package}`. That layo
 ## Next
 
 - [Create your first app](./your-first-app.md)
+- [app.php manifest](./app-manifest.md)
+- [Events](../advanced/events.md)
 - [Pinx CLI](./pinx-cli.md)
 - [Build and release](./build-release.md)

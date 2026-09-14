@@ -102,11 +102,11 @@ pinx dev --open             # open browser (--no-frontend only)
 
 pinx migrate                # run app migrations (--platform runs platform first)
 pinx migrate:st             # migration status
-pinx migrate:cr create_products_table
+pinx migrate:cr add_email_to_users
 
 pinx make controller ProductController
 pinx make model ProductModel
-pinx make migration create_products_table
+pinx make migration add_email_to_users
 pinx make portal ShopService
 
 pinx routes                 # list named actions (--validate, --json)
@@ -125,6 +125,8 @@ pinx fe:sc --stack=vue      # scaffold starter files
 ```
 
 Open the **PHP URL** printed by `pinx dev` or `pinx fe:d` — not the Vite port. See [Frontend & Vite](../basic/frontend-vite.md) and [@pinooxhq/vite-plugin](../basic/vite-plugin.md).
+
+Use **bun** instead of npm for Vite HMR: set `PINOOX_JS_PACKAGE_MANAGER=bun` in project `.env` (see [package manager](../basic/frontend-vite.md)).
 
 **Dependencies:**
 
@@ -225,10 +227,23 @@ pinx inspector
 
 ## Ship to production
 
-Build a `.pinx` package for installation on a full Pinoox platform (Manager → Applications):
+Build a `.pinx` package, then install it on a **Pinoox platform** host.
+
+**Manual:** `pinx build` → upload via Manager → Applications.
+
+**Pinroll (recommended):** ships **only this app’s `.pinx`** — not the whole project. See [Deploy a Pinx app](../deploy/pinx.md).
 
 ```bash
-pinx build                  # → export/*.pinx
+composer require --dev pinoox/pinroll
+pinx pinroll:init
+pinx connect --via=ftp      # or: pinx kit
+pinx deploy                 # fe:build + pinx:build → upload → install/update apps/{package}/
+```
+
+Do **not** use `pinx deploy --full` for day-to-day app updates (that also ships a platform zip).
+
+```bash
+pinx build                  # → export/*.pinx (local only)
 pinx build -o /tmp/shop.pinx
 pinx release --bump=patch   # bump version in app.php + build
 pinx release --sign         # sign when key is configured in app.php → pinx.sign
@@ -304,7 +319,7 @@ Run `pinx list` for a sectioned overview. Shorthand aliases appear in brackets.
 | `migrate:run [package]` | `migrate` | Run app migrations for current or linked package (`--platform`, `--fresh`, `--refresh`, `--reset`, `--devdb`) |
 | `migrate:status [package]` | `migrate:st` | Migration status for current or linked package |
 | `migrate:rollback [package]` | `migrate:rb` | Rollback last batch for current or linked package (`--step`, `--all`, `--ignore-fk`) |
-| `migrate:create <name>` | `migrate:cr` | Create migration file |
+| `migrate:create <name>` | `migrate:cr` | Create migration file (`--create`, `--table`) |
 | `migrate:platform` | `migrate:pl` | Platform migrations only |
 | `seeder:run` | `seed` | Run seeders (`-c` file basename) |
 
@@ -322,6 +337,12 @@ Run `pinx list` for a sectioned overview. Shorthand aliases appear in brackets.
 |---------|---------|-------------|
 | `build` | `bld` | Build `.pinx` package |
 | `release` | `rel` | Version bump + build (`--bump`, `--sign`) |
+| `pinroll:init` | — | Scaffold `.pinoox/pinroll.config.php` |
+| `connect` | `pinroll:connect` | Connect host / PinGate |
+| `kit` | `pinroll:kit` | PinGate zip for File Manager |
+| `pinroll:check` | `deploy:check` | Verify host + PinGate |
+| `deploy` | `pinroll:deploy` | Build this app’s `.pinx`, upload, install/update |
+| `provision` | `pinroll:provision` | Blank-host platform install (once) |
 
 ### Scaffolding
 
@@ -443,6 +464,8 @@ Override the detected package with environment variables:
 
 ## Related docs
 
+- [Deploy a Pinx app](../deploy/pinx.md)
+- [Pinroll — release & deploy](../deploy/pinroll.md)
 - [Frontend & Vite](../basic/frontend-vite.md)
 - [@pinooxhq/vite-plugin](../basic/vite-plugin.md)
 - [Installing Pinoox](./installing-pinoox.md)

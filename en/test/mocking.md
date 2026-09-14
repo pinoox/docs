@@ -88,6 +88,28 @@ $logger->shouldReceive('info')->once()->with('order.created');
 
 ---
 
+## Fake events
+
+Record dispatches without running listeners. Full guide: [Events](../advanced/events.md#testing).
+
+```php
+use App\com_acme_shop\Event\OrderPlaced;
+use Pinoox\Portal\Event;
+
+it('dispatches OrderPlaced on checkout', function () {
+    event_fake(OrderPlaced::class);
+
+    // … run checkout …
+
+    Event::assertDispatched(OrderPlaced::class);
+    Event::dontFake();
+});
+```
+
+`event_fake()` with no arguments fakes **all** events (including kernel events). Prefer a class or name list, and always call `Event::dontFake()` when the test finishes.
+
+---
+
 ## Running tests
 
 ```bash
@@ -111,6 +133,7 @@ php pinoox test com_my_shop -f OrderService
 - [HTTP tests](./http-tests.md)
 - [Console tests](./console-tests.md)
 - [Portal](../basic/portal.md)
+- [Events](../advanced/events.md)
 - [Services](../advanced/services.md)
 
 ---

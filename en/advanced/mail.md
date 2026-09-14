@@ -65,14 +65,17 @@ final class MailService
 
 ## Event and listener
 
+Put classes in `Event/` and `Listener/` — they are auto-discovered on boot. No `boot.php` registration is required.
+
 ```php
 <?php
-namespace App\com_acme_shop\Component\Event;
+// Event/OrderPlaced.php
+namespace App\com_acme_shop\Event;
 
-final class OrderPlaced
+use Pinoox\Component\Event\Event;
+
+class OrderPlaced extends Event
 {
-    public const NAME = 'shop.order.placed';
-
     public function __construct(
         public readonly int $orderId,
         public readonly string $customerEmail,
@@ -82,15 +85,16 @@ final class OrderPlaced
 
 ```php
 <?php
-namespace App\com_acme_shop\Component\Listener;
+// Listener/SendOrderConfirmation.php
+namespace App\com_acme_shop\Listener;
 
-use App\com_acme_shop\Component\Event\OrderPlaced;
+use App\com_acme_shop\Event\OrderPlaced;
 use App\com_acme_shop\Component\MailService;
 use Pinoox\Portal\View;
 
-final class SendOrderConfirmation
+class SendOrderConfirmation
 {
-    public function __invoke(OrderPlaced $event): void
+    public function handle(OrderPlaced $event): void
     {
         $html = View::render('emails/order-confirm.twig', [
             'order_id' => $event->orderId,
@@ -105,42 +109,20 @@ final class SendOrderConfirmation
 }
 ```
 
----
-
-## Register the listener in boot.php
-
-```php
-<?php
-use App\com_acme_shop\Component\Event\OrderPlaced;
-use App\com_acme_shop\Component\Listener\SendOrderConfirmation;
-use Pinoox\Component\AppEvent\AppRegister;
-
-return function (AppRegister $register): void {
-    $register->listen(OrderPlaced::NAME, SendOrderConfirmation::class);
-};
-```
-
-Or in `app.php`:
-
-```php
-'event' => [
-    OrderPlaced::NAME => SendOrderConfirmation::class,
-],
-```
+Extra listeners can still go in `boot.php` or `app.php` `events.listen`. Full guide: [Events](./events.md).
 
 ---
 
 ## Dispatch from a controller
 
 ```php
-use App\com_acme_shop\Component\Event\OrderPlaced;
-use Pinoox\Portal\Event;
+use App\com_acme_shop\Event\OrderPlaced;
 
 public function checkout(Request $request)
 {
     $order = $this->createOrder($request);
 
-    Event::dispatch(new OrderPlaced($order->id, $order->email), OrderPlaced::NAME);
+    OrderPlaced::dispatch($order->id, $order->email);
 
     return $this->ok(['order_id' => $order->id], 'order.created');
 }
@@ -170,6 +152,7 @@ The controller only dispatches the event; the listener sends the email. On failu
 ## Related docs
 
 - [App services](./services.md)
+- [Events](./events.md)
 - [Events and boot.php](./boot-and-events.md)
 - [Controllers](../basic/controllers.md)
 - [Views and Twig](../basic/views.md)

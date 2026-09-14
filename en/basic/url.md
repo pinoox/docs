@@ -38,6 +38,30 @@ echo Url::link('^config/app.php');
 
 ---
 
+## Stored file download URL
+
+`url()->file()` / `Url::file()` / `file_url()` resolve a stored file (`file_id`, `hash_id`, or `FileModel`). The disk is detected automatically: unlocked/public disks get a direct `/storage/…` (or remote) URL; locked disks use the owning app dispatcher `{app}/file/{hash}`.
+
+```php
+echo url()->file($fileId);
+echo Url::file($fileId);
+echo file_url($fileId);            // same resolver as File::url()
+
+echo url()->fileThumb($fileId);
+echo file_thumb($fileId);
+
+echo url()->temporaryFile($fileId, 1800);
+echo file_temporary_url($fileId, 1800);
+```
+
+```twig
+<a href="{{ url().file(invoice.file_id) }}">Download</a>
+```
+
+Full disk and policy details: [File Management](../advanced/file-management.md).
+
+---
+
 ## Twig — `url()` accessor
 
 ```twig
@@ -46,6 +70,7 @@ const PINOOX = {
     URL: {
         APP: '{{ url().app }}',
         BASE: '{{ url().appPath }}',
+        AREA: '{{ url().app }}', {# absolute active area; bootstrap may append theme-context path #}
         API: '{{ url().api }}',
         SITE: '{{ url().site }}',
         THEME: '{{ assets() }}',
@@ -53,11 +78,15 @@ const PINOOX = {
 };
 ```
 
+`window.__PINOOX__.url` from `pinoox_bootstrap()` always includes **`AREA`**: absolute URL of the active UI area. With a theme-context `path` (e.g. `panel`), `AREA` becomes `APP` + that path (`https://domain.com/panel`) while `BASE` stays path-only (`/panel`). See [Theme contexts](./theme-contexts.md).
+
 | Accessor method | Purpose |
 |-----------------|---------|
 | `url().site` | origin + project path |
 | `url().app` | origin + app segment |
 | `url().api` | API prefix (default `api/v1/`) |
+| `url().file($id)` | stored file download URL (auto public/private disk) |
+| `url().fileThumb($id)` | stored file thumbnail URL |
 | `url().resource('resources/logo.png')` | static file under `apps/{package}/` |
 | `url('profile')` | route link inside the app |
 
@@ -126,6 +155,7 @@ Url::referer();
 ## Related docs
 
 - [File Path](./path.md)
+- [File Management](../advanced/file-management.md)
 - [Views](./views.md)
 - [Twig Templates](./templates.md)
 - [Router](./routers.md)

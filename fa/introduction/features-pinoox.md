@@ -101,9 +101,16 @@ return response()->json(['ok' => true, 'data' => $items]);
 
 ---
 
+## Pinoox ID
+
+هر نصب در اولین boot یک شناسه پایدار می‌گیرد (`pinoox_id()` / `Identity::id()`). برای پشتیبانی، لایسنس و API ریموت — نه به‌عنوان راز. جزئیات: [Pinoox ID](../advanced/pinoox-id.md).
+
+---
+
 ## مستندات مرتبط
 
 - [پینوکس چیست؟](./what-is-pinoox.md)
+- [Pinoox ID](../advanced/pinoox-id.md)
 - [نصب و راه‌اندازی](../start/installing-pinoox.md)
 - [روتر](../basic/routers.md)
 - [فلو — Flow](../basic/flows.md)

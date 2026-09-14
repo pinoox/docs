@@ -66,10 +66,12 @@ Read these in order if you are building a new app.
 ## Build, Runtime, And Advanced Features
 
 - [Pinker and cache](./en/advanced/pinker.md)
+- [Pinoox ID (install identity)](./en/advanced/pinoox-id.md)
 - [Patches for data updates](./en/advanced/patches.md)
 - [Scheduling](./en/advanced/schedule.md)
 - [App services](./en/advanced/services.md)
 - [Global helpers](./en/advanced/helpers.md)
+- [Events](./en/advanced/events.md)
 - [Mail](./en/advanced/mail.md)
 - [HTTP client](./en/advanced/http-client.md)
 - [Rate Limiter](./en/advanced/rate-limiter.md)
@@ -85,6 +87,13 @@ Read these in order if you are building a new app.
 - [Transport and shared resources](./en/advanced/transport.md)
 - [Kernel and boot pipeline](./en/advanced/kernel.md)
 - [boot.php and events](./en/advanced/boot-and-events.md)
+- [Pinroll overview](./en/advanced/pinroll.md)
+
+## Deploy
+
+- [Deploy a Pinx app (package only)](./en/deploy/pinx.md)
+- [Pinroll — quick start](./en/start/pinroll-quickstart.md)
+- [Pinroll — release & deploy](./en/deploy/pinroll.md)
 
 ## Walkthroughs
 

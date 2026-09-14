@@ -77,7 +77,7 @@ Der Basis-Controller bietet außerdem **`$this->validate()`** und **`$this->vali
 ```php
 $file = $request->file('avatar');
 
-$uploader = $request->store('avatar', 'avatars'); // → storage/apps/{package}/avatars
+$uploader = $request->store('avatar', 'avatars'); // → storage/local/{package}/avatars
 if ($uploader) {
     $path = $uploader->getPath();
 }

@@ -1,8 +1,79 @@
-# داده آزمایشی — Seeder
+# داده آزمایشی — Factories و Seeders
 
 [← بازگشت به فهرست](../README.md)
 
-پینوکس 3.x **Model Factory** (Laravel-style) در CLI ندارد. روش پیشنهادی برای داده اولیه و توسعه: **Seeder** با `SeederBase` در `apps/{package}/database/seeders/`.
+پینوکس از Model Factory به سبک Laravel در `apps/{package}/database/factories/` پشتیبانی می‌کند.
+روش پیشنهادی پیش‌فرض: کلاس نام‌دار با `class PostFactory extends Factory` (همان خروجی `factory:create`).
+
+---
+
+## ساخت Factory
+
+```bash
+php pinoox factory:create PostFactory com_acme_blog
+```
+
+```text
+apps/com_acme_blog/database/factories/PostFactory.php
+```
+
+```php
+<?php
+namespace App\com_acme_blog\database\factories;
+
+use App\com_acme_blog\Model\PostModel;
+use Pinoox\Component\Database\Factories\Factory;
+
+class PostFactory extends Factory
+{
+    protected ?string $model = PostModel::class;
+
+    public function definition(): array
+    {
+        return [
+            'user_id' => 1,
+            'title' => 'پست نمونه',
+            'body' => 'متن نمونه',
+            'status' => 'draft',
+        ];
+    }
+}
+```
+
+استفاده:
+
+```php
+PostModel::factory()->make();
+PostModel::factory()->create();
+PostModel::factory()->count(10)->create();
+PostModel::factory()->state(['status' => 'published'])->create();
+```
+
+### اختیاری: `FactoryBase` به‌صورت anonymous
+
+اگر بخواهید مثل seeder بنویسید، می‌توانید `FactoryBase` را با کلاس anonymous برگردانید:
+
+```php
+namespace App\com_acme_blog\database\factories;
+
+use App\com_acme_blog\Model\PostModel;
+use Pinoox\Component\Database\Factories\FactoryBase;
+
+return new class extends FactoryBase
+{
+    protected ?string $model = PostModel::class;
+
+    public function definition(): array
+    {
+        return [
+            'title' => 'پست نمونه',
+            'status' => 'draft',
+        ];
+    }
+};
+```
+
+`Model::factory()` اول کلاس نام‌دار را پیدا می‌کند، بعد فایل‌های anonymous داخل `database/factories/` را بار می‌کند.
 
 ---
 
@@ -191,7 +262,8 @@ public function run(): void
     if (env('APP_ENV') === 'production') {
         return;
     }
-    // sample data
+
+    PostModel::factory()->count(20)->create();
 }
 ```
 
@@ -209,9 +281,11 @@ public function run(): void
 
 ## نکات
 
+- Factory را روی یک مدل متمرکز نگه دارید؛ روش پیشنهادی: `class PostFactory extends Factory`.
+- در صورت تمایل به الگوی seeder از `return new class extends FactoryBase` استفاده کنید.
 - Seeder را idempotent بنویسید (`firstOrCreate` به‌جای `insert` کور).
-- credential واقعی در seeder commit نکنید.
-- برای تست واحد از Pest fixture یا `:memory:` sqlite استفاده کنید.
+- credential واقعی در seeder یا factory commit نکنید.
+- برای تست واحد از `make()` یا `:memory:` sqlite استفاده کنید.
 
 ---
 

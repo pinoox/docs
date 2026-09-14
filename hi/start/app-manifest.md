@@ -68,7 +68,7 @@
 | `database` | DB कनेक्शन ओवरराइड |
 | `table.prefix` | टेबल प्रीफ़िक्स |
 | `transport.user` / `file_storage` / `access` | प्रीसेट या विस्तृत (granular) keys |
-| `filesystem` | disk, thumbs, access |
+| `filesystem` | disk, hash_length, dispatcher, file_policy, groups, thumbs |
 
 ---
 

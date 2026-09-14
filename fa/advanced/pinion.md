@@ -123,7 +123,7 @@ class MediaUploadController extends ApiController
             'extensions' => ['mp4', 'mov'],
             'mode' => 'auto',
             'record' => true,
-            'access' => 'public',
+            'disk' => 'public',
             'group' => 'media',
         ];
     }

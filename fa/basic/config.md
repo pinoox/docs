@@ -117,6 +117,7 @@ Config::name('payment')->set('enabled', true)->save();
 ## نکات
 
 - secretها (API key، رمز DB) را در git commit نکنید؛ از `.env` یا `pinker/state` استفاده کنید.
+- [Pinoox ID](../advanced/pinoox-id.md) نصب در `pinker/state/identity.php` است، نه در کانفیگ نسخه.
 - نام فایل: `{name}.config.php` → `config('{name}.key')`.
 - پس از deploy production، `php pinoox pinker:rebuild` برای bake config.
 
@@ -126,6 +127,7 @@ Config::name('payment')->set('enabled', true)->save();
 
 - [Portal — پورتال](portal.md)
 - [Pinker — بیلد](../advanced/pinker.md)
+- [Pinoox ID](../advanced/pinoox-id.md)
 - [مسیر فایل](path.md)
 - [مرجع app.php](../start/app-manifest.md)
 

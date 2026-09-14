@@ -32,7 +32,7 @@ use function Pinoox\Router\{
 };
 ```
 
-Use **`collection()`** to mount a nested route file or callback under a path prefix (with optional shared flows).
+Use **`collection()`** to mount a nested route file or callback under a path prefix (with optional shared flows). For multi-theme apps, optional `context:` resolves path and `theme.*` flow from `theme-contexts` — see [Theme contexts](./theme-contexts.md) (not required for single-theme apps).
 
 ### Route facade (alternative)
 

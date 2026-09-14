@@ -7,7 +7,7 @@
 | روش | مناسب برای |
 |-----|------------|
 | **الف. تک‌اپ با [Pinx CLI](./pinx-cli.md)** | ساخت یک اپ — سریع‌ترین شروع، بدون UI منیجر |
-| **ب. پلتفرم کامل (کلاسیک)** | میزبانی چند اپ با نصب‌کننده گرافیکی و منیجر |
+| **ب. پلتفرم کامل (کلاسیک)** | میزبانی چند اپ با نصب‌کننده گرافیکی یا CLI و منیجر |
 
 ---
 
@@ -88,6 +88,10 @@ CREATE DATABASE pinoox_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ### ۴. اجرای نصب‌کننده
 
+دو روش وجود دارد؛ هر دو همان مراحل نصب گرافیکی را اجرا می‌کنند (ذخیره دیتابیس، migrate هسته و اپ‌ها، patch، ساخت مدیر، زبان، و غیرفعال کردن installer).
+
+#### نصب گرافیکی
+
 مرورگر را باز کنید:
 
 ```
@@ -101,6 +105,34 @@ http://localhost/pinoox
 3. وارد کردن اطلاعات دیتابیس
 4. ساخت حساب مدیر
 5. پایان نصب
+
+#### نصب از CLI
+
+بدون مرورگر، از فایل کانفیگ محلی (gitignore زیر `.pinoox/`):
+
+```bash
+php pinoox install-platform init
+# فایل .pinoox/install-platform.php را ویرایش کنید (دیتابیس + کاربر مدیر + lang)
+php pinoox install-platform check
+php pinoox install-platform run
+```
+
+`init` فایل `.pinoox/install-platform.php` را می‌سازد و در صورت وجود، مقادیر `DB_*` را از `.env` پر می‌کند. فیلدهای لازم: `lang`، `db` و `user` (رمز مدیر حداقل ۶ کاراکتر). اتصال‌های پشتیبانی‌شده: `mysql`، `mariadb`، `pgsql`، `sqlsrv`.
+
+فلگ‌های مفید:
+
+```bash
+php pinoox install-platform init --force
+php pinoox install-platform run --dry-run
+php pinoox install-platform run -r
+php pinoox install-platform run --file=.pinoox/install-platform.php
+```
+
+پس از نصب موفق، `/` به Welcome و `/manager` به Manager می‌رود. فایل کانفیگ رمز عبور دارد — با `-r` (`--remove`) بعد از نصب حذفش کنید.
+
+اگر اپ installer از قبل غیرفعال باشد، `run` بدون `--force` متوقف می‌شود.
+
+مرجع دستور: [CLI پینوکس](./cli-reference.md#نصب-پلتفرم).
 
 ---
 
@@ -133,12 +165,15 @@ php pinoox app:create com_acme_blog
 | 404 روی sub-route | mod_rewrite / `.htaccess` را فعال کنید |
 | خطای extension | ext-mysqli و ext-zip را در php.ini فعال کنید |
 | نصب‌کننده باز نمی‌شود | مسیر document root و دسترسی نوشتن پوشه‌های runtime |
+| Config not found | اول `php pinoox install-platform init` را اجرا کنید |
+| already installed | اگر installer غیرفعال است، `php pinoox install-platform run --force` |
 
 ---
 
 ## مستندات مرتبط
 
 - [Pinx CLI — پروژه تک‌اپ](./pinx-cli.md)
+- [مرجع CLI پینوکس](./cli-reference.md)
 - [ساخت اولین اپلیکیشن](./your-first-app.md)
 - [ساختار پوشه‌بندی](./structure.md)
 - [پینوکس چیست؟](../introduction/what-is-pinoox.md)

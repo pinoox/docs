@@ -13,6 +13,7 @@ A **patch** in Pinoox 3.x is a **one-time operational change**: fix data, move r
 | **Migration** | CREATE/ALTER tables and columns |
 | **Seeder** | Initial or sample data (manual / explicit call; not on install) |
 | **Patch** | Run once and track in `history` |
+| **lifecycle.php** | Every install/update/uninstall/reset (seed, folders, file cleanup) — [boot & events](./boot-and-events.md#package-lifecycle-lifecyclephp) |
 
 Patch examples:
 
@@ -133,12 +134,12 @@ Alias: `php pinoox patch` = `patch:run`.
 Migrations and patches share the **`history`** table:
 
 ```text
-type = migration | patch
+type = migration | patch | lifecycle
 app  = platform | com_acme_shop
 status = success | failed | skipped | rolled_back
 ```
 
-Successful patches are not re-run automatically.
+Successful patches are not re-run automatically. `type=lifecycle` records `onInstall` so platform provision does not double-seed. Uninstall/reset **clears** patch and lifecycle history so reinstall runs them again.
 
 ---
 
@@ -160,6 +161,7 @@ The system app `com_pinoox_installer` runs migrations and patches during setup v
 ## Related docs
 
 - [Migrations](./migrations.md)
+- [Package lifecycle (`lifecycle.php`)](./boot-and-events.md#package-lifecycle-lifecyclephp)
 - [Seeders / factories](../eloquent-orm/factories.md)
 - [CLI reference](../start/cli-reference.md)
 

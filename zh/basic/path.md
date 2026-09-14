@@ -85,7 +85,7 @@ class UploadService
 {
     public function store($file, string $subdir = 'products'): ?string
     {
-        // 存储在 storage/apps/com_acme_shop/{subdir} 下
+        // 存储在 storage/local/com_acme_shop/{subdir} 下
         $result = File::upload($file)
             ->to($subdir)
             ->diskOnly()

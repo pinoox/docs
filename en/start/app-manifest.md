@@ -28,10 +28,12 @@
 | `boot` | Run `boot.php` (default true) |
 | `boot-global` | Boot on every HTTP request |
 | `extends` | Boot when host app boots |
+| `lifecycle` | Run `lifecycle.php` on install/update/uninstall/reset (`true` / `false` / custom path) |
+| `events` | Auto-discover `Listener/` (`true`, default), disable (`false`), or map: `discover`, `path`, `listen`, `subscribe` — [Events](../advanced/events.md) |
 | `loader` | Extra files (`func.php`) |
 | `depends` | Required / optional apps — [App dependencies](./app-depends.md) |
 
-See [boot.php & events](../advanced/boot-and-events.md).
+See [boot.php & events](../advanced/boot-and-events.md) (includes [package lifecycle](../advanced/boot-and-events.md#package-lifecycle-lifecyclephp)). Domain events: [Events](../advanced/events.md).
 
 ---
 
@@ -69,7 +71,7 @@ See [Flows](../basic/flows.md), [User management](../advanced/user-management.md
 | `database` | DB connection override |
 | `table.prefix` | Table prefix |
 | `transport.user` / `file_storage` / `access` | Presets or granular keys |
-| `filesystem` | disk, thumbs, access |
+| `filesystem` | disk, hash_length, dispatcher, file_policy, groups, thumbs |
 
 ---
 
@@ -136,6 +138,8 @@ return [
 ## Related docs
 
 - [Project structure](./structure.md)
+- [boot.php and events](../advanced/boot-and-events.md)
+- [Events](../advanced/events.md)
 - [App dependencies](./app-depends.md)
 - [Theme contexts](../basic/theme-contexts.md)
 - [Theme manifest (`theme.php`)](../basic/theme-manifest.md)

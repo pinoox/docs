@@ -14,6 +14,9 @@
 | `response()` | پاسخ HTTP | `return response()->json($data);` |
 | `redirect()` | ریدایرکت | `return redirect(url('login'));` |
 | `url()` | URL اپ/سایت | `url('products')` |
+| `file_url()` | لینک دانلود فایل (تشخیص خودکار دیسک) | `file_url($fileId)` |
+| `file_thumb()` | لینک بندانگشتی فایل | `file_thumb($fileId)` |
+| `file_temporary_url()` | لینک موقت امضاشده | `file_temporary_url($fileId, 1800)` |
 | `path()` | مسیر فایل روی دیسک | `path('storage/logs/app.log')` |
 | `assets()` | URL فایل theme | `assets('dist/app.css')` |
 | `config()` | خواندن/نوشتن config | `config('app.name')` |
@@ -28,6 +31,8 @@
 | `_env()` | متغیر محیط | `_env('APP_DEBUG', false)` |
 | `alias()` | Flow/class alias | `alias('auth')` |
 | `jalali()`, `gregorian()`, `date_display()` | تاریخ / تقویم | `date_display($time, 'datetime')` |
+| `event()`, `event_listen()`, `event_has()`, `event_fake()` | ارسال / گوش‌دادن / تست رویداد | `event('order.register', ['id' => 12])` |
+| `pinoox_id()` | شناسه پایدار همین نصب | `pinoox_id()` |
 
 برای رندر HTML در کنترلر از **`View::render()`** استفاده کنید (مثل اپ‌های سیستمی). تابع `view()` هم وجود دارد اما در کنترلر Portal را ترجیح دهید.
 
@@ -113,9 +118,46 @@ $label = t('product.title');
 
 ```php
 $link = url('api/v1/orders');
+$download = file_url($fileId);     // دیسک عمومی یا {app}/file/{hash}
+$thumb = file_thumb($fileId);
 $file = path('storage/export.csv');
 $css = assets('dist/panel.css');
 ```
+
+همان resolver از طریق Url: `url()->file($fileId)`، `Url::file($fileId)`. ببینید [مدیریت فایل](./file-management.md) و [URL و لینک‌سازی](../basic/url.md).
+
+---
+
+## رویدادها
+
+```php
+event('order.register', ['id' => 12, 'user_id' => 4]);
+event_listen('order.register', function ($event) {
+    $id = $event->get('id');
+});
+
+OrderPlaced::dispatch($orderId, $email);
+event_listen(function (OrderPlaced $event) {
+    // type-hint کافی است
+});
+```
+
+راهنمای کامل: [رویدادها](./events.md).
+
+---
+
+## Pinoox ID
+
+شناسه پایدار همین نصب — در اولین boot ساخته می‌شود:
+
+```php
+use Pinoox\Portal\Identity;
+
+$id = pinoox_id();
+$id = Identity::id();
+```
+
+راهنمای کامل: [Pinoox ID](./pinoox-id.md).
 
 ---
 
@@ -179,6 +221,8 @@ function format_price(float $amount): string
 - [URL — آدرس](../basic/url.md)
 - [مسیر — Path](../basic/path.md)
 - [زبان](../basic/language.md)
+- [رویدادها (Events)](./events.md)
+- [Pinoox ID](./pinoox-id.md)
 - [سرویس‌ها](services.md)
 
 ---

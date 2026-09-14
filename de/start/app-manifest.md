@@ -68,7 +68,7 @@ Siehe [Flows](../basic/flows.md), [Benutzerverwaltung](../advanced/user-manageme
 | `database` | DB-Verbindung überschreiben |
 | `table.prefix` | Tabellenpräfix |
 | `transport.user` / `file_storage` / `access` | Voreinstellungen oder granulare Schlüssel |
-| `filesystem` | disk, thumbs, access |
+| `filesystem` | disk, hash_length, dispatcher, file_policy, groups, thumbs |
 
 ---
 

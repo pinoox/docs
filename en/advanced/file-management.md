@@ -2,7 +2,37 @@
 
 [← Back to index](../README.md)
 
-Upload and storage in Pinoox 3.x go through a single portal: **`Pinoox\Portal\File`**. Metadata lives in `pincore_file` (or a shared transport scope) and physical files on disk (local, S3, …).
+Upload and storage go through **`Pinoox\Portal\File`**. Metadata lives in the file table (platform or app transport). Bytes live on **disks**.
+
+## Concepts (quick map)
+
+| Concept | What it is |
+|---------|------------|
+| **Disk** | Where bytes live (`local`, `public`, `s3`, or a custom name) |
+| **`protect`** | Web access to the folder: `lock` (default) or `unlock` |
+| **`file_access`** | Internal DB flag (`public` / `private`), usually synced from the disk |
+| **`hash_id`** | Short public id for private downloads (`/file/{hash}`) |
+| **`file_policy` / `groups`** | Who may download a **private** file via the dispatcher |
+
+```text
+storage/                         ← project storage root (always web-denied)
+├── local/{package}/…            ← disk `local`   protect:lock   → /file/{hash}
+├── public/{package}/…           ← disk `public`  protect:unlock → /storage/public/{package}/…
+├── tmp/                         ← disk `temp`    protect:lock
+└── {your-disk}/{package}/…      ← custom disks follow the same pattern
+```
+
+| Call | Disk | Internal `file_access` | Typical URL |
+|------|------|------------------------|-------------|
+| `->public()` | `public` | `public` | `/storage/public/{package}/…` |
+| `->private()` | `local` (or app `filesystem.disk`) | `private` | `{app}/file/{hash}` |
+| `->disk('s3')` | `s3` | `private` | `{app}/file/{hash}` (or remote URL) |
+| `->disk('media')` | custom, `protect:unlock` | `public` | `/storage/media/{package}/…` |
+| `->disk('contracts')` | custom, `protect:lock` | `private` | `{app}/file/{hash}` |
+
+Without `public()` / `private()`, mode follows **`filesystem.disk`**: an unlocked/public web disk ⇒ public uploads; anything else ⇒ private.
+
+Prefer `disk()` / `public()` / `private()`. Use `access()` only for edge cases (e.g. a shared link while the file stays on a private disk).
 
 ---
 
@@ -10,158 +40,431 @@ Upload and storage in Pinoox 3.x go through a single portal: **`Pinoox\Portal\Fi
 
 ```php
 use Pinoox\Portal\File;
+use Pinoox\Portal\Storage;
 ```
 
 | Need | API |
 |------|-----|
-| Upload + DB record + URL | `File::upload(...)->save()` |
+| Upload + DB + URL | `File::upload(...)->save()` |
 | Find / delete / URL | `File::find()`, `File::url()`, `File::remove()` |
-| Raw disk access | `File::storage()->put(...)` |
+| Download URL (auto disk) | `file_url($file)`, `url()->file($file)`, `Url::file($file)` |
+| Thumbnail URL | `file_thumb($file)`, `url()->fileThumb($file)` |
+| Temporary signed URL | `File::temporaryUrl($file, 1800)`, `file_temporary_url($file, 1800)` |
+| Package-scoped disk | `Storage::app($package, 'local')` |
+| Raw disk I/O | `File::storage('public')->put(...)` or `Storage::disk('local')` |
 
-Do not use `Storage::` directly for user uploads — prefix, disk, and URL stay consistent with `File::`.
+Do not use `Storage::` alone for user uploads if you need DB records, `hash_id`, and consistent URLs — use `File::`.
 
 ---
 
-## app.php configuration
+## Download URL (auto)
+
+You do not choose public vs private when building the link. Pass a `file_id`, `hash_id`, or `FileModel` — Pinoox inspects the disk:
+
+| Disk | How it is detected | URL |
+|------|--------------------|-----|
+| Built-in `public` | disk name | `/storage/public/{package}/…` |
+| Custom unlocked (`protect: unlock`) | disk config | `/storage/{disk}/{package}/…` |
+| Public remote (`visibility: public` + `url`) | disk config | remote / CDN URL |
+| Locked (`local`, `temp`, …) | everything else | owning app dispatcher `{app}/file/{hash}` |
+
+```php
+use Pinoox\Portal\File;
+use Pinoox\Portal\Url;
+
+// Same resolver — pick whichever style you prefer
+File::url($fileId);
+file_url($fileId);
+url()->file($fileId);
+Url::file($fileId);
+
+File::thumb($fileId);
+file_thumb($fileId);
+url()->fileThumb($fileId);
+
+File::temporaryUrl($fileId, 1800);
+file_temporary_url($fileId, 1800);
+url()->temporaryFile($fileId, 1800);
+```
+
+Twig:
+
+```twig
+<a href="{{ url().file(post.cover_id) }}">Download</a>
+<img src="{{ file_thumb(post.cover_id) }}" alt="">
+```
+
+`$result->url` from `File::upload(...)->save()` is this same resolver.
+
+---
+
+## Configure the app (`app.php`)
 
 ```php
 return [
+    'package' => 'com_acme_shop',
     'transport' => [
-        'file_storage' => 'platform',   // or 'local'
+        // 'platform' = shared file table; 'local' = app-owned scope
+        'file_storage' => 'platform',
     ],
     'filesystem' => [
-        'disk' => 'local',
-        'default_access' => 'public',
+        'disk' => 'local',            // default upload disk when you omit public()/private()
+        'hash_length' => 8,           // hash_id length (4–50)
+        'dispatcher' => 'file',       // private URL prefix → /file/{hash} (e.g. 'direct', 'link/to')
+        'file_policy' => 'owner',     // default private-download policy
+        'groups' => [
+            'avatar' => 'public',                 // anyone via /file/{hash} if still private disk
+            'invoice' => 'login',                 // any logged-in user
+            'hr' => 'role:admin',
+            'finance' => 'permissions:pay.view,pay.export',
+            'custom' => 'callback',               // needs FileDispatcher::auth
+        ],
         'thumb_width' => 512,
         'thumb_height' => 512,
     ],
 ];
 ```
 
-Global disks in `config/filesystems.config.php` and `.env`:
+### Custom dispatcher URL prefix
+
+Private downloads default to `/file/{hash}`. Override per app (or globally via `FILE_DISPATCHER` / `~filesystems.dispatcher`):
+
+```php
+'filesystem' => [
+    'dispatcher' => 'direct',   // → /direct/{hash} and /direct/{hash}/thumb
+    // 'dispatcher' => 'link/to', // → /link/to/{hash}
+],
+```
+
+`File::url()` / temporary URLs use the **owning package’s** prefix (`file.app`). Segments may contain letters, digits, `_`, `-`, and `/` (nested prefixes).
+
+### Private download policies
+
+| Policy | Who may download via `/file/{hash}` |
+|--------|-------------------------------------|
+| `owner` | Logged-in owner (`user_id`) |
+| `login` / `auth` | Any logged-in user |
+| `public` | Everyone (still via dispatcher if not on the public disk) |
+| `callback` | Only if `FileDispatcher::auth` / `authFor` allows |
+| `role:admin` | User with that `role_key` / `group_key` |
+| `roles:a,b` | Any listed role |
+| `permission:x.y` | `Access::can(...)` |
+| `permissions:a,b` | Any listed permission |
+
+**Priority:** valid temporary signature → public disk / `file_access=public` → package auth callback → `groups[file_group]` → `file_policy`.
+
+```php
+// boot.php — optional custom gate for policy "callback"
+use Pinoox\Component\File\FileDispatcher;
+
+FileDispatcher::auth(function ($file, $user) {
+    return $user && (int) $user->user_id === (int) $file->user_id;
+});
+
+// Or only for this package:
+FileDispatcher::authFor('com_acme_shop', function ($file, $user) {
+    return $user && $user->hasPermission('files.download');
+});
+```
+
+---
+
+## Built-in disks (`filesystems.config.php`)
+
+Global config ships with:
+
+```php
+'disks' => [
+    'local' => [
+        'driver' => 'local',
+        'root' => '~storage/local',
+        'protect' => 'lock',
+        'visibility' => 'private',
+    ],
+    'public' => [
+        'driver' => 'local',
+        'root' => '~storage/public',
+        'protect' => 'unlock',   // must be explicit — default is lock
+        'url' => rtrim(env('APP_URL'), '/') . '/storage/public',
+        'visibility' => 'public',
+    ],
+    'temp' => [
+        'driver' => 'local',
+        'root' => '~storage/tmp',
+        'protect' => 'lock',
+    ],
+    's3' => [
+        'driver' => 's3',
+        'key' => env('AWS_ACCESS_KEY_ID'),
+        'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        'region' => env('AWS_DEFAULT_REGION'),
+        'bucket' => env('AWS_BUCKET'),
+        // ...
+    ],
+],
+```
+
+`protect` defaults to **`lock`**. Only `unlock` makes the folder web-readable (Apache/IIS stubs; Nginx/Caddy stubs are guides).
 
 ```env
 FILESYSTEM_DISK=local
-AWS_ACCESS_KEY_ID=...
-AWS_BUCKET=...
-AWS_URL=https://cdn.example.com
+FILESYSTEM_LOCAL_ROOT=~storage/local
+FILESYSTEM_PUBLIC_ROOT=~storage/public
+FILESYSTEM_TEMP_ROOT=~storage/tmp
+FILESYSTEM_PUBLIC_URL=   # defaults to {APP_URL}/storage/public
+FILE_HASH_LENGTH=8
+FILE_DISPATCHER=file     # private download prefix: /file/{hash}
+FILE_LOOKUP_CACHE_TTL=60
+```
+
+After changing disks or on deploy:
+
+```bash
+php pinoox storage:setup
 ```
 
 ---
 
-## Upload with a database record
+## Create a custom disk in your app
+
+You usually add disks in one of these ways.
+
+### 1) Project config (recommended for permanent disks)
+
+Add or override in the project `config/filesystems.config.php` (or your Pinker override of `~filesystems`):
 
 ```php
-$result = File::upload('avatar')
-    ->to('avatar')                  // → storage/apps/{package}/avatar
-    ->group('avatar')
-    ->thumb()
-    ->maxSize('2MB')
-    ->extensions('jpg,jpeg,png,webp')
+// config/filesystems.config.php  (merge/override disks)
+return [
+    // ... keep other keys from core, or full file
+    'disks' => [
+        // ...existing local/public/temp/s3...
+
+        // Private contracts vault (locked)
+        'contracts' => [
+            'driver' => 'local',
+            'root' => '~storage/contracts',
+            'protect' => 'lock',
+            'visibility' => 'private',
+            'throw' => false,
+        ],
+
+        // Extra public CDN-like folder (unlocked)
+        'media' => [
+            'driver' => 'local',
+            'root' => '~storage/media',
+            'protect' => 'unlock',
+            'url' => rtrim(env('APP_URL'), '/') . '/storage/media',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+    ],
+];
+```
+
+Then create folders and apply protect stubs:
+
+```bash
+mkdir -p storage/contracts storage/media
+php pinoox storage:setup
+# or per disk:
+php pinoox storage:lock contracts
+php pinoox storage:unlock media
+```
+
+**Package scoping:** for local drivers, `File::upload(...)->disk('contracts')` and `Storage::app($package, 'contracts')` store under:
+
+`storage/contracts/{package}/…`
+
+Same rule as `local` / `public`.
+
+### 2) Register at runtime in `boot.php`
+
+Useful for app-specific disks without editing the global config file:
+
+```php
+// apps/com_acme_shop/boot.php
+use Pinoox\Portal\Config;
+
+Config::name('~filesystems')->set('disks.contracts', [
+    'driver' => 'local',
+    'root' => '~storage/contracts',
+    'protect' => 'lock',
+    'visibility' => 'private',
+]);
+```
+
+Call `storage:setup` (or `StorageSetup::ensureDisk('contracts')`) so `protect` stubs exist on first use / deploy.
+
+### 3) One-off disk with `Storage::build()`
+
+When you need a disposable root (no named disk):
+
+```php
+use Pinoox\Portal\Storage;
+
+$disk = Storage::build([
+    'driver' => 'local',
+    'root' => path('~storage/exports'),
+    'protect' => 'lock',
+]);
+
+$disk->put('report.csv', $csv);
+```
+
+Or register it under a name for the request lifecycle:
+
+```php
+Storage::set('exports', Storage::build([
+    'driver' => 'local',
+    'root' => path('~storage/exports'),
+    'protect' => 'lock',
+]));
+
+File::upload($file)->to('reports')->disk('exports')->save();
+```
+
+### Use the custom disk
+
+```php
+// Private upload → /file/{hash} + file_policy / groups
+File::upload($request->file('pdf'))
+    ->to('2026')
+    ->disk('contracts')
+    ->group('invoice')
+    ->extensions('pdf')
+    ->maxSize('20MB')
     ->save();
 
-if ($result->success) {
-    $fileId = $result->id;
-    $url = $result->url;
-    $thumb = $result->thumb;
+// Public custom disk (protect:unlock + url set)
+File::upload($request->file('banner'))
+    ->to('home')
+    ->disk('media')
+    ->save();
+// → URL under /storage/media/{package}/home/...
+```
+
+Set the app default disk so omitted `public()`/`private()` uses your disk:
+
+```php
+// app.php
+'filesystem' => [
+    'disk' => 'contracts',
+],
+```
+
+---
+
+## Examples
+
+### Example A — Public avatar from a controller
+
+```php
+use Pinoox\Component\Kernel\Controller\Controller;
+use Pinoox\Portal\File;
+use Pinoox\Portal\View;
+
+class ProfileController extends Controller
+{
+    public function uploadAvatar()
+    {
+        $result = File::upload('avatar')
+            ->to('avatars')
+            ->public()                 // storage/public/{package}/avatars
+            ->group('avatar')
+            ->thumb(256, 256)
+            ->maxSize('2MB')
+            ->extensions('jpg,jpeg,png,webp')
+            ->replaceOn(auth()->user(), 'avatar_id')
+            ->save();
+
+        if (!$result->success) {
+            return View::json(['error' => $result->error], 422);
+        }
+
+        return View::json([
+            'file_id' => $result->id,
+            'url' => $result->url,           // /storage/public/...
+            'thumb' => $result->thumb,
+        ]);
+    }
 }
 ```
 
----
-
-## From Request
+### Example B — Private invoice PDF (login required)
 
 ```php
-$result = $request->store('photo', 'gallery')
+// app.php → filesystem.groups.invoice = 'login'
+
+$result = File::upload($request->file('pdf'))
+    ->to('invoices/' . date('Y'))
+    ->private()                    // storage/local/{package}/invoices/2026
+    ->group('invoice')
+    ->extensions('pdf')
+    ->maxSize('15MB')
+    ->metadata(['order_id' => $orderId])
+    ->save();
+
+// Share link for the owner / logged-in users:
+$url = File::url($result->id);                 // {app}/file/{hash}
+$temp = File::temporaryUrl($result->id, 3600); // signed, expires in 1h
+```
+
+### Example C — From `Request` (Laravel-style disk argument)
+
+```php
+// 2nd arg = disk name (not an access string)
+$result = $request->file('photo')->store('gallery', 'public')
     ->group('gallery')
     ->thumb(256, 256)
     ->save();
+
+// Shortcuts: 'private' → private disk; omit disk → app filesystem.disk
+$request->store('contract', '2026', 'contracts')->group('invoice')->save();
 ```
 
----
-
-## Attach to a model
+### Example D — Attach to a model
 
 ```php
 $result = File::upload('cover')
     ->to('posts')
+    ->private()
     ->group('post_cover')
     ->attach($post, 'cover_id')
     ->save();
+
+// Later
+$post->cover_id;                 // file_id
+File::url($post->cover_id);      // {app}/file/{hash}
 ```
 
-Replace a previous file:
+### Example E — Disk only (no DB row)
 
 ```php
-$result = File::upload('avatar')
-    ->to('avatar')
-    ->group('avatar')
-    ->replaceOn($user, 'avatar_id')
-    ->thumb()
-    ->save();
-```
-
----
-
-## Disk only (no DB)
-
-```php
-$result = File::upload('file')
-    ->to('packages')
+$result = File::upload($zip)
+    ->to('imports')
+    ->disk('local')
     ->diskOnly()
+    ->extensions('zip')
     ->save();
 
 if ($result->success) {
-    $path = $result->path;
+    $absolute = $result->path;
 }
 ```
 
----
-
-## Read and delete
+### Example F — Read, list, delete
 
 ```php
-$record = File::find($fileId);
+$record = File::find($fileId);        // file_id or hash_id
 $url = File::url($fileId);
 $thumb = File::thumb($fileId);
 $list = File::listByGroup('avatar');
 
-File::remove($fileId);
+File::remove($fileId);                // DB + storage (via model hooks)
 ```
 
----
-
-## UploadBuilder — key methods
-
-| Method | Description |
-|--------|-------------|
-| `to($dir)` | Destination folder |
-| `group($name)` | Logical group in DB |
-| `thumb($w, $h)` | Image thumbnail |
-| `maxSize('2MB')` | Max file size |
-| `extensions('jpg,png')` | Allowed extensions |
-| `disk('s3')` | Override disk |
-| `attach($model, $column)` | Set FK after upload |
-| `replaceOn($model, $column)` | Remove old + upload new |
-| `save()` | Execute → `UploadResult` |
-
----
-
-## UploadResult
-
-```php
-$result->success;   // bool
-$result->id;        // file_id
-$result->url;       // file_link
-$result->thumb;     // thumb_link
-$result->path;      // absolute path
-$result->record;    // FileModel
-$result->error;     // error message
-```
-
----
-
-## S3
+### Example G — S3
 
 ```php
 // app.php
@@ -169,61 +472,79 @@ $result->error;     // error message
 
 // or per upload
 File::upload('doc')->to('docs')->disk('s3')->save();
+
+$url = File::temporaryUrl($file, now()->addHour());
+// native Flysystem:
+$url = File::storage('s3')->temporaryUrl('path/doc.pdf', now()->addHour());
 ```
 
-Private files on S3:
+---
+
+## UploadBuilder reference
+
+| Method | Description |
+|--------|-------------|
+| `to($dir)` | Folder under the package disk root |
+| `disk('public'\|'local'\|'s3'\|…)` | Target disk (sets internal access) |
+| `public()` / `private()` | Shortcuts for public / private disks |
+| `group($name)` | Logical group → `filesystem.groups` policy |
+| `thumb($w, $h)` | Image thumbnail |
+| `maxSize('2MB')` | Max size |
+| `extensions('jpg,png')` | Allow-list |
+| `metadata([...])` | JSON metadata on the row |
+| `attach($model, $column)` | Set FK after upload |
+| `replaceOn($model, $column)` | Delete old file + upload |
+| `access($mode)` | Edge-case override |
+| `diskOnly()` | Skip DB record |
+| `package($name)` | Override package scope |
+| `save()` | → `UploadResult` |
+
+### UploadResult
 
 ```php
-$url = File::storage('s3')->temporaryUrl('private/doc.pdf', now()->addHour());
+$result->success; // bool
+$result->id;      // file_id
+$result->url;
+$result->thumb;
+$result->path;    // absolute path when available
+$result->record;  // FileModel
+$result->error;
 ```
 
 ---
 
-## Tips
+## CLI
 
-- Validate in FormRequest before `File::upload()`.
-- `user_id` is filled from `Auth::id()`.
-- With `transport.file_storage => platform`, files are shared across platform apps.
+```bash
+php pinoox storage:setup
+php pinoox storage:lock local
+php pinoox storage:lock contracts
+php pinoox storage:unlock public
+php pinoox storage:unlock media
+php pinoox storage:link
+php pinoox storage:unlink
 
----
-
-## CLI (terminal)
-
-List and maintain `FileModel` records and storage assets from the terminal:
+php pinoox file:list com_acme_shop
+php pinoox file:show a1b2c3d4
+php pinoox file:delete 12 --force
+php pinoox file:purge com_acme_shop --group=avatar --force
+```
 
 | Command | Purpose |
 |---------|---------|
-| `file:list {package}` | List files with storage status |
-| `file:show {file}` | Details by `file_id` or `hash_id` |
-| `file:update {file}` | Update metadata JSON, access, or name |
-| `file:delete {file}` | Default: DB row **and** storage (original + thumb) |
-| `file:purge` | Bulk delete by group or age |
+| `storage:setup` | Apply root deny + each disk’s `protect` |
+| `storage:lock [disk]` | Force lock (omit disk → storage root) |
+| `storage:unlock [disk]` | Force unlock (omit disk → public) |
+| `storage:link` / `unlink` | Symlink from `filesystems.links` |
+| `file:*` | Manage `FileModel` + assets |
 
-Delete modes for `file:delete`:
-
-| Flag | Effect |
-|------|--------|
-| *(default)* | Delete model row; model hook removes storage |
-| `--db-only` | Remove DB row only (`FileModel::withoutEvents`) |
-| `--storage-only` | Remove files on disk/S3 only; keep DB row |
-| `--force` | Skip confirmation |
-
-```bash
-php pinoox file:list com_my_shop
-php pinoox file:show abc123hash
-php pinoox file:delete 12 --db-only --force
-php pinoox file:purge com_my_shop --group=avatar --force
-```
-
-Alias: `files` → `file:list`.
-
-See [CLI reference](../start/cli-reference.md).
+See also [CLI reference](../start/cli-reference.md).
 
 ---
 
-## Large files
+## Large files (Pinion)
 
-For files that exceed `upload_max_filesize` or need resume/progress, use the **[Pinion](./pinion.md)** protocol. Pinion stages chunks under `storage/pinion`, then on `complete` publishes to your app disk (local or S3) via `Portal\File` when `mode` is `auto` or `storage`.
+For resume/progress beyond `upload_max_filesize`, use **[Pinion](./pinion.md)**. Chunks stage under `storage/pinion`; on `complete`, files publish through `File` using session `disk` / `public()` / `private()`.
 
 ```javascript
 import { uploadFile } from '@pinooxhq/pinion-client';
@@ -234,15 +555,40 @@ await uploadFile(file, {
 });
 ```
 
+```php
+protected function pinionDefaults(): array
+{
+    return [
+        'destination' => 'uploads/media',
+        'disk' => 'public',       // or 'contracts', 's3', …
+        'mode' => 'auto',
+        'record' => true,
+        'group' => 'media',
+    ];
+}
+```
+
 ---
 
-## Related docs
+## Tips
 
-- [Pinion protocol (Pinion)](./pinion.md)
+- Validate in a FormRequest before `File::upload()`.
+- `user_id` is filled from `Auth::id()`.
+- `transport.file_storage => platform` shares the file table across platform apps.
+- Run `php pinoox storage:setup` after adding disks or deploying.
+- Use `file_url($id)` / `url()->file($id)` — public disks get `/storage/{disk}/{package}/…`; locked disks get `{app}/file/{hash}`.
+- Name custom disks after their folder when possible (`contracts` → `storage/contracts`).
+
+---
+
+## Related
+
+- [Pinion](./pinion.md)
 - [User management](./user-management.md)
 - [Transport](./transport.md)
 - [Validation](../basic/validation.md)
-- [Image gallery walkthrough](../examples/gallery-app.md)
+- [Image gallery example](../examples/gallery-app.md)
+- [Boot and events](./boot-and-events.md)
 
 ---
 

@@ -32,6 +32,8 @@ apps/com_acme_shop/
 ├── boot.php                 ← ثبت برنامه‌ای route/event (اختیاری)
 ├── schedule.php             ← cron (اختیاری)
 ├── Controller/              ← handlerهای HTTP
+├── Event/                   ← کلاس رویداد دامنه (خودکار)
+├── Listener/                ← listenerها (کشف خودکار)
 ├── Model/                   ← Eloquent models
 ├── Flow/                    ← middleware
 ├── Component/               ← منطق کسب‌وکار
@@ -88,7 +90,9 @@ PSR-4: `App\` → `apps/`
 | فایل | Namespace |
 |------|-----------|
 | `apps/com_acme_shop/Controller/OrderController.php` | `App\com_acme_shop\Controller` |
-| `apps/com_acme_shop\Model/OrderModel.php` | `App\com_acme_shop\Model` |
+| `apps/com_acme_shop/Event/OrderPlaced.php` | `App\com_acme_shop\Event` |
+| `apps/com_acme_shop/Listener/SendOrderEmail.php` | `App\com_acme_shop\Listener` |
+| `apps/com_acme_shop/Model/OrderModel.php` | `App\com_acme_shop\Model` |
 | `apps/com_acme_shop/Flow/AuthFlow.php` | `App\com_acme_shop\Flow` |
 
 ---
@@ -120,6 +124,7 @@ PSR-4: `App\` → `apps/`
 - [روتر](../basic/routers.md)
 - [کنترلر](../basic/controllers.md)
 - [فلو — Flow](../basic/flows.md)
+- [رویدادها (Events)](../advanced/events.md)
 
 ---
 

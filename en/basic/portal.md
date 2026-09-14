@@ -17,11 +17,13 @@ use Pinoox\Portal\Route;
 use Pinoox\Portal\Validation;
 use Pinoox\Portal\Database\DB;
 use Pinoox\Portal\Date;
+use Pinoox\Portal\Identity;
 
 View::render('home', $data);
 Route::get('/', '@welcome')->name('home');
 Route::any('/webhook', 'handle')->name('webhook');
 Date::display($item->created_at, 'datetime');
+Identity::id();              // stable per-install Pinoox ID
 Url::link('products');
 Url::forApp('com_acme_shop');
 Path::get('storage/logs');
@@ -122,6 +124,7 @@ php pinoox portal:update PriceCalculator -p com_acme_shop
 ## Related docs
 
 - [App Services](../advanced/services.md)
+- [Pinoox ID](../advanced/pinoox-id.md)
 - [Config](./config.md)
 - [Project structure](../start/structure.md)
 

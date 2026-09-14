@@ -4,7 +4,7 @@
 
 How Pinoox boots an app, resolves controllers, and caches production metadata — while keeping **Portal / HMVC / Flow** as the core architecture.
 
-For registering routes, listeners, and plugins in `boot.php`, see [boot.php and events](./boot-and-events.md).
+For registering routes, listeners, and plugins in `boot.php`, see [boot.php and events](./boot-and-events.md). Domain events and auto-discovery: [Events](./events.md).
 
 ---
 
@@ -22,6 +22,8 @@ index.php
 ```
 
 The Symfony `HttpKernel` remains the HTTP engine. Pinoox adds HMVC apps, Portal DI, and Flow middleware on top.
+
+During portal boot (before the HTTP kernel), Pinoox also ensures a stable [Pinoox ID](./pinoox-id.md) in `pinker/state/identity.php`.
 
 ---
 
@@ -157,7 +159,9 @@ No breaking changes: container DI is **opt-in**.
 ## Related docs
 
 - [boot.php and events](./boot-and-events.md)
+- [Events](./events.md)
 - [Pinker and cache](./pinker.md)
+- [Pinoox ID](./pinoox-id.md)
 - [Flows](../basic/flows.md)
 - [app.php manifest](../start/app-manifest.md)
 - [Project structure](../start/structure.md)

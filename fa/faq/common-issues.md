@@ -153,6 +153,41 @@ php pinoox test com_my_shop
 
 ---
 
+## استیج کپی‌شده از پروداکشن همان Pinoox ID را دارد
+
+**علائم:** هاب، لایسنس یا تله‌متری استیج را با پروداکشن یکی می‌گیرد.
+
+**راه‌حل:** روی کپی، فایل `pinker/state/identity.php` را حذف کنید و یک‌بار boot کنید. [Pinoox ID](../advanced/pinoox-id.md) جدید ساخته می‌شود. کپی `pinker/state/` عمداً هویت نصب را هم کپی می‌کند.
+
+---
+
+## Pinroll
+
+**علائم:** `401` روی PinGate، `503`، `PinGate request failed`، `Package install failed`، `Cannot redeclare pinroll_pingate_run`، یا `Action "…" is already registered`.
+
+**راه‌حل (به ترتیب):**
+
+1. کانفیگ را ببینید: `php pinoox pinroll:config`
+2. اتصال را تست کنید: `php pinoox pinroll:check`
+3. اگر pingate خراب یا قدیمی است: `php pinoox pinroll:gate` (یا دوباره `pinroll:kit`)
+4. دوباره deploy بزنید — مرحله **Ensure PinGate** خودش pingate را چک و در صورت نیاز آپلود می‌کند
+
+| خطا | معنی ساده |
+|-----|-----------|
+| `401` | توکن در `.pinoox/pinroll.config.php` با هاست یکی نیست |
+| `503` / HTML | سرور overload یا `pingate.php` مشکل دارد |
+| HTTPS روی ویندوز/MAMP | Pinroll 1.5.2+ معمولاً خودش حل می‌کند |
+| `Action already registered` | pingate را به‌روز کنید؛ نصب با skip_cache |
+| sync / `route=sync` | `pingate.php` قدیمی — `pinroll:gate` |
+
+بدون FTP: `php pinoox pinroll:kit` → extract در `public_html` → `check` → `deploy`.
+
+لاگ درخواست‌های PinGate: `storage/pinroll/gate/` روی ماشین توسعه.
+
+راهنمای ساده: [Pinroll — راهنمای سریع](../start/pinroll-quickstart.md)
+
+---
+
 ## مستندات مرتبط
 
 - [نصب و راه‌اندازی](../start/installing-pinoox.md)
@@ -160,7 +195,11 @@ php pinoox test com_my_shop
 - [روتر — Routers](../basic/routers.md)
 - [پیکربندی — Config](../basic/config.md)
 - [Pinker — بیلد Pinoox](../advanced/pinker.md)
+- [Pinoox ID](../advanced/pinoox-id.md)
 - [شروع دیتابیس](../database/getting-started.md)
+- [Pinroll — راهنمای سریع](../start/pinroll-quickstart.md)
+- [دیپلوی اپ Pinx](../deploy/pinx.md)
+- [Pinroll — دیپلوی](../deploy/pinroll.md)
 - [تماس با پشتیبانی](./contact-support.md)
 
 ---

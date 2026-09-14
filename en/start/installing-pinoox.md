@@ -91,7 +91,39 @@ cd pinoox
 composer install
 ```
 
-Then configure your web server and database and run the installer in the browser.
+Point the web server document root at the project folder that contains `index.php`, then create a database.
+
+### Web installer
+
+Open the project URL in the browser. The `com_pinoox_installer` app walks through PHP checks, database credentials, and the admin user.
+
+### CLI installer
+
+Same steps as the web installer, from a local config file (gitignored under `.pinoox/`):
+
+```bash
+php pinoox install-platform init
+# edit .pinoox/install-platform.php (database + admin user + lang)
+php pinoox install-platform check
+php pinoox install-platform run
+```
+
+`init` writes `.pinoox/install-platform.php` and pre-fills `db` from `.env` `DB_*` keys when they are set. Fill in `lang`, `db`, and `user` (admin password is required, min 6 characters). Supported connections: `mysql`, `mariadb`, `pgsql`, `sqlsrv`.
+
+Useful flags:
+
+```bash
+php pinoox install-platform init --force
+php pinoox install-platform run --dry-run
+php pinoox install-platform run -r
+php pinoox install-platform run --file=.pinoox/install-platform.php
+```
+
+After a successful install, `/` serves Welcome and `/manager` serves Manager. The config file contains secrets — pass `-r` (`--remove`) to delete it, or remove it yourself.
+
+If the installer app is already disabled, `run` stops unless you pass `--force`.
+
+Command reference: [Pinoox CLI](./cli-reference.md#install-platform).
 
 For single-app development, prefer Pinx.
 
@@ -103,3 +135,4 @@ For single-app development, prefer Pinx.
 - [Single-app structure](./structure.md)
 - [DevDB](./devdb.md)
 - [Pinx CLI](./pinx-cli.md)
+- [Pinoox CLI reference](./cli-reference.md)

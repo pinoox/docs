@@ -104,9 +104,16 @@ Unified Jalali and Gregorian formatting via the `Date` Portal — no extra Compo
 
 ---
 
+## Pinoox ID
+
+Each install gets a stable identifier on first boot (`pinoox_id()` / `Identity::id()`). Use it for support, licenses, and remote APIs — not as a secret. See [Pinoox ID](../advanced/pinoox-id.md).
+
+---
+
 ## Related docs
 
 - [What is Pinoox?](./what-is-pinoox.md)
+- [Pinoox ID](../advanced/pinoox-id.md)
 - [Installing Pinoox](../start/installing-pinoox.md)
 - [Router](../basic/routers.md)
 - [Flow](../basic/flows.md)

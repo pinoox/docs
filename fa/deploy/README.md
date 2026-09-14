@@ -4,7 +4,8 @@
 
 | راهنما | توضیح |
 |--------|--------|
-| [Pinroll](./pinroll.md) | هاست، connect، apps، PinGate، deploy، retention، rollback |
+| [دیپلوی اپ Pinx](./pinx.md) | تک‌اپ: `pinx deploy` فقط `.pinx` همین اپ را می‌فرستد |
+| [Pinroll](./pinroll.md) | مرجع کامل (هاست خالی، سایت موجود، `--full`، `pinroll:setup`) |
 
 ---
 

@@ -4,7 +4,7 @@
 
 پینوکس چطور اپ را بوت می‌کند، کنترلر را resolve می‌کند، و متادیتای production را کش می‌کند — در حالی که **Portal / HMVC / Flow** معماری اصلی می‌مانند.
 
-برای ثبت route، listener و افزونه در `boot.php` به [boot.php و رویدادها](./boot-and-events.md) مراجعه کنید.
+برای ثبت route، listener و افزونه در `boot.php` به [boot.php و رویدادها](./boot-and-events.md) مراجعه کنید. رویداد دامنه و auto-discovery: [رویدادها](./events.md).
 
 ---
 
@@ -22,6 +22,8 @@ index.php
 ```
 
 موتور HTTP همان Symfony `HttpKernel` است. پینوکس اپ‌های HMVC، DI از طریق Portal، و میان‌افزار Flow را روی آن می‌سازد.
+
+هنگام boot پورتال (قبل از HTTP kernel)، پینوکس یک [Pinoox ID](./pinoox-id.md) پایدار در `pinker/state/identity.php` می‌سازد یا همان قبلی را می‌خواند.
 
 ---
 
@@ -157,7 +159,9 @@ php pinoox cache:clear com_my_shop --only=boot
 ## مستندات مرتبط
 
 - [boot.php و رویدادها](./boot-and-events.md)
+- [رویدادها (Events)](./events.md)
 - [Pinker و Cache](./pinker.md)
+- [Pinoox ID](./pinoox-id.md)
 - [Flow](../basic/flows.md)
 - [مرجع app.php](../start/app-manifest.md)
 - [ساختار پروژه](../start/structure.md)

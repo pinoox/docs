@@ -153,6 +153,41 @@ Details: [Getting started with testing](../test/getting-started.md)
 
 ---
 
+## Staging copied from production shares the same Pinoox ID
+
+**Symptoms:** Hub, license, or telemetry treats staging as production.
+
+**Fix:** Delete `pinker/state/identity.php` on the copy and boot once. A new [Pinoox ID](../advanced/pinoox-id.md) is created. Copying `pinker/state/` copies the install identity on purpose.
+
+---
+
+## Pinroll
+
+**Symptoms:** `401` from PinGate, `503`, `PinGate request failed`, `Package install failed`, `Cannot redeclare pinroll_pingate_run`, or `Action "…" is already registered`.
+
+**Fix (in order):**
+
+1. Inspect config: `php pinoox pinroll:config`
+2. Test connection: `php pinoox pinroll:check`
+3. If pingate is broken or outdated: `php pinoox pinroll:gate` (or rebuild `pinroll:kit`)
+4. Deploy again — the **Ensure PinGate** step auto-checks and re-uploads pingate when needed
+
+| Error | Plain meaning |
+|-------|----------------|
+| `401` | Token in `.pinoox/pinroll.config.php` does not match the host |
+| `503` / HTML | Host overload or broken `pingate.php` |
+| HTTPS on Windows/MAMP | Pinroll 1.5.2+ usually handles this automatically |
+| `Action already registered` | Refresh pingate; install uses skip_cache |
+| sync / `route=sync` | Outdated `pingate.php` — `pinroll:gate` |
+
+No FTP: `php pinoox pinroll:kit` → extract into `public_html` → `check` → `deploy`.
+
+PinGate request logs: `storage/pinroll/gate/` on the dev machine.
+
+Simple guide: [Pinroll quick start](../start/pinroll-quickstart.md)
+
+---
+
 ## Related docs
 
 - [Installing Pinoox](../start/installing-pinoox.md)
@@ -160,7 +195,11 @@ Details: [Getting started with testing](../test/getting-started.md)
 - [Routers](../basic/routers.md)
 - [Config](../basic/config.md)
 - [Pinoox Baker (Pinker)](../advanced/pinker.md)
+- [Pinoox ID](../advanced/pinoox-id.md)
 - [Database getting started](../database/getting-started.md)
+- [Pinroll quick start](../start/pinroll-quickstart.md)
+- [Deploy a Pinx app](../deploy/pinx.md)
+- [Pinroll deploy](../deploy/pinroll.md)
 - [Contact support](./contact-support.md)
 
 ---

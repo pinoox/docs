@@ -21,7 +21,7 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | Alias | Command |
 |-------|---------|
 | `mg` | `migrate` |
-| `mg:create` | `migrate:create` |
+| `mg:create` / `mg:make` / `make:migration` | `migrate:create` |
 | `patch` | `patch:run` |
 | `seed` | `seeder:run` |
 | `cb` | `cache:build` |
@@ -39,6 +39,39 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | `databases` | `db:list` |
 | `pinion` | `pinion:list` |
 | `make:permission` | `permission:create` |
+| `platform:install` | `install-platform` |
+
+---
+
+## Install platform
+
+First-time multi-app setup without the browser installer. Runs the same `SetupService` as the GUI: save DB credentials, migrate core + apps, run patches, create the admin user, apply language, route `/` to Welcome and `/manager` to Manager, then disable the installer app.
+
+```bash
+php pinoox install-platform init
+# edit .pinoox/install-platform.php
+php pinoox install-platform check
+php pinoox install-platform run
+```
+
+| Action | Purpose |
+|--------|---------|
+| `init` | Write `.pinoox/install-platform.php` (pre-filled from `.env` `DB_*` when set) |
+| `check` | Validate the config and test the database connection |
+| `run` | Install |
+
+| Option | Purpose |
+|--------|---------|
+| `--file=` | Config path (default: `.pinoox/install-platform.php`) |
+| `--force` / `-f` | Overwrite the stub (`init`) or re-run if already installed (`run`) |
+| `--dry-run` | Validate without installing (`run`) |
+| `--remove` / `-r` / `--delete` / `-d` | Delete the config after a successful install |
+
+The config file lives under `.pinoox/` (gitignored) and contains the admin password. Pass `-r` after a successful install, or delete it yourself.
+
+If the installer app is already disabled, `run` refuses unless you pass `--force`.
+
+See [Installing Pinoox](./installing-pinoox.md#cli-installer).
 
 ---
 
@@ -49,6 +82,7 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | `app:create {package}` | Scaffold app (`--simple`, `--stack`, `--profile`) |
 | `app:list` | List apps |
 | `app:delete` | Remove app |
+| `app:reset {package}` | Wipe app data (keep files), then migrate + patch + install lifecycle |
 | `app:router set /path {package}` | URL mapping |
 | `app:domain` | Host → app map |
 | `app:resolve` | Debug active app |
@@ -68,6 +102,7 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | `seeder:create` | `database/seeders/` |
 | `factory:create` | `database/factories/` |
 | `test:create` | Pest file |
+| `lifecycle:create` | `lifecycle.php` (install/update/uninstall/reset) |
 | `theme:frontend` | Frontend tooling (Vue/React/Vite) — see [Frontend & Vite](../basic/frontend-vite.md) |
 
 ---
@@ -76,8 +111,9 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 
 | Command | Purpose |
 |---------|---------|
-| `migrate {package}` | Run migrations (app, `platform`, `pincore`) |
-| `migrate:create` | New migration file |
+| `migrate {package}` | Run migrations (app or `platform`) |
+| `migrate:create` | New migration file (`--create`, `--table`) |
+| `migrate:drop` | Hard-drop package tables and clear history |
 | `migrate:status` / `migrate:rollback` | Status / rollback |
 | `seeder:run` | Run seeders (`-c` file basename) |
 | `patch:create` / `patch:run` / `patch:status` / `patch:rollback` | [Patches](../advanced/patches.md) |
@@ -205,15 +241,20 @@ Build packages and deploy to configured hosts. Requires `pinoox/pinroll` and pro
 
 | Command | Purpose |
 |---------|---------|
-| `pinroll:init` | Scaffold `pinroll/pinroll.config.php` |
-| `pinroll:connect` | Setup / verify host (`--reset` to redo) |
+| `pinroll:init` | Scaffold `.pinoox/pinroll.config.php` |
+| `pinroll:kit` | Extract zip for File Manager (`pingate` + token) |
+| `pinroll:provision` | Blank-host install (PinGate + platform.zip + setup) |
+| `pinroll:connect` | Setup / verify (`--via=`, `--bootstrap-ftp`, `--reset`) |
 | `pinroll:apps` | Set `hosts.*.apps` |
-| `pinroll:vendor` | Export `vendor/` for host install or core update |
-| `pinroll:gate` | Build / upload PinGate |
+| `pinroll:vendor` | Production `vendor.zip` (`--push` to host) |
+| `pinroll:pincore` | Zip + upload pincore + PinGate extract |
+| `pinroll:sync` | Zip any folder (`--from`, `--to`) + PinGate extract |
+| `pinroll:gate` | Build / upload PinGate (`--kit` for zip) |
 | `pinroll:check` | Test host / PinGate |
 | `pinroll:push` | Build and upload only |
+| `pinroll:setup` | Post-deploy migrate + patch (`--seed`, `--config`, `--dry-run`) |
 | `pinroll:install` | Install staged release on host |
-| `pinroll:deploy` | Push + install (go live) |
+| `pinroll:deploy` | Push + install (go live); `--full` = platform + every app |
 | `pinroll:rollback` | Rollback via PinGate or local re-push |
 | `pinroll:cleanup` | Prune old archives (`--local`, `--dry-run`) |
 | `pinroll:build` | Build only |
@@ -223,9 +264,11 @@ Build packages and deploy to configured hosts. Requires `pinoox/pinroll` and pro
 
 ```bash
 php pinoox pinroll:init
-php pinoox pinroll:connect
-php pinoox pinroll:apps --apps=com_pinoox_shop
-php pinoox pinroll:deploy
+php pinoox pinroll:kit                # no FTP
+php pinoox pinroll:provision          # blank host
+php pinoox pinroll:connect            # existing site
+php pinoox pinroll:deploy --full
+php pinoox pinroll:setup
 ```
 
 See [Pinroll deploy guide](../deploy/pinroll.md).
@@ -266,7 +309,8 @@ See [Schedule](../advanced/schedule.md).
 | Command | Purpose |
 |---------|---------|
 | `pinx:build` | Build `.pinx` package |
-| `pinx:install` | Install package |
+| `pinx:install` | Install package (`--skip-lifecycle` to skip `lifecycle.php`) |
+| `pinx:uninstall` | Uninstall app/theme (`--skip-lifecycle`) |
 | `pinx:info` | Metadata |
 | `wizard:list` / `wizard:install` | Install wizard |
 
@@ -335,6 +379,7 @@ Installs and updates Composer (platform + per-app) and npm (theme) targets. Scop
 
 ## Related docs
 
+- [Installing Pinoox](./installing-pinoox.md)
 - [Frontend & Vite](../basic/frontend-vite.md)
 - [Your first app](./your-first-app.md)
 - [Migrations](../database/migrations.md)
