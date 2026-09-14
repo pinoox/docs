@@ -52,6 +52,8 @@ When a package is required and omitted, Pinoox shows an interactive picker.
 | `app:router set /path {package}` | URL mapping |
 | `app:domain` | Host → app map |
 | `app:resolve` | Debug active app |
+| `app:link {source} [{package}]` | Symlink and register external app (`link`, `--route`, `--force`) |
+| `app:unlink {package}` | Deregister and remove external app link (`unlink`, `--keep-routes`) |
 
 ---
 

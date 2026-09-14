@@ -147,6 +147,56 @@ pinx pinker:df              # تفاوت‌ها
 
 ---
 
+## یکپارچه‌سازی بدون تنظیمات با اپ‌های خارجی و پلتفرم (Zero-Config Linking)
+
+هنگام توسعه ماژول‌های اکوسیستم چنداپه (مانند درگاه پیامک `com_pinoox_sms`، درگاه‌های پرداخت، یا ارائه‌دهندگان هویت) در کنار یک اپلیکیشن تک‌اپ (مانند `com_pinoox_panda`)، می‌توانید اپ‌های خارجی را بدون نیاز به نصب مجدد، مستقیماً به محیط محلی خود لینک کنید:
+
+```bash
+# ایجاد لینک به اپ از مسیر پلتفرم یا هر پوشه محلی
+pinx app:link /path/to/platform/apps/com_pinoox_sms --route=/sms
+
+# یا با نام مستعار کوتاه:
+pinx link ../platform/apps/com_pinoox_sms
+```
+
+### قابلیت‌های خودکار `pinx app:link`:
+1. ساخت یک سیم‌لینک در مسیر `apps/{package}` با اشاره به سورس اصلی پروژه در حال توسعه شما.
+2. ثبت خودکار پکیج در فایل کانفیگ دیپلوی `platform/apps.config.php`.
+3. فعال‌سازی آنی **اتولودینگ PSR-4** کلاس‌ها (`App\{package}\...`) از طریق `AppEngine` پینوکس.
+4. امکان اتصال پیشوند روت در `platform/app-router.config.php` در صورت ارسال فلگ `--route=/path`.
+5. بازنشانی خودکار حافظه موقت کش پینکر (Pinker Cache).
+
+### ایزولاسیون دیتابیس (اتصال مستقیم به دیتابیس پلتفرم):
+اگر اپلیکیشن مهمان لینک‌شده از قبل جداول خود را در دیتابیس پلتفرم (مثلاً `pinoox_platform`) دارد، **نیازی نیست** مایگریشن‌های آن روی دیتابیس اپ میزبان اجرا شوند یا جداول تکراری ساخته شوند.
+
+کافی است یک فایل `.env` داخل پوشه همان اپ (`apps/{package}/.env`) قرار دهید:
+```env
+DB_DRIVER=mysql
+DB_HOST=127.0.0.1
+DB_PORT=8889
+DB_DATABASE=pinoox_platform
+DB_USERNAME=root
+DB_PASSWORD=root
+DB_PREFIX=sms_
+```
+
+پینوکس از طریق `AppEnvBridge` و `AppDatabaseResolver` به صورت خودکار تمام کوئری‌های اپلیکیشن مهمان را به دیتابیس اختصاصی خودش هدایت می‌کند و دیتابیس اصلی پروژه میزبان کاملاً تمیز می‌ماند.
+
+### اجرای مایگریشن برای پکیج‌های مهمان:
+در صورتی که بخواهید مایگریشن‌های یک اپ مهمان را در دیتابیس محلی اجرا یا بررسی کنید:
+```bash
+pinx migrate:status com_pinoox_sms
+pinx migrate com_pinoox_sms
+pinx migrate:rollback com_pinoox_sms
+```
+
+### لغو لینک اپلیکیشن:
+```bash
+pinx app:unlink com_pinoox_sms
+```
+
+---
+
 ## انتشار برای production
 
 ساخت پکیج `.pinx` برای نصب روی پلتفرم کامل پینوکس (Manager ← Applications):
@@ -212,6 +262,8 @@ pinx doctor --no-fixes      # عدم نمایش دستورهای پیشنهاد�
 | `setup` | — | دیتابیس: مایگریشن platform + اپ، سپس seed |
 | `doctor` | `dr` | بررسی سلامت — `--json`، `--skip-db`، `--skip-frontend` |
 | `info` | `inf` | نمایش متادیتای `app.php` |
+| `app:link <source> [package]` | `link` | ایجاد سیم‌لینک و ثبت اپ خارجی برای توسعه لوکال (`--route`، `--force`) |
+| `app:unlink <package>` | `unlink` | لغو لینک و حذف ثبت اپ خارجی (`--keep-routes`) |
 
 ### توسعه
 
@@ -223,9 +275,9 @@ pinx doctor --no-fixes      # عدم نمایش دستورهای پیشنهاد�
 
 | دستور | Alias | توضیح |
 |-------|-------|-------|
-| `migrate:run` | `migrate` | اجرای مایگریشن‌های اپ (`--platform` اول platform را اجرا می‌کند) |
-| `migrate:status` | `migrate:st` | وضعیت مایگریشن |
-| `migrate:rollback` | `migrate:rb` | بازگشت آخرین batch (`--ignore-fk`) |
+| `migrate:run [package]` | `migrate` | اجرای مایگریشن‌ها برای پکیج جاری یا پکیج لینک‌شده مهمان (`--platform`، `--fresh`، `--refresh`، `--reset`، `--devdb`) |
+| `migrate:status [package]` | `migrate:st` | وضعیت مایگریشن برای پکیج جاری یا پکیج مهمان |
+| `migrate:rollback [package]` | `migrate:rb` | بازگشت آخرین batch برای پکیج جاری یا مهمان (`--step`، `--all`، `--ignore-fk`) |
 | `migrate:create <name>` | `migrate:cr` | ساخت فایل مایگریشن |
 | `migrate:platform` | `migrate:pl` | فقط مایگریشن‌های platform |
 | `seeder:run` | `seed` | اجرای seeder ها (`-c` نام فایل) |

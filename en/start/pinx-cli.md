@@ -145,6 +145,57 @@ pinx pinker:rb              # rebuild
 pinx pinker:df              # diff
 ```
 
+
+---
+
+## Zero-Config external app integration (Cross-App Development)
+
+When developing multi-app ecosystem modules (such as an SMS gateway `com_pinoox_sms`, payment gateways, or auth providers) alongside a single-app host (such as `com_pinoox_panda`), you can link external apps directly into your development environment without reinstallation:
+
+```bash
+# Link an app from your local platform or external folder
+pinx app:link /path/to/platform/apps/com_pinoox_sms --route=/sms
+
+# Or via short alias:
+pinx link ../platform/apps/com_pinoox_sms
+```
+
+### What `pinx app:link` does automatically:
+1. Creates a symbolic link under `apps/{package}` pointing to your working source tree.
+2. Registers the package in `platform/apps.config.php`.
+3. Activates **PSR-4 autoloading** (`App\{package}\...`) immediately through Pinoox `AppEngine`.
+4. Optionally mounts a URL route prefix in `platform/app-router.config.php` when `--route=/path` is supplied.
+5. Invalidates and rebuilds Pinker discovery cache.
+
+### Cross-database isolation (Dual Database Setup):
+If the linked guest app already has its own tables in a platform database (e.g., `pinoox_platform`), you **do not** need to run its migrations or duplicate its tables in the host app's database.
+
+Simply create an `.env` file inside the linked app's folder (`apps/{package}/.env`):
+```env
+DB_DRIVER=mysql
+DB_HOST=127.0.0.1
+DB_PORT=8889
+DB_DATABASE=pinoox_platform
+DB_USERNAME=root
+DB_PASSWORD=root
+DB_PREFIX=sms_
+```
+
+Pinoox `AppEnvBridge` and `AppDatabaseResolver` automatically isolate all database queries made by the guest app to its dedicated database, keeping the host database clean.
+
+### Target package migrations:
+If you do want to run or inspect migrations for a linked guest app in the local database:
+```bash
+pinx migrate:status com_pinoox_sms
+pinx migrate com_pinoox_sms
+pinx migrate:rollback com_pinoox_sms
+```
+
+### Unlinking an app:
+```bash
+pinx app:unlink com_pinoox_sms
+```
+
 ---
 
 ## Pinx Inspector
@@ -237,6 +288,8 @@ Run `pinx list` for a sectioned overview. Shorthand aliases appear in brackets.
 | `setup` | — | DB: migrate platform + app, then seed |
 | `doctor` | `dr` | Health check — `--json`, `--skip-db`, `--skip-frontend` |
 | `info` | `inf` | Show metadata from `app.php` |
+| `app:link <source> [package]` | `link` | Symlink and register an external app for local integration (`--route`, `--force`) |
+| `app:unlink <package>` | `unlink` | Unlink and deregister an external app (`--keep-routes`) |
 
 ### Development
 
@@ -248,9 +301,9 @@ Run `pinx list` for a sectioned overview. Shorthand aliases appear in brackets.
 
 | Command | Aliases | Description |
 |---------|---------|-------------|
-| `migrate:run` | `migrate` | Run app migrations (`--platform` runs platform first) |
-| `migrate:status` | `migrate:st` | Migration status |
-| `migrate:rollback` | `migrate:rb` | Rollback last batch (`--ignore-fk`) |
+| `migrate:run [package]` | `migrate` | Run app migrations for current or linked package (`--platform`, `--fresh`, `--refresh`, `--reset`, `--devdb`) |
+| `migrate:status [package]` | `migrate:st` | Migration status for current or linked package |
+| `migrate:rollback [package]` | `migrate:rb` | Rollback last batch for current or linked package (`--step`, `--all`, `--ignore-fk`) |
 | `migrate:create <name>` | `migrate:cr` | Create migration file |
 | `migrate:platform` | `migrate:pl` | Platform migrations only |
 | `seeder:run` | `seed` | Run seeders (`-c` file basename) |

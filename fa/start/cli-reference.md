@@ -52,6 +52,8 @@ php pinoox help migrate
 | `app:router set /path {package}` | نگاشت URL |
 | `app:domain` | تنظیم host → اپ |
 | `app:resolve` | debug: کدام اپ handle می‌کند |
+| `app:link {source} [{package}]` | ایجاد سیم‌لینک و ثبت اپ خارجی (`link`، `--route`، `--force`) |
+| `app:unlink {package}` | حذف سیم‌لینک و لغو ثبت اپ خارجی (`unlink`، `--keep-routes`) |
 
 ---
 
