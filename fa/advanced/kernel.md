@@ -23,7 +23,7 @@ index.php
 
 موتور HTTP همان Symfony `HttpKernel` است. پینوکس اپ‌های HMVC، DI از طریق Portal، و میان‌افزار Flow را روی آن می‌سازد.
 
-هنگام boot پورتال (قبل از HTTP kernel)، پینوکس یک [Pinoox ID](./pinoox-id.md) پایدار در `pinker/state/identity.php` می‌سازد یا همان قبلی را می‌خواند.
+هنگام boot پورتال (قبل از HTTP kernel)، پینوکس یک [Pinoox ID](./pinoox-id.md) پایدار در `pinker/stable/identity.php` می‌سازد یا همان قبلی را می‌خواند.
 
 ---
 

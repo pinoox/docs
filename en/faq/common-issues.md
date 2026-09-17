@@ -157,7 +157,7 @@ Details: [Getting started with testing](../test/getting-started.md)
 
 **Symptoms:** Hub, license, or telemetry treats staging as production.
 
-**Fix:** Delete `pinker/state/identity.php` on the copy and boot once. A new [Pinoox ID](../advanced/pinoox-id.md) is created. Copying `pinker/state/` copies the install identity on purpose.
+**Fix:** Delete `pinker/stable/identity.php` on the copy and boot once. A new [Pinoox ID](../advanced/pinoox-id.md) is created. Copying `pinker/stable/` copies the install identity on purpose.
 
 ---
 

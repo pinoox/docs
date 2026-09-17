@@ -30,7 +30,7 @@ px_8f3c2a91b47d4e0aa1c6d92e5f18b3c4
 - Prefix `px_`
 - 32 hex characters (UUID v4, no dashes)
 
-Stored in `pinker/state/identity.php` (gitignored). `pinker:rebuild` does not replace it.
+Stored in `pinker/stable/identity.php` (gitignored). `pinker:rebuild` does not replace it.
 
 ```php
 <?php
@@ -96,7 +96,7 @@ Do not print it on public pages.
 
 ### 3. License and activation per install
 
-One purchase can bind to one Pinoox ID. Cloning the project *without* `pinker/state/identity.php` creates a new ID (a new install). Copying that file copies the identity — treat staging copies as a new install by deleting the file.
+One purchase can bind to one Pinoox ID. Cloning the project *without* `pinker/stable/identity.php` creates a new ID (a new install). Copying that file copies the identity — treat staging copies as a new install by deleting the file.
 
 ### 4. Opt-in telemetry and crash reports
 
@@ -142,14 +142,14 @@ Http::post($partnerWebhook, [
 | Situation | Result |
 |-----------|--------|
 | Fresh clone of the git repo | New ID on first boot (`pinker/` is not in git) |
-| Copy the whole project including `pinker/state/` | Same ID (same instance, moved) |
-| Staging copied from production | Same ID until you delete `pinker/state/identity.php` |
+| Copy the whole project including `pinker/stable/` | Same ID (same instance, moved) |
+| Staging copied from production | Same ID until you delete `pinker/stable/identity.php` |
 | Docker image without a volume for `pinker/` | New ID on every new container |
 | Docker with a persistent `pinker/` volume | Stable ID across restarts |
 
 To mint a new ID (staging, or a new instance on the same files):
 
-1. Delete `pinker/state/identity.php`
+1. Delete `pinker/stable/identity.php`
 2. Boot once (web or CLI)
 
 Do not bake an ID into a Docker image.

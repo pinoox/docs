@@ -30,7 +30,7 @@ px_8f3c2a91b47d4e0aa1c6d92e5f18b3c4
 - پیشوند `px_`
 - ۳۲ کاراکتر hex (UUID v4 بدون خط تیره)
 
-در `pinker/state/identity.php` ذخیره می‌شود (gitignore). `pinker:rebuild` آن را عوض نمی‌کند.
+در `pinker/stable/identity.php` ذخیره می‌شود (gitignore). `pinker:rebuild` آن را عوض نمی‌کند.
 
 ```php
 <?php
@@ -96,7 +96,7 @@ return $this->ok([
 
 ### ۳. لایسنس و فعال‌سازی per-install
 
-یک خرید می‌تواند به یک Pinoox ID وصل شود. کلون پروژه *بدون* `pinker/state/identity.php` ID جدید می‌سازد (نصب جدید). کپی همان فایل هویت را کپی می‌کند — برای استیج فایل را پاک کنید تا نصب جدید حساب شود.
+یک خرید می‌تواند به یک Pinoox ID وصل شود. کلون پروژه *بدون* `pinker/stable/identity.php` ID جدید می‌سازد (نصب جدید). کپی همان فایل هویت را کپی می‌کند — برای استیج فایل را پاک کنید تا نصب جدید حساب شود.
 
 ### ۴. تله‌متری و گزارش خطا (opt-in)
 
@@ -142,14 +142,14 @@ Http::post($partnerWebhook, [
 | وضعیت | نتیجه |
 |-------|--------|
 | کلون تازه از گیت | در اولین boot، ID جدید (`pinker/` در گیت نیست) |
-| کپی کل پروژه همراه `pinker/state/` | همان ID (همین اینستنس، جابه‌جا شده) |
-| استیج کپی‌شده از پروداکشن | همان ID تا وقتی `pinker/state/identity.php` را پاک کنید |
+| کپی کل پروژه همراه `pinker/stable/` | همان ID (همین اینستنس، جابه‌جا شده) |
+| استیج کپی‌شده از پروداکشن | همان ID تا وقتی `pinker/stable/identity.php` را پاک کنید |
 | ایمیج Docker بدون volume برای `pinker/` | با هر کانتینر جدید، ID جدید |
 | Docker با volume پایدار برای `pinker/` | ID بعد از restart ثابت می‌ماند |
 
 برای ID جدید (استیج، یا اینستنس تازه روی همان فایل‌ها):
 
-1. فایل `pinker/state/identity.php` را حذف کنید
+1. فایل `pinker/stable/identity.php` را حذف کنید
 2. یک‌بار boot کنید (وب یا CLI)
 
 ID را داخل ایمیج Docker bake نکنید.

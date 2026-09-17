@@ -157,7 +157,7 @@ php pinoox test com_my_shop
 
 **علائم:** هاب، لایسنس یا تله‌متری استیج را با پروداکشن یکی می‌گیرد.
 
-**راه‌حل:** روی کپی، فایل `pinker/state/identity.php` را حذف کنید و یک‌بار boot کنید. [Pinoox ID](../advanced/pinoox-id.md) جدید ساخته می‌شود. کپی `pinker/state/` عمداً هویت نصب را هم کپی می‌کند.
+**راه‌حل:** روی کپی، فایل `pinker/stable/identity.php` را حذف کنید و یک‌بار boot کنید. [Pinoox ID](../advanced/pinoox-id.md) جدید ساخته می‌شود. کپی `pinker/stable/` عمداً هویت نصب را هم کپی می‌کند.
 
 ---
 

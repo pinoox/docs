@@ -117,7 +117,7 @@ In practice `config()` wraps the same Portal — one style is enough.
 ## Tips
 
 - Do not commit secrets (API keys, DB passwords) to git; use `.env` or `pinker/state`.
-- The install [Pinoox ID](../advanced/pinoox-id.md) lives in `pinker/state/identity.php`, not in version config.
+- The install [Pinoox ID](../advanced/pinoox-id.md) lives in `pinker/stable/identity.php`, not in version config.
 - File name: `{name}.config.php` → `config('{name}.key')`.
 - After production deploy, run `php pinoox pinker:rebuild` to bake config.
 

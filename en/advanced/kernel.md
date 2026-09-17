@@ -23,7 +23,7 @@ index.php
 
 The Symfony `HttpKernel` remains the HTTP engine. Pinoox adds HMVC apps, Portal DI, and Flow middleware on top.
 
-During portal boot (before the HTTP kernel), Pinoox also ensures a stable [Pinoox ID](./pinoox-id.md) in `pinker/state/identity.php`.
+During portal boot (before the HTTP kernel), Pinoox also ensures a stable [Pinoox ID](./pinoox-id.md) in `pinker/stable/identity.php`.
 
 ---
 
