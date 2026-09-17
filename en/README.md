@@ -38,13 +38,15 @@ Read these in order if you are building a new app.
 - [HTTP Request](./basic/requests.md)
 - [HTTP Response](./basic/responses.md)
 - [URL and link building](./basic/url.md)
+- [File Path](./basic/path.md)
 - [Validation](./basic/validation.md)
 - [Views](./basic/views.md)
-- [Frontend & Vite](./basic/frontend-vite.md)
-- [@pinooxhq/vite-plugin](./basic/vite-plugin.md)
 - [Twig templates](./basic/templates.md)
 - [Theme contexts](./basic/theme-contexts.md)
 - [Theme manifest (`theme.php`)](./basic/theme-manifest.md)
+- [Frontend & Vite](./basic/frontend-vite.md)
+- [@pinooxhq/vite-plugin](./basic/vite-plugin.md)
+- [Portal (Facade)](./basic/portal.md)
 - [Config](./basic/config.md)
 - [Language and translation](./basic/language.md)
 - [Date and calendar](./basic/date-and-calendar.md)
@@ -58,6 +60,7 @@ Read these in order if you are building a new app.
 
 - [Eloquent ORM getting started](./eloquent-orm/getting-started.md)
 - [Eloquent relationships](./eloquent-orm/relationships.md)
+- [Eloquent Collections](./eloquent-orm/collections.md)
 - [Factories and seeders](./eloquent-orm/factories.md)
 - [Mutators and casts](./eloquent-orm/mutators-casts.md)
 - [API resources](./eloquent-orm/api-resources.md)
@@ -76,19 +79,19 @@ Read these in order if you are building a new app.
 - [HTTP client](./advanced/http-client.md)
 - [Rate Limiter](./advanced/rate-limiter.md)
 - [CORS](./advanced/cors.md)
-- [Route Resolver](./advanced/route-resolver.md)
 - [Route Parameters](./advanced/route-parameters.md)
+- [Route Resolver](./advanced/route-resolver.md)
 - [Fallback Routes](./advanced/fallback-routes.md)
 - [User management](./advanced/user-management.md)
 - [File management](./advanced/file-management.md)
 - [Pinion uploads](./advanced/pinion.md)
-- [Pinroll overview](./advanced/pinroll.md)
 - [Token management](./advanced/token-management.md)
 - [Access and permissions](./advanced/access-permissions.md)
 - [Transport and shared resources](./advanced/transport.md)
 - [Sub-Apps and App Mounting](./advanced/sub-app.md)
 - [Kernel and boot pipeline](./advanced/kernel.md)
 - [boot.php and events](./advanced/boot-and-events.md)
+- [Pinroll overview](./advanced/pinroll.md)
 
 ## Deploy
 
@@ -109,6 +112,10 @@ Use these after the start guide when you want concrete examples.
 - [Vue SPA panel](./examples/vue-spa-app.md)
 - [React SPA panel](./examples/react-spa-app.md)
 - [Vite hybrid app](./examples/vite-hybrid-app.md)
+
+## Example Source Code
+
+- [docs/source/](../source/) — Complete runnable source code for each walkthrough app
 
 ## Testing
 

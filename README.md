@@ -38,6 +38,7 @@ Read these in order if you are building a new app.
 - [HTTP Request](./en/basic/requests.md)
 - [HTTP Response](./en/basic/responses.md)
 - [URL and link building](./en/basic/url.md)
+- [File Path](./en/basic/path.md)
 - [Validation](./en/basic/validation.md)
 - [Views](./en/basic/views.md)
 - [Twig templates](./en/basic/templates.md)
@@ -45,6 +46,7 @@ Read these in order if you are building a new app.
 - [Theme manifest (`theme.php`)](./en/basic/theme-manifest.md)
 - [Frontend & Vite](./en/basic/frontend-vite.md)
 - [@pinooxhq/vite-plugin](./en/basic/vite-plugin.md)
+- [Portal (Facade)](./en/basic/portal.md)
 - [Config](./en/basic/config.md)
 - [Language and translation](./en/basic/language.md)
 - [Date and calendar](./en/basic/date-and-calendar.md)
@@ -58,6 +60,7 @@ Read these in order if you are building a new app.
 
 - [Eloquent ORM getting started](./en/eloquent-orm/getting-started.md)
 - [Eloquent relationships](./en/eloquent-orm/relationships.md)
+- [Eloquent Collections](./en/eloquent-orm/collections.md)
 - [Factories and seeders](./en/eloquent-orm/factories.md)
 - [Mutators and casts](./en/eloquent-orm/mutators-casts.md)
 - [API resources](./en/eloquent-orm/api-resources.md)
@@ -85,15 +88,16 @@ Read these in order if you are building a new app.
 - [Token management](./en/advanced/token-management.md)
 - [Access and permissions](./en/advanced/access-permissions.md)
 - [Transport and shared resources](./en/advanced/transport.md)
+- [Sub-Apps and App Mounting](./en/advanced/sub-app.md)
 - [Kernel and boot pipeline](./en/advanced/kernel.md)
 - [boot.php and events](./en/advanced/boot-and-events.md)
 - [Pinroll overview](./en/advanced/pinroll.md)
 
 ## Deploy
 
-- [Deploy a Pinx app (package only)](./en/deploy/pinx.md)
-- [Pinroll — quick start](./en/start/pinroll-quickstart.md)
-- [Pinroll — release & deploy](./en/deploy/pinroll.md)
+- [Deploy a Pinx app (package only)](./en/deploy/pinx.md) — `pinx deploy` ships this app’s `.pinx`, not the whole project
+- [Pinroll — quick start](./en/start/pinroll-quickstart.md) (kit without FTP, connect, deploy)
+- [Pinroll — release & deploy](./en/deploy/pinroll.md) (full reference: kit, provision, sync/pincore, `--full`, `pinroll:setup`)
 
 ## Walkthroughs
 
@@ -108,6 +112,10 @@ Use these after the start guide when you want concrete examples.
 - [Vue SPA panel](./en/examples/vue-spa-app.md)
 - [React SPA panel](./en/examples/react-spa-app.md)
 - [Vite hybrid app](./en/examples/vite-hybrid-app.md)
+
+## Example Source Code
+
+- [docs/source/](./source/) — Complete runnable source code for each walkthrough app
 
 ## Testing
 
