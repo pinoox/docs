@@ -200,6 +200,32 @@ pinx app:unlink com_pinoox_sms
 
 ---
 
+## Service Discovery in Multi-App Development (`pinx dev`)
+
+In multi-app microservice setups or when developing multiple single-app Pinoox projects (such as a shop `com_pinoox_panda` and a payment service `com_pinoox_pay`) across separate folders, **there is no need for `apps.config.php` or manual symlinking**.
+
+Simply start each app in its own terminal with `pinx dev` on distinct ports:
+
+```bash
+# In payment app folder (port 8001)
+cd /path/to/pay
+pinx dev --port=8001
+
+# In shop app folder (port 8002)
+cd /path/to/panda
+pinx dev --port=8002
+```
+
+### How It Works:
+1. **Global App Registry (`AppDevRegistry`):** Whenever a dev server starts, Pinoox automatically registers the app instance (package name, port, origin URL, and filesystem root) in the global user registry (`~/.pinoox/dev_apps.json`).
+2. **Dynamic In-Memory Mounting (`AppEngine`):** When code in the shop app queries `App::exists('com_pinoox_pay')`, `AppEngine::path('com_pinoox_pay')`, or `App::meeting('com_pinoox_pay', ...)`, Pinoox discovers the live server and mounts it temporarily in memory without touching any configuration file on disk.
+3. **Smart Cross-App URLs:** Calling `url('@com_pinoox_pay/checkout')` inside the shop app resolves to `http://127.0.0.1:8001/checkout`.
+4. **Local Sources Take Precedence:** If a package is already installed locally under `apps/` or declared in `apps.config.php`, local files are preserved and never overridden.
+5. **Self-Package Protection:** The currently running app will never register itself as an external service.
+6. **Automatic Cleanup:** When a dev server stops (e.g. via `Ctrl+C`), its entry is removed from the registry.
+
+---
+
 ## Pinx Inspector
 
 When `pinoox/pinx-inspector` is installed in `require-dev`, `pinx dev` exposes a local dashboard on the same server:

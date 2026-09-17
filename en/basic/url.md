@@ -38,6 +38,36 @@ echo Url::link('^config/app.php');
 
 ---
 
+## Cross-App URLs and Service Discovery
+
+In multi-app or microservice architectures, you can build links directly to other applications using the **`@package`** prefix:
+
+```php
+// Link to the root of another application
+echo url('@com_pinoox_pay');               // e.g. http://127.0.0.1:8001 or /pay
+
+// Link to a specific route in another app
+echo url('@com_pinoox_pay/checkout');      // http://127.0.0.1:8001/checkout
+echo url('@com_acme_shop/product/12');     // http://shop.test/product/12
+
+// Get app base URL via Url portal
+use Pinoox\Portal\Url;
+echo Url::forApp('com_pinoox_pay');        // http://127.0.0.1:8001
+```
+
+### Service Discovery Fallback Chain
+
+When resolving an app URL, Pinoox evaluates the following hierarchy:
+
+1. **Active Dev Server Registry (`AppDevRegistry`):**
+   If the target app is running via `pinx dev` (e.g. on port `8001`), its live development URL is automatically discovered and returned — **no manual port configuration needed**.
+2. **Domain Configuration (`domain.config.php`):**
+   If a custom domain or port mapping is configured (e.g., `'pay.test' => 'com_pinoox_pay'` or `'localhost:8001' => 'com_pinoox_pay'`), it will be used.
+3. **Path Routing:**
+   If neither a dev server nor a custom domain is active, the URL falls back to the current host origin combined with the app's route prefix from `app-router.config.php` (e.g. `/pay/checkout`).
+
+---
+
 ## Stored file download URL
 
 `url()->file()` / `Url::file()` / `file_url()` resolve a stored file (`file_id`, `hash_id`, or `FileModel`). The disk is detected automatically: unlocked/public disks get a direct `/storage/…` (or remote) URL; locked disks use the owning app dispatcher `{app}/file/{hash}`.

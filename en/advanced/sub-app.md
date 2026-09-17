@@ -63,7 +63,8 @@ Pinoox uses **`AppEngine`** to resolve and locate all application resources (rou
 
 1. **Standard `apps/` Directory:** If the app resides in `apps/{package}`, `AppEngine` detects and mounts it automatically without any manual registration.
 2. **Host App Sub-Folders (`sub_apps/`):** If a sub-app is located inside the host app (e.g., `apps/{host}/sub_apps/{guest}` or `apps/{host}/apps/{guest}`), `SubApp` automatically scans conventional locations and registers the guest package in `AppEngine`.
-3. **Custom / Arbitrary Paths:** You can mount an app located anywhere on the filesystem:
+3. **Development Server Registry (`AppDevRegistry`):** If the guest app is running on a live dev server (`pinx dev`), `AppEngine` automatically discovers and mounts it in memory without needing an entry in `apps.config.php`.
+4. **Custom / Arbitrary Paths:** You can mount an app located anywhere on the filesystem:
 
 ```php
 // Option A: Fluent builder path()
