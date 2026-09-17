@@ -47,11 +47,41 @@ Route::subApp('/shop', 'com_pinoox_shop')
 
 | Method | Description |
 |--------|-------------|
+| `path(string $path)` | Specify a custom filesystem directory path for the sub-app (auto-registered with `AppEngine`). |
+| `appPath(string $path)` | Alias of `path()` to set a custom app directory. |
 | `config(array $overrides)` | Temporarily override `app.php` configuration keys for the guest app during this request. |
 | `context(array $data)` | Pass arbitrary contextual data from the host application to the guest app. |
 | `name(string $name)` | Assign a named route prefix to the sub-app base path. |
 | `flows(array $flows)` | Apply middleware/flows prior to entering the guest sub-app. |
 | `methods(array\|string $methods)` | Restrict allowed HTTP verbs (defaults to all methods). |
+
+---
+
+## Automatic App Path Detection & Custom Locations
+
+Pinoox uses **`AppEngine`** to resolve and locate all application resources (routes, controllers, configs, translations, themes). In Sub-Apps, path detection is completely automatic:
+
+1. **Standard `apps/` Directory:** If the app resides in `apps/{package}`, `AppEngine` detects and mounts it automatically without any manual registration.
+2. **Host App Sub-Folders (`sub_apps/`):** If a sub-app is located inside the host app (e.g., `apps/{host}/sub_apps/{guest}` or `apps/{host}/apps/{guest}`), `SubApp` automatically scans conventional locations and registers the guest package in `AppEngine`.
+3. **Custom / Arbitrary Paths:** You can mount an app located anywhere on the filesystem:
+
+```php
+// Option A: Fluent builder path()
+Route::subApp('/payment', 'com_payment')
+    ->path(path('sub_apps/payment'));
+
+// Option B: Passing directory path directly as package
+Route::subApp('/chat', path('modules/live_chat'));
+
+// Option C: Options array
+Route::subApp('/blog', 'com_blog', [
+    'path' => '/var/custom_apps/blog',
+]);
+```
+
+Inside views or controllers, you can retrieve the resolved sub-app filesystem path using:
+- PHP: `sub_app_path()` or `SubApp::path('package_name', 'sub/path')`
+- Twig: `{{ sub_app_path() }}` or `{{ sub_app_path('package_name') }}`
 
 ---
 
