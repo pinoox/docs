@@ -28,7 +28,8 @@ Pinoox 3.x routing has two layers: **Named Actions** (logical handlers) and **Ro
 use function Pinoox\Router\{
     get, post, put, patch, delete, query,
     options, head, purge, trace, connect, any,
-    route_match, action, group, collection, routes, collect, route
+    route_match, action, group, collection, routes, collect, route,
+    subApp, mountApp
 };
 ```
 
@@ -263,6 +264,28 @@ group(['prefix' => '/api'], function () {
     fallback(fn () => response()->json(['message' => 'Not Found'], 404));
 });
 ```
+
+---
+
+## Mount Sub-Apps (`subApp`)
+
+You can mount another independent application under a sub-path, with nested paths routed automatically to the guest app:
+
+```php
+use function Pinoox\Router\subApp;
+use Pinoox\Portal\Route;
+
+// Simple registration
+subApp('/pay', 'com_pinoox_payment');
+
+// Fluent route builder with dynamic config overlay
+Route::subApp('/shop', 'com_pinoox_shop')
+    ->config(['theme' => 'minimal'])
+    ->context(['embed' => true])
+    ->name('shop.sub');
+```
+
+For restrictions (`allowed_hosts`, `subapp_only`) and view helpers, see [Sub-Apps and App Mounting](../advanced/sub-app.md).
 
 ---
 

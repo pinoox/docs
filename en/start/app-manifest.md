@@ -46,8 +46,10 @@ See [boot.php & events](../advanced/boot-and-events.md) (includes [package lifec
 | `auth` | mode, lifetime, JWT/cookie |
 | `access` | RBAC: `groups`, `super_roles` |
 | `transport` | Share user/file/access with platform |
+| `subapp_only` | Restrict app to run only as a mounted sub-app (`true` / `false`) |
+| `allowed_hosts` | Whitelist host packages allowed to mount this sub-app (`['com_host_app']`) |
 
-See [Flows](../basic/flows.md), [User management](../advanced/user-management.md), [Access](../advanced/access-permissions.md).
+See [Flows](../basic/flows.md), [Sub-Apps](../advanced/sub-app.md), [User management](../advanced/user-management.md), [Access](../advanced/access-permissions.md).
 
 ---
 

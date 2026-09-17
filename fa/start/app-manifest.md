@@ -46,8 +46,10 @@
 | `auth` | mode، lifetime، JWT/cookie |
 | `access` | RBAC: `groups`, `super_roles` |
 | `transport` | اشتراک user/file/access با platform |
+| `subapp_only` | جلوگیری از اجرای مستقیم اپ و اجبار به لود به عنوان زیربرنامه (`true` / `false`) |
+| `allowed_hosts` | وایت‌لیست پکیج‌های میزبان مجاز برای مانت کردن اپ به صورت زیربرنامه (`['com_host_app']`) |
 
-جزئیات: [Flow](../basic/flows.md)، [مدیریت کاربران](../advanced/user-management.md)، [دسترسی](../advanced/access-permissions.md).
+جزئیات: [Flow](../basic/flows.md)، [زیر‌برنامه‌ها (Sub-App)](../advanced/sub-app.md)، [مدیریت کاربران](../advanced/user-management.md)، [دسترسی](../advanced/access-permissions.md).
 
 ---
 

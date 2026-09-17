@@ -28,7 +28,8 @@
 use function Pinoox\Router\{
     get, post, put, patch, delete, query,
     options, head, purge, trace, connect, any,
-    route_match, action, group, collection, routes, collect, route
+    route_match, action, group, collection, routes, collect, route,
+    subApp, mountApp
 };
 ```
 
@@ -261,6 +262,28 @@ group(['prefix' => '/api'], function () {
     fallback(fn () => response()->json(['message' => 'Not Found'], 404));
 });
 ```
+
+---
+
+## اتصال زیر‌برنامه (Sub-App / Mount)
+
+می‌توانید یک اپلیکیشن دیگر را زیر یک مسیر مشخص سوار (mount) کنید تا بدون نیاز به تغییر در روت‌های داخلی اپ مهمان، تمام زیرمسیرهای آن پردازش شوند:
+
+```php
+use function Pinoox\Router\subApp;
+use Pinoox\Portal\Route;
+
+// استفاده ساده
+subApp('/pay', 'com_pinoox_payment');
+
+// یا با زنجیره متدهای کنترلی و تغییر موقت کانفیگ
+Route::subApp('/shop', 'com_pinoox_shop')
+    ->config(['theme' => 'minimal'])
+    ->context(['embed' => true])
+    ->name('shop.sub');
+```
+
+برای جزئیات بیشتر، محدودیت‌های امنیتی (`allowed_hosts`، `subapp_only`) و متدهای کمکی، به [مستندات زیر‌برنامه‌ها (Sub-App)](../advanced/sub-app.md) مراجعه کنید.
 
 ---
 

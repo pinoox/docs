@@ -82,6 +82,7 @@
 #### [مدیریت توکن](./advanced/token-management.md)
 #### [دسترسی و مجوز (Access)](./advanced/access-permissions.md)
 #### [ترنسپورت (Transport) — منابع مشترک](./advanced/transport.md)
+#### [زیر‌برنامه‌ها و مانت اپ (Sub-App)](./advanced/sub-app.md)
 #### [Kernel و pipeline بوت](./advanced/kernel.md)
 #### [boot.php و رویدادها](./advanced/boot-and-events.md)
 #### [زمان‌بندی (Schedule / Cron)](./advanced/schedule.md)
