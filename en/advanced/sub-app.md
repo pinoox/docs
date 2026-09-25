@@ -4,7 +4,7 @@
 
 The **Sub-App** feature in Pinoox allows you to mount and execute any independent application under a sub-path of another host application without modifying the guest app's internal routes, controllers, or structure.
 
-It also supports **Dynamic In-Memory Configuration Overlays**, contextual data passing, and granular access restrictions (such as `subapp_only` and `allowed_hosts`).
+It also supports **Dynamic In-Memory Configuration Overlays**, contextual data passing with **Lazy Evaluation**, selective route mounting, granular access restrictions (such as `subapp_only` and `allowed_hosts`), and complete SPA base path resolution.
 
 ---
 
@@ -49,11 +49,119 @@ Route::subApp('/shop', 'com_pinoox_shop')
 |--------|-------------|
 | `path(string $path)` | Specify a custom filesystem directory path for the sub-app (auto-registered with `AppEngine`). |
 | `appPath(string $path)` | Alias of `path()` to set a custom app directory. |
+| `routes(string\|array $routeFiles)` | Selectively mount specific route file(s) instead of loading all guest routes (e.g., separating web/site from panel routes). |
+| `only(array\|string $tagsOrContexts)` | Filter sub-app routes to only include those matching the specified tag(s). |
 | `config(array $overrides)` | Temporarily override `app.php` configuration keys for the guest app during this request. |
-| `context(array $data)` | Pass arbitrary contextual data from the host application to the guest app. |
+| `context(array $data)` | Pass arbitrary contextual data, metadata, or lazy closures from the host application to the guest app. |
 | `name(string $name)` | Assign a named route prefix to the sub-app base path. |
 | `flows(array $flows)` | Apply middleware/flows prior to entering the guest sub-app. |
 | `methods(array\|string $methods)` | Restrict allowed HTTP verbs (defaults to all methods). |
+
+---
+
+## Selective Route Mounting and Tag Filtering
+
+In Pinoox, rather than loading every route defined in the guest application's `app.php`, you can selectively mount specific route files or filter routes by tags:
+
+### 1. Specific Route Files with `routes()`
+```php
+// Mount only frontend / public payment routes
+Route::subApp('/pay', 'com_pinoox_pay')
+    ->routes('routes/site/web.php');
+
+// Mount payment administrative routes under admin panel
+Route::subApp('/panel/payment', 'com_pinoox_pay')
+    ->routes('routes/panel/web.php');
+```
+
+### 2. Tag Filtering with `only()`
+```php
+// Only routes tagged with 'site' are mounted
+Route::subApp('/pay', 'com_pinoox_pay')
+    ->only('site');
+
+// Mount routes matching multiple tags
+Route::subApp('/checkout', 'com_pinoox_pay')
+    ->only(['checkout', 'public']);
+```
+
+---
+
+## Lazy Context Evaluation (Closures & Callables)
+
+When passing dynamic values (such as the authenticated user or roles) from host to guest, evaluating them eagerly during route boot time can be problematic because the user may not yet be authenticated. Pinoox allows passing lazy closures:
+
+```php
+Route::subApp('/pay', 'com_pinoox_pay')
+    ->context([
+        'is_manager' => fn () => Auth::user()?->is_admin ?? false,
+        'portal_mode' => 'embedded',
+    ]);
+```
+
+Inside the guest sub-app:
+- `App::context('is_manager')` or helper `sub_app_context('is_manager')` automatically evaluates the closure and returns the resolved value (`true` or `false`).
+- `App::rawContext('is_manager')` returns the raw stored closure/callable without invoking it.
+- `App::resolveContext('is_manager')` explicitly resolves and returns the evaluated value.
+
+---
+
+## Base Path and SPA / Theme Integration
+
+When an application is mounted as a sub-app at `/pay` or `/panel/payment`, its mount path and base URL must be accessible to front-end routers (like Vue Router with `createWebHistory`) and templates without hardcoded paths:
+
+### PHP and Twig Base Path Access
+- In PHP: `App::mountPath(): string` returns the relative mount path (e.g. `/pay`), and `App::subAppBaseUrl(): string` returns the complete URL.
+- In Twig: `{{ mount_path() }}` and `{{ sub_app_base_url() }}` are available globally.
+
+### Response Headers
+Pinoox automatically attaches tracking headers to all sub-app responses:
+- `X-SubApp-Mount-Path`: The relative mount path (e.g., `/pay`)
+- `X-SubApp-Base-Url`: The full base URL of the sub-app
+- `X-SubApp-Parent`: The package name of the host application
+
+### JavaScript and SPA Initialization (`window.__PINOOX__`)
+The global `window.__PINOOX__.url` object automatically provides mount path information:
+```javascript
+// In Vue Router or React Router configuration:
+import { createRouter, createWebHistory } from 'vue-router';
+
+const router = createRouter({
+    history: createWebHistory(window.__PINOOX__?.url?.MOUNT_PATH || '/'),
+    routes: [ ... ]
+});
+```
+
+---
+
+## Authentication & Access Control Flows (`AuthFlow` and `AccessFlow`)
+
+Pinoox provides `AccessFlow` (and an upgraded `AuthFlow`) to cleanly distinguish unauthenticated requests (**401 Unauthorized**) from permission/authorization denials (**403 Forbidden**):
+
+```php
+namespace App\com_pinoox_pay\Flow;
+
+use Pinoox\Component\Http\Request;
+use Pinoox\Component\Router\Route;
+use Pinoox\Flow\AccessFlow;
+use Pinoox\Portal\Auth;
+
+class PaymentAccessFlow extends AccessFlow
+{
+    /**
+     * Determine authorization for the given request and route.
+     */
+    protected function authorize(Request $request, ?Route $route): bool
+    {
+        // At this point, the user is authenticated (guests are already redirected or returned 401)
+        return Auth::user()?->can_pay ?? false;
+    }
+}
+```
+
+- If `Auth::guest()` is true, `unauthenticated()` is called, issuing an HTTP `401 Unauthorized` response or redirecting to the login page.
+- If the user is authenticated but `authorize()` returns `false`, `forbidden()` is called, issuing an HTTP `403 Access Denied` response.
+- JSON / API requests automatically receive structured JSON error payloads.
 
 ---
 

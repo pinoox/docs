@@ -49,11 +49,117 @@ Route::subApp('/shop', 'com_pinoox_shop')
 |-----|-------|
 | `path(string $path)` | تعیین مسیر دلخواه در فایل‌سیستم برای زیر‌برنامه (ثبت خودکار در `AppEngine`). |
 | `appPath(string $path)` | نام مستعار برای `path()` جهت تعیین مسیر پوشه برنامه. |
+| `routes(string\|array $routeFiles)` | تعیین فایل یا فایل‌های روت مشخص برای مانت انتخابی (مانند تفکیک روت‌های وب/سایت از پنل). |
+| `only(array\|string $tagsOrContexts)` | فیلتر کردن روت‌های زیر‌برنامه تنها به روت‌هایی که تگ‌های مشخص‌شده را دارند. |
 | `config(array $overrides)` | بازنویسی موقت کلیدهای `app.php` اپ مهمان (تنها در طول پردازش همین درخواست). |
-| `context(array $data)` | ارسال داده‌های کمکی و اختیاری از اپ میزبان به اپ مهمان. |
+| `context(array $data)` | ارسال داده‌های کمکی، اختیاری یا کالبک‌های تنبل (Lazy Closures) از اپ میزبان به اپ مهمان. |
 | `name(string $name)` | تعیین نام برای روت پایه زیر‌برنامه. |
 | `flows(array $flows)` | اعمال میان‌افزارها و Flowها پیش از ورود به زیربرنامه. |
 | `methods(array\|string $methods)` | محدود کردن متدهای HTTP مجاز (پیش‌فرض تمام متدهاست). |
+
+---
+
+## مانت انتخابی روت‌ها و فیلتر بر اساس تگ (Selective Route Mounting)
+
+در پینوکس می‌توانید به جای لود کردن تمام روت‌های اپلیکیشن مهمان، تنها فایل‌های روت خاصی را مانت کرده یا روت‌ها را بر اساس تگ فیلتر کنید:
+
+### ۱. تعیین فایل روت مشخص با `routes()`
+```php
+// مانت فقط روت‌های وب سایت
+Route::subApp('/pay', 'com_pinoox_pay')
+    ->routes('routes/site/web.php');
+
+// مانت فقط روت‌های پنل مدیریت
+Route::subApp('/panel/payment', 'com_pinoox_pay')
+    ->routes('routes/panel/web.php');
+```
+
+### ۲. فیلتر روت‌ها بر اساس تگ با `only()`
+```php
+// تنها روت‌هایی که تگ 'site' دارند مانت می‌شوند
+Route::subApp('/pay', 'com_pinoox_pay')
+    ->only('site');
+
+// یا با چند تگ مشخص
+Route::subApp('/checkout', 'com_pinoox_pay')
+    ->only(['checkout', 'public']);
+```
+
+---
+
+## پشتیبانی از کالبک‌های تنبل (Lazy Context Evaluation)
+
+هنگامی که نیاز دارید مقادیری مانند کاربر لاگین‌شده یا دسترسی‌ها را از اپلیکیشن میزبان به زیر‌برنامه منتقل کنید، ممکن است در زمان بوت روت‌ها کاربر هنوز احراز هویت نشده باشد. برای جلوگیری از اجرای زودهنگام کد، می‌توانید از `Closure` استفاده کنید:
+
+```php
+Route::subApp('/pay', 'com_pinoox_pay')
+    ->context([
+        'is_manager' => fn () => Auth::user()?->is_admin ?? false,
+        'portal_mode' => 'embedded',
+    ]);
+```
+
+درون زیر‌برنامه:
+- متد `App::context('is_manager')` یا تابع `sub_app_context('is_manager')` به صورت خودکار کالبک را اجرا کرده و مقدار نهایی (`true` یا `false`) را بازمی‌گرداند.
+- متد `App::rawContext('is_manager')` مقدار خام و اجرا نشده (کالبک) را برمی‌گرداند.
+- متد `App::resolveContext('is_manager')` مقدار کانتکست را به صورت صریح ارزیابی و بازمی‌گرداند.
+
+---
+
+## مسیر پایه و یکپارچه‌سازی با SPA و تم‌ها (Base Path)
+
+هنگامی که یک اپلیکیشن به عنوان زیر‌برنامه در مسیری مانند `/pay` یا `/panel/payment` مانت می‌شود، مسیر پایه (Base Path) آن باید به صورت داینامیک برای روتر فرانت‌اند (مانند Vue Router با `createWebHistory`) در دسترس باشد تا نیازی به هاردکد کردن آدرس‌ها نباشد:
+
+### دریافت مسیر پایه در PHP و Twig
+- در PHP: متد `App::mountPath(): string` مسیر نسبی مانت‌شده (مانند `/pay`) و متد `App::subAppBaseUrl(): string` آدرس کامل را بازمی‌گرداند.
+- در Twig: توابع `{{ mount_path() }}` و `{{ sub_app_base_url() }}` در دسترس هستند.
+
+### در هدرهای ریسپانس (Response Headers)
+پینوکس به صورت خودکار هدرهای زیر را به پاسخ‌های زیر‌برنامه اضافه می‌کند:
+- `X-SubApp-Mount-Path`: مسیر نسبی مانت‌شده (مانند `/pay`)
+- `X-SubApp-Base-Url`: آدرس پایه کامل زیر‌برنامه
+- `X-SubApp-Parent`: نام پکیج اپلیکیشن میزبان
+
+### در جاوا اسکریپت و SPAها (`window.__PINOOX__`)
+آبجکت `window.__PINOOX__.url` مقادیر زیر را به صورت خودکار شامل می‌شود:
+```javascript
+// در پیکربندی Vue Router یا React Router:
+const router = createRouter({
+    history: createWebHistory(window.__PINOOX__?.url?.MOUNT_PATH || '/'),
+    routes: [ ... ]
+});
+```
+
+---
+
+## جریان‌های احراز هویت و دسترسی (`AuthFlow` و `AccessFlow`)
+
+در هسته پینوکس برای تفکیک وضعیت عدم احراز هویت (**401 Unauthorized**) از عدم دسترسی یا نقش ناکافی (**403 Forbidden**)، کلاس `AccessFlow` (و ارتقای `AuthFlow`) ارائه شده است:
+
+```php
+namespace App\com_pinoox_pay\Flow;
+
+use Pinoox\Component\Http\Request;
+use Pinoox\Component\Router\Route;
+use Pinoox\Flow\AccessFlow;
+use Pinoox\Portal\Auth;
+
+class PaymentAccessFlow extends AccessFlow
+{
+    /**
+     * شرط دسترسی به این روت یا منبع
+     */
+    protected function authorize(Request $request, ?Route $route): bool
+    {
+        // در این مرحله کاربر لاگین است (چون مهمان‌ها قبلاً به 401 هدایت شده‌اند)
+        return Auth::user()?->can_pay ?? false;
+    }
+}
+```
+
+- اگر کاربر مهمان باشد (`Auth::guest()`)، متد `unauthenticated()` خطای `401` یا ریدایرکت لاگین را اجرا می‌کند.
+- اگر کاربر لاگین باشد اما متد `authorize()` مقدار `false` برگرداند، متد `forbidden()` خطای `403 Access Denied` صادر می‌کند.
+- برای درخواست‌های API یا JSON، پاسخ‌ها به صورت ساختاریافته در قالب JSON بازگردانده می‌شوند.
 
 ---
 
