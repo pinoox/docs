@@ -236,7 +236,54 @@ return [
 ];
 ```
 
-> If an unauthorized application attempts to mount a guest restricted by `allowed_hosts`, an HTTP 403 `AccessDeniedHttpException` is thrown.
+---
+
+## Declarative Mounting in Host `app.php` (`sub_apps`)
+
+In addition to registering sub-apps inside route files, host applications can declare sub-apps directly in their `app.php` configuration. Pinoox automatically registers these sub-apps at boot time without needing any route file modifications:
+
+### 1. Simple Mapping (Path => Package)
+
+```php
+// apps/com_shop/app.php
+return [
+    'package' => 'com_shop',
+
+    'sub_apps' => [
+        '/pay' => 'com_pinoox_payment',
+        '/sms' => 'com_pinoox_sms',
+    ],
+];
+```
+
+### 2. Advanced Options per Mount Path
+
+You can pass fine-grained configurations, custom route files, contexts, or arbitrary filesystem paths:
+
+```php
+// apps/com_shop/app.php
+return [
+    'package' => 'com_shop',
+
+    'sub_apps' => [
+        '/pay' => [
+            'app' => 'com_pinoox_payment',
+            'enable' => true,
+            'routes' => 'routes/site/web.php',
+            'only' => ['checkout'],
+            'config' => [
+                'theme' => 'shop_theme',
+            ],
+            'context' => [
+                'mode' => fn () => 'live',
+            ],
+            'share_auth' => true,
+            'name' => 'shop.pay',
+            'path' => 'C:/projects/com_pinoox_payment', // Optional explicit path
+        ],
+    ],
+];
+```
 
 ---
 
