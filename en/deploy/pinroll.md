@@ -649,6 +649,7 @@ Auth: `Authorization: Bearer {token}`. Paths are `pingate.php?route=…`.
 | `POST` | `/rollback` | Re-install previous release |
 | `POST` | `/cleanup` | Prune old archives |
 | `GET` | `/history` | Rollout history |
+| `GET / POST` | `/logs` | List or inspect remote host logs (structured for AI Agents) |
 
 `/sync` runs early in the PinGate bootstrap so `vendor/pinoox/pincore` can be replaced without locking the running core.
 
@@ -673,6 +674,7 @@ Auth: `Authorization: Bearer {token}`. Paths are `pingate.php?route=…`.
 | `pinroll:deploy` | Push + install |
 | `pinroll:rollback` | Rollback via PinGate or local re-push |
 | `pinroll:cleanup` | Prune archives (`--local`, `--dry-run`, `-k`) |
+| `pinroll:logs` | Read or list remote host logs (`--json` for Agents, `--file`, `--latest`) |
 | `pinroll:build` | Build only |
 | `pinroll:status` | Rollout status |
 | `pinroll:history` | Deploy history |
@@ -698,6 +700,48 @@ Push / deploy flags: `--full`, `--all`, `--vendor`, `--theme`, `--app=` / `--app
 | `local` | Same machine / smoke tests |
 
 Setup without FTP: `pinroll:kit` → extract into `public_html` → then `via=pinion`.
+
+### Host logs & Agent diagnostics
+
+Pinroll allows developers and AI Agents to inspect server and platform logs remotely via the `pinroll:logs` command (or `pinx logs` in Pinx CLI) through PinGate's secure `/logs` endpoint. It supports tailing, text search, log-level filtering, and structured JSON output for AI Agent integration.
+
+```bash
+# List available log files on remote host
+php pinoox pinroll:logs
+pinx logs
+
+# Tail the most recent log file
+php pinoox pinroll:logs --latest
+pinx logs -l
+
+# Tail specific log file and specify line count
+php pinoox pinroll:logs --file=storage/logs/pinoox.log --lines=100
+pinx logs -f error_log -n 50
+
+# Filter by type or search query
+php pinoox pinroll:logs --type=pinoox --search="SQLSTATE"
+php pinoox pinroll:logs --level=error
+
+# Structured JSON output for AI Agents
+pinx logs --json
+php pinoox pinroll:logs --latest --lines=50 --json
+
+# Read local logs
+php pinoox pinroll:logs --local
+```
+
+| Flag | Description |
+|------|-------------|
+| `--host=` | Destination host name (default: active configured host) |
+| `--file=` / `-f` | Remote log filename or path |
+| `--latest` / `-l` | Automatically select the newest modified log file |
+| `--lines=` / `-n` | Number of tail lines (default: `100`, max: `1000`) |
+| `--type=` | Filter by log category (`all`, `pinoox`, `gate`, `system`, `php`) |
+| `--search=` / `-s` | Search string within log entries |
+| `--level=` | Filter by severity level (e.g. `error`, `critical`, `warning`) |
+| `--local` | Read logs from local project instead of remote server |
+| `--json` | Return structured JSON output for Agent and automated consumption |
+| `--raw` | Output plain log text without console decoration or tables |
 
 ### Troubleshooting
 

@@ -646,6 +646,7 @@ php pinoox pinroll:check
 | `POST` | `/rollback` | نصب مجدد نسخه قبلی |
 | `POST` | `/cleanup` | هرس آرشیو |
 | `GET` | `/history` | تاریخچه |
+| `GET / POST` | `/logs` | لیست یا مشاهده لاگ‌های سرور (خروجی ساختاریافته برای Agent) |
 
 `/sync` زود در bootstrap PinGate اجرا می‌شود تا بتوان `vendor/pinoox/pincore` را جایگزین کرد بدون اینکه هستهٔ در حال اجرا قفل شود.
 
@@ -670,6 +671,7 @@ php pinoox pinroll:check
 | `pinroll:deploy` | push + install |
 | `pinroll:rollback` | rollback |
 | `pinroll:cleanup` | هرس (`--local`، `--dry-run`، `-k`) |
+| `pinroll:logs` | مشاهده یا دریافت لیست لاگ‌های سرور (`--json` برای Agent، `--file`، `--latest`) |
 | `pinroll:build` | فقط build |
 | `pinroll:status` | وضعیت rollout |
 | `pinroll:history` | تاریخچه |
@@ -687,6 +689,48 @@ php pinoox pinroll:check
 | `local` | همان ماشین / تست |
 
 راه‌اندازی بدون FTP: `pinroll:kit` → extract در `public_html` → بعد `via=pinion`.
+
+### لاگ‌ها و عیب‌یابی سرور (برای توسعه‌دهنده و Agent)
+
+Pinroll از طریق دستور `pinroll:logs` (یا `pinroll:log`) و در Pinx CLI با `pinx logs`، امکان مشاهده و تحلیل مستقیم لاگ‌های سرور را بدون نیاز به ورود به SSH یا کنترل‌پنل هاست فراهم می‌کند. این ابزار از طریق مسیر امن `/logs` در PinGate با سرور ارتباط برقرار کرده و همچنین قابلیت بازگشت خروجی استاندارد JSON برای پردازش خودکار توسط هوش مصنوعی (AI Agents) را دارد.
+
+```bash
+# دریافت لیست فایل‌های لاگ موجود روی هاست
+php pinoox pinroll:logs
+pinx logs
+
+# مشاهده آخرین خطوط جدیدترین لاگ تغییر یافته
+php pinoox pinroll:logs --latest
+pinx logs -l
+
+# خواندن فایل لاگ مشخص با تعداد خط معین
+php pinoox pinroll:logs --file=storage/logs/pinoox.log --lines=100
+pinx logs -f error_log -n 50
+
+# فیلتر لاگ‌ها بر اساس نوع یا جستجوی متن
+php pinoox pinroll:logs --type=pinoox --search="SQLSTATE"
+php pinoox pinroll:logs --level=error
+
+# خروجی ساختاریافته JSON برای هوش مصنوعی (AI Agent)
+pinx logs --json
+php pinoox pinroll:logs --latest --lines=50 --json
+
+# لاگ‌های محیط محلی (Local)
+php pinoox pinroll:logs --local
+```
+
+| فلگ | توضیح |
+|-----|-------|
+| `--host=` | نام هاست مقصد (پیش‌فرض: هاست فعال در کانفیگ) |
+| `--file=` / `-f` | نام یا مسیر فایل لاگ روی هاست |
+| `--latest` / `-l` | باز کردن مستقیم جدیدترین لاگ تغییر یافته |
+| `--lines=` / `-n` | تعداد خطوط انتهایی لاگ (پیش‌فرض: `100`، حداکثر: `1000`) |
+| `--type=` | فیلتر نوع لاگ (`all`، `pinoox`، `gate`، `system`، `php`) |
+| `--search=` / `-s` | جستجوی عبارت متنی درون خطوط لاگ |
+| `--level=` | فیلتر سطح خطا (مانند `error`، `critical`، `warning`) |
+| `--local` | خواندن لاگ‌ها از ماشین محلی به‌جای سرور ریموت |
+| `--json` | خروجی خام ساختاریافته JSON برای Agent و پردازش خودکار |
+| `--raw` | چاپ خطوط لاگ بدون قالب‌بندی و جدول کنسول |
 
 ### عیب‌یابی
 

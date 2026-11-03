@@ -75,6 +75,7 @@ php pinoox pinroll:deploy           # app .pinx only
 php pinoox pinroll:deploy --full    # platform + every app
 php pinoox pinroll:pincore             # core update (zip + sync)
 php pinoox pinroll:setup               # migrate + patch
+php pinoox pinroll:logs --latest       # inspect host logs (or pinx logs)
 php pinoox pinroll:rollback
 ```
 
