@@ -257,6 +257,7 @@ Build packages and deploy to configured hosts. Requires `pinoox/pinroll` and pro
 | `pinroll:deploy` | Push + install (go live); `--full` = platform + every app |
 | `pinroll:rollback` | Rollback via PinGate or local re-push |
 | `pinroll:cleanup` | Prune old archives (`--local`, `--dry-run`) |
+| `pinroll:logs` | Read or list remote host logs (`--json` for Agents, `--file`, `--latest`) |
 | `pinroll:build` | Build only |
 | `pinroll:status` | Rollout status |
 | `pinroll:history` | Deploy history |
@@ -269,6 +270,7 @@ php pinoox pinroll:provision          # blank host
 php pinoox pinroll:connect            # existing site
 php pinoox pinroll:deploy --full
 php pinoox pinroll:setup
+php pinoox pinroll:logs --latest      # check remote host logs (--json for agents)
 ```
 
 See [Pinroll deploy guide](../deploy/pinroll.md).

@@ -75,6 +75,7 @@ php pinoox pinroll:deploy              # فقط .pinx اپ
 php pinoox pinroll:deploy --full       # پلتفرم + همه اپ‌ها
 php pinoox pinroll:pincore             # آپدیت هسته (zip + sync)
 php pinoox pinroll:setup               # migrate + patch
+php pinoox pinroll:logs --latest       # مشاهده لاگ سرور (یا pinx logs)
 php pinoox pinroll:rollback
 ```
 

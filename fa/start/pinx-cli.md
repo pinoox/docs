@@ -343,6 +343,7 @@ pinx doctor --no-fixes      # عدم نمایش دستورهای پیشنهاد�
 | `pinroll:check` | `deploy:check` | بررسی هاست + PinGate |
 | `deploy` | `pinroll:deploy` | ساخت `.pinx` همین اپ، آپلود، نصب/آپدیت |
 | `provision` | `pinroll:provision` | نصب پلتفرم روی هاست خالی (یک‌بار) |
+| `logs` | `pinroll:logs`, `log` | دریافت یا مشاهده لاگ‌های سرور یا لوکال (`--json` برای Agent، `-f`، `-l`) |
 
 ### اسکلت‌سازی
 

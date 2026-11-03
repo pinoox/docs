@@ -369,6 +369,7 @@ Run `pinx list` for a sectioned overview. Shorthand aliases appear in brackets.
 | `pinroll:check` | `deploy:check` | Verify host + PinGate |
 | `deploy` | `pinroll:deploy` | Build this app’s `.pinx`, upload, install/update |
 | `provision` | `pinroll:provision` | Blank-host platform install (once) |
+| `logs` | `pinroll:logs`, `log` | Inspect or list host/local logs (`--json` for Agents, `-f`, `-l`) |
 
 ### Scaffolding
 

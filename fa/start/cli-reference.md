@@ -256,6 +256,7 @@ pinx pinion:info {upload_id} --json
 | `pinroll:deploy` | push + install؛ `--full` = پلتفرم + همه اپ‌ها |
 | `pinroll:rollback` | rollback از PinGate یا آرشیو لوکال |
 | `pinroll:cleanup` | هرس آرشیوهای قدیمی (`--local`، `--dry-run`) |
+| `pinroll:logs` | مشاهده یا دریافت لیست لاگ‌های سرور (`--json` برای Agent، `--file`، `--latest`) |
 | `pinroll:build` | فقط build |
 | `pinroll:status` | وضعیت rollout |
 | `pinroll:history` | تاریخچه دیپلوی |
@@ -268,6 +269,7 @@ php pinoox pinroll:provision          # هاست خالی
 php pinoox pinroll:connect            # سایت موجود
 php pinoox pinroll:deploy --full
 php pinoox pinroll:setup
+php pinoox pinroll:logs --latest      # بررسی لاگ‌های هاست (خروجی json با --json)
 ```
 
 مستندات: [راهنمای Pinroll](../deploy/pinroll.md).
